@@ -1,0 +1,45 @@
+<div class="gmap" id="gmap" style="min-height: 1125px;width:100%;"></div>
+<script>
+    var LocsA = [
+	  <?php foreach($allSubmissions as $row) {
+		
+		if(isset($row['Latitude']) && $row['Latitude'] != ""){
+		  $icon = $this->basePath('assets/img/map-points/dark-green.png');
+		  if($row['AUDIT_SCORE_PERCANTAGE'] > 90){
+			$icon = $this->basePath('assets/img/map-points/dark-green.png');
+		  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <= 89){
+			$icon = $this->basePath('assets/img/map-points/light-green.png');
+		  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <= 79){
+			$icon = $this->basePath('assets/img/map-points/yellow.png');
+		  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <= 599){
+			$icon = $this->basePath('assets/img/map-points/orange.png');
+		  }else{
+			$icon = $this->basePath('assets/img/map-points/red.png');
+		  }
+		  
+		?>
+		{
+			lat: "<?php echo $row['Latitude'] ?>",
+			lon: "<?php echo $row['Longitude'] ?>",
+			title: "<?php echo addslashes($row['facilityname']); ?>",
+			html: "<strong><?php echo addslashes($row['facilityname']); ?></strong>",
+			animation: google.maps.Animation.DROP,
+			icon : "<?php echo $icon; ?>"
+		},
+	  <?php }
+	  }?>
+	];
+    $(document).ready(function(){
+		new Maplace({
+		  locations: LocsA,
+		  map_div: '#gmap',
+	      controls_on_map: true,
+		  map_options : {
+			  mapTypeId: google.maps.MapTypeId.ROADMAP,
+			  zoom: 8,
+			   scrollwheel: false
+		  }
+		}).Load();
+		
+      });
+</script>

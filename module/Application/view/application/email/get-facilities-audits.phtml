@@ -1,0 +1,17 @@
+<?php
+$audits = '';
+$audits.='<select class="" name="audits[]" id="audits" multiple="multiple" title="Please select the audits">';
+    if(count($result['audits']) > 0){
+        foreach($result['audits'] as $audit){
+            $audits.='<option value="'.$audit['id'].'"> '.$audit['testingpointname'].' - '.$audit['assesmentofaudit'].'</option>';
+        }
+    }
+$audits.='</select>';
+
+$facilityName = '';
+$emailAddress = '';
+if(isset($result['facilityProfile']->facility_name)){
+    $facilityName = $result['facilityProfile']->facility_name;
+    $emailAddress = $result['facilityProfile']->email;
+}
+echo $audits."##".$facilityName."##".$emailAddress;

@@ -1,0 +1,14 @@
+<select class="" id="district" multiple="multiple">
+    <?php
+    foreach($result as $districtName){
+    ?>
+    <option value="<?php echo $districtName['district']; ?>"><?php echo ucwords($districtName['district']); ?></option>
+    <?php
+        }
+    ?>
+</select>
+<script>
+    $(document).ready(function () {
+        $("#district").multipleSelect({placeholder:'Select District(s)',width: '100%'});
+    });
+</script>

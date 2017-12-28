@@ -1,0 +1,296 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/responsive.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>List of certifications</h2>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
+            <h1 style="text-align: center; color: #FF7F50;margin-bottom: 50px;">List of certificates to be sent</h1>
+
+            <table id="example3" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr>
+                        <th  style="width:10%;">Professional Registration No(if available </th>
+                        <th  style="width:10%;">Certification Registration no </th>
+                        <th  style="width:10%;">Certification ID  </th>
+                        <th  style="width:10%;">Provider</th>
+                        <th  style="width:10%;">Final Decision</th>
+                        <th  style="width:10%;">Certificate Issuer</th>
+                        <th  style="width:10%;">Date Certificate Issued</th>
+                        <th style="width:10%;">Date Certificate Sent</th>
+                        <th style="width:10%;">Type of Certification</th> 
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'pdf')) { ?>
+                            <th style="width:5%;">PDF</th>
+                        <?php } ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
+                            <th style="width:5%;">E-Mail</th>
+                        <?php } ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
+                            <th style="width:5%;">Status</th>
+                        <?php } ?>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <?php foreach ($certifications3 as $certification) : ?>
+                        <tr><td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->professional_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_issuer); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($certification->date_certificate_issued))); ?></div></td>
+                            <?php
+                            if (isset($certification->date_certificate_sent)) {
+                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . date("d-m-Y", strtotime($this->escapeHtml($certification->date_certificate_sent))) . '</div></td>';
+                            } else {
+                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . $this->escapeHtml($certification->date_certificate_sent) . '</div></td>';
+                            };
+                            ?>
+
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'pdf')) { ?>
+                                <?php
+                                if (strcasecmp($certification->final_decision, 'Certified') == 0) {
+
+                                    echo "<td><div style='width:80px;height:40px;overflow:auto;'>
+                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array(base64_encode('last') => base64_encode($certification->last_name), base64_encode('first') => base64_encode($certification->first_name), base64_encode('middle') => base64_encode($certification->middle_name), base64_encode('professional_reg_no') => base64_encode($certification->professional_reg_no), base64_encode('certification_id') => base64_encode($certification->certification_id), base64_encode('date_issued') => base64_encode($certification->date_certificate_issued))
+                                    )) .
+                                    " target='_blank'><span class='glyphicon glyphicon-download-alt'>PDF</span></a> 
+                                    </div>
+                                </td> ";
+                                } else {
+
+                                    echo "<td><div >
+                                        <span class='glyphicon glyphicon-download-alt'>PDF</span>
+                                    </div>
+                                </td> ";
+                                }
+                                ?>
+                            <?php } ?>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
+                                <td> <div style='width:120px;height:40px;overflow:auto;'><a href="<?php echo $this->url('certification-mail', array('action' => 'index'), array('query' => array(base64_encode('email') => base64_encode($certification->email), base64_encode('certification_id') => base64_encode($certification->id), base64_encode('provider') => base64_encode($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name), base64_encode('facility_in_charge_email') => base64_encode($certification->facility_in_charge_email), base64_encode('key2') => base64_encode('key')))); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Send Certificate</a></div> </td>
+                            <?php } ?>  
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
+                                <td> <div style='width:120px;height:40px;overflow:auto;' onclick="if (!confirm('Do you really want to mark this certificate as sent?')) {
+                                            return false;
+                                        }" name="via_mail"><a  href="<?php echo $this->url('certification', array('action' => 'index'), array('query' => array(base64_encode('certification_id') => base64_encode($certification->id), base64_encode('key') => base64_encode('key')))); ?>"><span class="glyphicon glyphicon-send"></span>&nbsp;send via mail</a></div> </td>
+                                      <?php } ?>  
+                        </tr>
+                        <?php
+                    endforeach;
+                    ?>
+                </tbody>
+            </table>
+
+
+            <h1 style="text-align: center;color: #32CD32;margin-bottom: 50px;">List of certified testers</h1>
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr >
+                        <th  style="width:10%;">Professional Registration No(if available </th>
+                        <th  style="width:10%;">Certification Registration no </th>
+                        <th  style="width:10%;">Certification ID  </th>
+                        <th  style="width:10%;">Provider</th>
+                        <th  style="width:10%;">Final Decision</th>
+                        <th  style="width:10%;">Certificate Issuer</th>
+                        <th  style="width:10%;">Date Certificate Issued</th>
+                        <th style="width:10%;">Date Certificate Sent</th>
+                        <th style="width:10%;">Type of Certification</th> 
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'edit')) { ?>
+                            <th style="width:5%;">Edit</th>
+                        <?php } ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'pdf')) { ?>
+                            <th style="width:5%;">PDF</th>
+                        <?php } ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <?php foreach ($certifications as $certification) : ?>
+                        <tr><td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->professional_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_issuer); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($certification->date_certificate_issued))); ?></div></td>
+                            <?php
+                            if (isset($certification->date_certificate_sent)) {
+                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . date("d-m-Y", strtotime($this->escapeHtml($certification->date_certificate_sent))) . '</div></td>';
+                            } else {
+                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . $this->escapeHtml($certification->date_certificate_sent) . '</div></td>';
+                            };
+                            ?>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'edit')) { ?>
+                                <td>
+                                    <div style="width:80px;height:40px;overflow:auto;">
+                                        <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => base64_encode($certification->id))); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                    </div>
+                                </td>
+                            <?php } ?>
+
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'pdf')) { ?>
+                                <?php
+                                if (strcasecmp($certification->final_decision, 'Certified') == 0) {
+
+                                    echo "<td><div style='width:80px;height:40px;overflow:auto;'>
+                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array(base64_encode('last') => base64_encode($certification->last_name), base64_encode('first') => base64_encode($certification->first_name), base64_encode('middle') => base64_encode($certification->middle_name), base64_encode('professional_reg_no') => base64_encode($certification->professional_reg_no), base64_encode('certification_id') => base64_encode($certification->certification_id), base64_encode('date_issued') => base64_encode($certification->date_certificate_issued))
+                                    )) . " target='_blank'><span class='glyphicon glyphicon-download-alt'>PDF</span></a> 
+                                    </div>
+                                </td> ";
+                                } else {
+
+                                    echo "<td><div >
+                                        <span class='glyphicon glyphicon-download-alt'>PDF</span>
+                                    </div>
+                                </td> ";
+                                }
+                                ?>
+                            <?php } ?>
+
+                        </tr>
+                        <?php
+                    endforeach;
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <div class="widget widget-fullwidth widget-small" style="padding:5px; margin-top:100px;" >
+            <h1 style="text-align: center; color:#1E90FF;margin-bottom: 50px;">List of pending or failed testers</h1>
+            <table id="example2" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr>
+                        <th  style="width:10%;">Professional Registration No(if available </th>
+                        <th  style="width:10%;">Certification Registration no </th>
+                        <th  style="width:10%;">Certification ID  </th>
+                        <th  style="width:10%;">Provider</th>
+                        <th  style="width:10%;">Final Decision</th>
+                        <!--<th  style="width:10%;">Certificate Issuer</th>-->
+                        <!--<th  style="width:10%;">Date Certificate Issued</th>-->
+                        <!--<th style="width:10%;">Date Certificate Sent</th>-->
+                        <th style="width:10%;">Type of Certification</th> 
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'edit')) { ?>
+                            <th style="width:5%;">Edit</th>
+                        <?php } ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <?php foreach ($certifications2 as $certification2) : ?>
+                        <tr><td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->professional_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->last_name . ' ' . $certification2->first_name . ' ' . $certification2->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification2->final_decision); ?></div></td>
+                            <!--<td><div style="width:180px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($certification2->certification_issuer);  ?></div></td>-->
+                            <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo date("d-m-Y", strtotime($this->escapeHtml($certification2->date_certificate_issued)));  ?></div></td>-->
+                            <?php
+//                            if (isset($certification->date_certificate_sent)) {
+//                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . date("d-m-Y", strtotime($this->escapeHtml($certification->date_certificate_sent))) . '</div></td>';
+//                            } else {
+//                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . $this->escapeHtml($certification->date_certificate_sent) . '</div></td>';
+//                            };
+                            ?>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_type); ?></div></td>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'edit')) { ?>
+                                <td>
+                                    <div style="width:80px;height:40px;overflow:auto;">
+                                        <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => base64_encode($certification2->id))); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                    </div>
+                                </td>
+                            <?php } ?>
+
+
+                        </tr>
+                        <?php
+                    endforeach;
+                    ;
+                    ?>
+                </tbody>
+            </table>
+
+        </div> 
+    </div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery-1.12.4.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.responsive.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/responsive.bootstrap.min.js'); ?>"></script>
+
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+
+<script type="text/javascript" language="javascript" >
+                            $(document).ready(function () {
+
+                                $('#example').dataTable({
+                                    "aProcessing": true,
+                                    "aServerSide": true,
+                                })
+                            });
+
+                            $(document).ready(function () {
+
+                                $('#example2').dataTable({
+                                    "aProcessing": true,
+                                    "aServerSide": true,
+                                })
+                            });
+
+                            $(document).ready(function () {
+
+                                $('#example3').dataTable({
+                                    "aProcessing": true,
+                                    "aServerSide": true,
+                                })
+                            });
+
+</script>
+
+
+
+
+
+

@@ -1,0 +1,187 @@
+<?php
+// Extend the TCPDF class to create custom Header and Footer
+class MYPDF extends TCPDF {
+
+    public function setSchemeName($header,$logo) {
+	$this->header = $header;
+	$this->logo = $logo;
+    }
+    
+    //Page header
+    public function Header() {
+        // Logo
+        if(trim($this->logo)!="" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo'. DIRECTORY_SEPARATOR.$this->logo)){
+	    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo'. DIRECTORY_SEPARATOR.$this->logo;
+	    $this->Image($image_file, 12,3,20, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
+	}
+        // Set font
+        $this->SetFont('helvetica', 'B', 12);
+        // Title
+        $this->writeHTMLCell(0,'',54,10,$this->header,0,1,false,true,'C',true);
+        $this->writeHTMLCell(180,'','','','<br/><hr/>',0,1,false,true,'C',true);
+       
+    }
+
+    // Page footer
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', 'I', 8);
+        // Page number
+        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    }
+}
+
+// create new PDF document
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+$pdf->setSchemeName(ucwords($configData['header']),$configData['logo']);
+// set document information
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Nicola Asuni');
+$pdf->SetTitle('SPI-RT Checklist');
+$pdf->SetSubject('TCPDF Tutorial');
+$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+
+
+// set default header data
+$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+// set header and footer fonts
+$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+// set default monospaced font
+$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+// set margins
+$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+// set auto page breaks
+$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+// set image scale factor
+$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    require_once(dirname(__FILE__).'/lang/eng.php');
+    $pdf->setLanguageArray($l);
+}
+// ---------------------------------------------------------
+
+// set font
+$pdf->SetFont('times', '', 10);
+
+// add a page
+$pdf->AddPage();
+//$pdf->SetY(20,true,false);
+
+$partDTitle='<p style="font-weight:bold;line-height:30px;">Part D. Auditor\'s Summation Report for SPI-RT Audit</p>';
+$pdf->writeHTML($partDTitle,true,0,true,0);
+
+$partDtableBox1='<table cellspacing="0" cellpadding="2">';
+$partDtableBox1.="<tr><td>Facility Name:".$formData['facilityname']."</td></tr><tr><td>Site Type:".$formData['testingpointtype'];
+$partDtableBox1.=((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other']: "");
+$partDtableBox1.="</td></tr>";
+$partDtableBox1.="<tr><td>Staff Audited Name: ".$formData['staffaudited']."</td></tr>";
+$partDtableBox1.='</table>';
+$pdf->writeHTMLCell(50,26,'','',$partDtableBox1,1, 0, 0, true, 'L');
+
+$partDtableBox2='<table cellspacing="0" cellpadding="5">';
+$partDtableBox2.="<tr><td>No. of Tester(s): ".$formData['NumberofTester']."</td></tr><tr><td>Duration of Audit: ".$formData['durationaudit']."</td></tr>";
+$partDtableBox2.='</table>';
+
+$pdf->writeHTMLCell(50,26,70,'',$partDtableBox2,1,0, 0, true, 'L',true);
+
+$scorePer=round($formData['AUDIT_SCORE_PERCANTAGE']);
+$level='';
+$colorCode='';
+if($scorePer<40){
+  $level="Level 0";
+  $colorCode="background-color:#C00000";
+}elseif($scorePer>=40 && $scorePer<=59){
+  $level="Level 1";
+  $colorCode="background-color:#E36C0A";
+}elseif($scorePer>=60 && $scorePer<=79){
+  $level="Level 2";
+  $colorCode="background-color:#FFFF00";
+}elseif($scorePer>=80 && $scorePer<=89){
+  $level="Level 3";
+  $colorCode="background-color:#92D050";
+}elseif($scorePer>=90){
+  $level="Level 4";
+  $colorCode="background-color:#00B050";
+}
+					  
+$partDtableBox3='<table cellspacing="0" cellpadding="5">';
+$partDtableBox3.="<tr><td>Total points scored (exclude N/A) = ".$formData['FINAL_AUDIT_SCORE']."</td></tr>";
+$partDtableBox3.="<tr><td>Total score expected = ".$formData['MAX_AUDIT_SCORE']."</td></tr>";
+$partDtableBox3.='<tr><td>% Score = '.round($formData['AUDIT_SCORE_PERCANTAGE'],2).'% &nbsp; <span style="'.$colorCode.'">  &nbsp;&nbsp;'.$level.'  &nbsp;&nbsp;</span></td></tr>';
+$partDtableBox3.='</table>';
+
+$pdf->writeHTMLCell(70,26,125,'',$partDtableBox3,1,1, 0, true, 'L',true);
+
+$partDTable='<br/><br/><table border="1" cellspacing="0" cellpadding="5" style="width:100%">';
+$partDTable.='<tr>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>Section No.</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>Deficiency/Issue observed</td>';
+$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:20%">Correction Actions</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">Auditor\'s <br/>Comments</td>';
+$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:26%">Recommendations</td>';
+$partDTable.='</tr>';
+$partDTable.='<tr>';
+$partDTable.='<td style="font-weight:bold;text-align:center;width:12%;">Immediate</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;width:8%;">Follow up</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;">Actions</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;">Timeline / Person responsible</td>';
+$partDTable.='</tr>';
+if(isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  && $formData['correctiveaction'] != "[]"){
+    $correctiveActions = json_decode($formData['correctiveaction'],true);
+    foreach($correctiveActions as $ca) {
+        $partDTable.='<tr>';
+        $partDTable.='<td style="text-align:center;">'.$ca['sectionno'].'</td>';
+        $partDTable.='<td>'.$ca['deficiency'].'</td>';
+        $partDTable.='<td style="text-align:center;">';
+        $partDTable.=($ca['correction'] == 'Immediate' ? '<img src="'.$this->basePath('assets/img/black-tick.png').'" width="20">' : "" );
+        $partDTable.='</td>';
+        $partDTable.='<td style="text-align:center;">';
+        $partDTable.=($ca['correction'] == 'Followup' ? '<img src="'.$this->basePath('assets/img/black-tick.png').'" width="20">' : "" );
+        $partDTable.='</td>';
+        $partDTable.='<td>'.$ca['auditorcomment'].'</td>';
+        $partDTable.='<td>'.$ca['action'].'</td>';
+        $partDTable.='<td>'.$ca['timeline'].'</td>';
+        $partDTable.='</tr>';
+    }
+}else {
+    $partDTable.='<tr>';
+    $partDTable.='<td colspan="7">No Corrective Actions</td>';
+    $partDTable.='</tr>';
+}
+$partDTable.='</table><br/><br/><br/>';
+$pdf->writeHTML($partDTable,true,0,true,0);
+
+$signBox1='<table cellspacing="0" cellpadding="4">';
+$signBox1.="<tr><td>Staff Audited Signature:</td></tr>";
+$signBox1.="<tr><td>Person in Charge Name and Signature : ".$formData['personincharge']."</td></tr>";
+$signBox1.='</table>';
+$pdf->writeHTMLCell(90,18,'','',$signBox1,1, 0, 0, true, 'L');
+
+$signBox2='<table cellspacing="0" cellpadding="4">';
+$signBox2.="<tr><td>Auditor Name and Signature:</td></tr>";
+$signBox2.="<tr><td>Date (dd/mm/yyyy):</td></tr>";
+$signBox2.='</table>';
+$pdf->writeHTMLCell(80,18,115,'',$signBox2,1,1, 0, true, 'L');
+
+//Close and output PDF document
+$fileName = "SPI-RT-CHECKLIST-".date('d-M-Y-H-i-s').".pdf";
+$filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR.$fileName;
+//$pdf->Output('example_003.pdf', 'I');
+$pdf->Output($filePath, "I");
+//echo $fileName;
+//============================================================+
+// END OF FILE
+//============================================================+

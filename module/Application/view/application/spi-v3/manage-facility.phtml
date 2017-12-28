@@ -1,0 +1,202 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
+<style>
+    .facilityName{height: 200px !important;width: 200px;}
+    .moveButtons{line-height: 35px;}
+    .updateButton{padding:15px 0px 0px 45px;}
+    .btn{font-weight: bold;}
+</style>
+<div class="am-content">
+        <div class="page-head">
+          <h2>SPI-RT 3.0 Checklist</h2>
+        </div>
+
+        <div class="main-content">
+            
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+                <?php
+                if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-facility-name')) {
+                if(count($pendingFacilityName)>0){
+                ?>
+                <div class="row" id="pendingFacilityName" align="center">
+                    <div class="col-sm-12">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="col-md-2"></div>
+                            <table class="col-lg-8">
+                                <tr>
+                                    <td>
+                                        <h4 align="center"><b>Pending Facility Name</b></h4>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <h4 align="center"><b>Selected Facility Name</b></h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-lg-3" align="center">
+                                        <select id="facilityNameLeft" name="facilityNameLeft[]" class="facilityName" multiple="multiple">
+                                            <?php
+                                            foreach($pendingFacilityName as $name){
+                                                ?>
+                                                <option value="<?php echo $name['id'];?>"><?php echo $name['facilityname'];?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                   </td>
+                                    <td class="col-lg-2 moveButtons" >
+                                        <input type="button" id="moveright" class="btn btn-xs btn-primary" value="Right >>" onclick="move_list_items('facilityNameLeft','facilityNameRight');" />
+                                        <input type="button" id="moverightall" class="btn btn-xs btn-primary" value="Move To Right All >>" onclick="move_list_items_all('facilityNameLeft','facilityNameRight');" />
+                                        <input type="button" id="moveleft" class="btn btn-xs btn-primary" value="<< Left" onclick="move_list_items('facilityNameRight','facilityNameLeft');" />
+                                        <input type="button" id="moveleftall" class="btn btn-xs btn-primary" value="<< Move To Left All" onclick="move_list_items_all('facilityNameRight','facilityNameLeft');" />
+                                    </td>
+                                    <td class="col-lg-3" align="center">
+                                        <select id="facilityNameRight" name="facilityNameRight[]" class="facilityName" multiple="multiple">
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="updateButton">
+                                        <button type="button" onclick="updateFacilityName()" class="btn btn-space btn-primary">Update</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <?php }
+                } ?>
+
+                <table id="example" class="datatables table-condensed table table-bordered table-striped table-hover table-fw-widget">
+                  <thead>
+                    <tr>
+                      <th>Facility Name</th>
+                      <th style="width:5%;">Audit Round</th>
+                      <th style="width:5%;">Audit Date</th>
+                      <th style="width:5%;">Testing Point Type</th>
+                      <th>Level</th>
+                      <th>Affiliation</th>
+                      <th style="width:5%;">Audit Score %</th>
+                      <th style="width:5%;">Status</th>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) { ?>
+                      <th style="width:15%;">Action</th>
+                      <?php } ?>
+                    </tr>
+                  </thead>
+                  <tbody>
+                   <tr>
+                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        <br>
+        <br>
+        <br>
+        <br>
+            
+        </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/datatables.min.js'); ?>"></script>
+<script type="text/javascript">
+  
+  $(document).ready(function () {
+   table = $('#example').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "pageLength": 50,
+         "aoColumns": [
+                <?php echo $editAction; ?>
+            ],
+         "iDisplayLength": 50,
+         "aaSorting": [[ 4, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'manage-facility')); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      fnCallback(json);
+                     }
+                });
+            }
+    } );
+      //
+      //var table = $('#example').DataTable({"order": [[1, 'asc']]});
+      //
+      // Add event listener for opening and closing details
+  });
+    function move_list_items(sourceid, destinationid)
+    {
+      $("#"+sourceid+"  option:selected").appendTo("#"+destinationid);
+    }
+    
+    //this will move all selected items from source list to destination list
+    function move_list_items_all(sourceid, destinationid)
+    {
+      $("#"+sourceid+" option").appendTo("#"+destinationid);
+    }
+    
+    function updateFacilityName()
+    {
+        var val = []; 
+        $('#facilityNameRight option').each(function(i, selected){
+            val[i] = $(selected).val(); 
+        });
+        if(val.length!=0){
+          $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{idList: val},
+           function(data) {
+            if (data>0) {
+                alert("Audit updated successfully");
+                $("#facilityNameRight").html("");
+                
+                var selectArr = []; 
+                $('#facilityNameLeft option').each(function() {
+                    selectArr.push($(this).val());
+                });
+                if(selectArr.length==0){
+                    $("#pendingFacilityName").hide();
+                }
+                
+                table.draw();
+            }
+          });
+        }
+    }
+    function downloadPdf(formId){
+      window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+      return false;
+    }
+    
+    function deleteAudit(auditId){
+        if($.trim(auditId)!= ""){
+            var conf = confirm("Are you sure you want to delete this audit?");
+            if(conf){
+                $.post("<?php echo $this->url('spi-v3-form',array('action'=>'delete')); ?>", {deleteId:auditId},
+                    function(data){
+                        if(data == 0){
+                          alert("OOPS..We have experienced the problem.Please try again!");
+                        }else{
+                          table.draw();
+                        }
+                    });
+            }
+        }else{
+           alert("OOPS..We have experienced the problem.Please try again!");
+        }
+    }
+</script>

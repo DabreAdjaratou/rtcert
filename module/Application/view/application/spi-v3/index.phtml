@@ -1,0 +1,441 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<style>
+
+ td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_open.png'); ?>') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_close.png'); ?>') no-repeat center center;
+}
+.btn-success:hover{
+    background-color:#5cb85c !important;
+}
+</style> 
+<div class="am-content">
+        <div class="page-head">
+          <h2>SPI-RT 3.0 Checklist</h2>
+        </div>
+        
+        <div class="main-content">
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+        <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form role="form" class="form-horizontal">
+                    <div class="form-group">
+                     <label for="date" class="col-sm-2 control-label">Date Range</label>
+                     <div class=" col-lg-4">
+                      <input type="text" placeholder="Select Date Range" class="form-control" id="date" readonly>
+                     </div>
+                      <label for="auditRndNo" class="col-sm-2 control-label">Audit Round No.</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="auditRndNo">
+                        <option value=''>All</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="level" class="col-sm-2 control-label">Level</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="level">
+                        <option value="">All</option>
+                        <option value="Region/Province/Zone">Region/Province/Zone</option>         
+                        <option value="District">District</option>
+                        <option value="Referral center">Referral center</option>
+                        <option value="HealthCenter">Health center</option>
+                        <option value="Dispensary">Dispensary</option>
+                        <option value="Health Post">Health Post</option>
+                        <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="affiliation">
+                        <option value="">All</option>
+                        <option value="Government">Government</option>
+                        <option value="Private">Private</option>
+                        <option value="Faith-based Organization">Faith-based Organization</option>
+                        <option value="Non-governmental organization">Non-governmental organization</option>
+                        <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="province" class="col-sm-2 control-label">Province</label>
+                      <div class=" col-lg-4">
+                      <select class="" id="province" multiple="multiple" onchange="getAllDistrict();">
+                        <?php
+                        foreach($levelNamesResult as $levelName){
+                        ?>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <?php
+                            }
+                        ?>
+                      </select>
+                      </div>
+                       <label for="district" class="col-sm-2 control-label">District</label>
+                      <div class=" col-lg-4 districtFilter">
+                      <select class="form-control" id="district">
+                        <?php
+                        foreach($levelNamesResult as $levelName){
+                        ?>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <?php
+                        }
+                        ?>
+                      </select>
+                      </div>
+                      
+                    </div>
+                    <div class="form-group">
+                        <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+                        <div class=" col-lg-4">
+                          <select class="form-control" id="scoreLevel">
+                            <option value="">All</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                          </select>
+                        </div>
+                      <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
+                        <option value="">All</option>
+                        <?php
+                        foreach($testingPointResult as $val){
+                        ?>
+                        <option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+                        <?php
+                        }
+                        ?>
+                      </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="testPointNameSection"></div>  
+                    </div>
+                    <div class="form-group" style="text-align:center;">
+                      <button type="button" onclick="search();" class="btn btn-space btn-primary">Search</button>&nbsp;
+                      <button type="button" onclick="exportSearchPDFData();" class="btn btn-space btn-success">Export as PDF</button>
+                    </div>
+                  </form>
+                </div>
+                <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'duplicate')) { ?>
+                <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm" >Duplicates (0)</a>&nbsp;&nbsp;
+                <?php } ?>
+                <a href="/spi-v3/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Audits in Bulk </a>
+              </div>
+            </div>
+          </div>
+            
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Facility Name</th>
+                  <th style="width:8%;">Audit Round No.</th>
+                  <th style="width:10%;">Audit Date</th>
+                  <th style="width:10%;">Testing Point Name</th>
+                  <th style="width:6%;">Testing Point Type</th>
+                  <th style="width:8%;">Level</th>
+                  <th>Affiliation</th>
+                  <th style="width:5%;">Audit Score %</th>
+                  <th style="width:8%;">Status</th>
+                  <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
+                  <th>Action</th>
+                  <?php } ?>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                   <td colspan="10" class="dataTables_empty">Loading data from server</td>
+               </tr>
+              </tbody>
+            </table>
+        </div>
+        <div class="spacer col-lg-12">
+            <table style="width:100%;background-color:#fff;margin-bottom:20px;font-size:13px;">
+                <tr>
+                    <td>&nbsp;<strong>No.of Audit(s)</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="totalAudit" style=""></td>
+                    <td style="padding-left:1%;"><strong>Avg. Audit Score</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="avgAuditScore"></td>
+                    <td style="width:2%;"></td>
+                    <td style="width:2%;background-color:red;"></td>
+                    <td style="padding-left:1%;"><strong>Level 0<br>(Below 40)</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="level0"></td>
+                    <td style="width:2%;"></td>
+                    <td style="width:2%;background-color:orange;"></td>
+                    <td style="padding-left:1%;"><strong>Level 1<br>(40-59)</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="level1"></td>
+                    <td style="width:2%;"></td>
+                    <td style="width:2%;background-color:yellow;"></td>
+                    <td style="padding-left:1%;"><strong>Level 2<br>(60-79)</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="level2"></td>
+                    <td style="width:2%;"></td>
+                    <td style="width:2%;background-color:#8DD63E;"></td>
+                    <td style="padding-left:1%;"><strong>Level 3<br>(80-89)</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="level3"></td>
+                    <td style="width:2%;"></td>
+                    <td style="width:2%;background-color:#528A16;"></td>
+                    <td style="padding-left:1%;"><strong>Level 4<br>(90 and above)</strong></td>
+                    <td style="text-align:center;">:&nbsp;</td>
+                    <td id="level4"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="spacer col-lg-12">
+            <!--<button type="button" onclick="window.location.href='< ?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>'" class="btn btn-space btn-primary">Export All Data</button>-->
+            <button type="button" onclick="exportData();" class="btn btn-space btn-primary">Export All Data</button>
+            &nbsp;&nbsp;<button type="button" onclick="exportPDFData();" class="btn btn-space btn-primary">Export as PDF</button>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        </div>
+</div>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script type="text/javascript">
+    table = null;
+    function formatValue(value) {
+      //return '<a href="/spi-v3/print/'+value+'" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
+      return '<a href="javascript:void(0);" onclick="downloadPdf('+value+')" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
+                        +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                        + 
+             '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf('+value+')" target="_blank"><i class="fa fa-print"></i> Print Corrective Actions</a>';
+  }
+  $(document).ready(function () {
+        var startDate = "";
+        var endDate = "";
+        $("#province").multipleSelect({placeholder:'Select Province/District(s)',width: '100%'});
+        $('#date').daterangepicker({
+                format: 'DD-MMM-YYYY',
+                startDate: moment().subtract('days', 29),
+                endDate: moment(),
+                maxDate: moment(),
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                }
+            },
+            function(start, end) {
+                startDate = start.format('YYYY-MM-DD');
+                endDate = end.format('YYYY-MM-DD');
+            });
+   table = $('#example').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                <?php echo $editAction;?>
+            ],
+         "iDisplayLength": 50,
+         "pageLength": 50,
+         "aaSorting": [[ 3, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+          aoData.push( { "name":"auditRndNo","value": $("#auditRndNo").val()} );
+          aoData.push( { "name":"dateRange","value": $("#date").val()} );
+          aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );
+          aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
+          aoData.push( { "name":"level","value": $("#level").val()} );
+          aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
+          aoData.push( { "name":"province","value": $("#province").val()} );
+          aoData.push( { "name":"district","value": $("#district").val()} );
+          aoData.push( { "name":"scoreLevel","value": $("#scoreLevel").val()} );
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      $.unblockUI();
+                      $("#totalAudit").html(json.iTotalDisplayRecords);
+                      $("#avgAuditScore").html(json.avgAuditScore+"%");
+                      $("#level0").html(json.levelZeroCount);
+                      $("#level1").html(json.levelOneCount);
+                      $("#level2").html(json.levelTwoCount);
+                      $("#level3").html(json.levelThreeCount);
+                      $("#level4").html(json.levelFourCount+"&nbsp;");
+                        $("#duplicate").html("Duplicates ("+json.duplicate+")");
+                      fnCallback(json);
+                     }
+                });
+            }
+    } );
+      //
+      //var table = $('#example').DataTable({"order": [[1, 'asc']]});
+      //
+      // Add event listener for opening and closing details
+      $('#example').on('click', 'td.details-control', function () {
+          var tr = $(this).closest('tr');
+          var row = table.row(tr);
+      
+          if (row.child.isShown()) {
+              // This row is already open - close it
+              row.child.hide();
+              tr.removeClass('shown');
+          } else {
+              // Open this row
+              row.child(formatValue(tr.attr('id'))).show();
+              tr.addClass('shown');
+          }
+      });
+  });
+  
+  function approveStatus(id) {
+    conf=confirm("Are you sure you want to approve this audit ?");
+    if (conf) {
+      $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{id: id},
+       function(data) {
+        if (data>0) {
+            alert("Audit updated successfully");
+            table.draw();
+        }
+      });
+    }
+  }
+  
+  function downloadPdf(formId){
+   window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+   return false;
+  }
+  function downloadCorrectiveActionPdf(formId){
+   window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+   return false;
+  }
+  
+  function search(){
+   $.blockUI({ message: '<h1>Loading...</h1>' });
+   table.draw();
+  }
+  
+  function getTestingPointTypeNames(){
+     $.blockUI();
+     var testingPointType = $('#testPoint').val();
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-testing-point-type-names')); ?>",{testingPointType: testingPointType},
+       function(data) {
+        $('.testPointNameSection').html(data);
+        $.unblockUI();
+      });
+  }
+  function exportData(){
+     $.blockUI();
+     var dateRange = $('#date').val();
+     var auditRndNo = $('#auditRndNo').val();
+     var level = $('#level').val();
+     var affiliation = $('#affiliation').val();
+     var province = $('#province').val();
+     var scoreLevel = $('#scoreLevel').val();
+     var testPoint = $('#testPoint').val();
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,scoreLevel:scoreLevel,testPoint:testPoint},
+       function(data) {
+	    if(data == "" || data == null || data == undefined){
+		$.unblockUI();
+		alert('Unable to generate download');
+	    }else{
+		$.unblockUI();
+		document.location.href = '/temporary/'+data;
+	    }
+      });
+  }
+  function exportPDFData(){
+     $.blockUI();
+     var dateRange = $('#date').val();
+     var auditRndNo = $('#auditRndNo').val();
+     var level = $('#level').val();
+     var affiliation = $('#affiliation').val();
+     var province = $('#province').val();
+     var district = $('#district').val();
+     var scoreLevel = $('#scoreLevel').val();
+     var testPoint = $('#testPoint').val();
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'export-as-pdf')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,district:district,scoreLevel:scoreLevel,testPoint:testPoint},
+       function(data) {
+	    if(data == "" || data == null || data == undefined){
+		$.unblockUI();
+		alert('Unable to generate download');
+	    }else{
+		$.unblockUI();
+		window.open('/temporary/'+data,'_blank');
+	    }
+      });
+  }
+  
+  function exportSearchPDFData(){
+     $.blockUI();
+     var dateRange = $('#date').val();
+     var auditRndNo = $('#auditRndNo').val();
+     var level = $('#level').val();
+     var affiliation = $('#affiliation').val();
+     var province = ($('#province').val() == null)?'':$('#province').val();
+     var district = ($('#district').val() == null)?'':$('#district').val();
+     var scoreLevel = $('#scoreLevel').val();
+     var testPoint = $('#testPoint').val();
+     var testPointName = ($('#testPointName').length >0)?$('#testPointName').val():'';
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'save-download-data')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,district:district,scoreLevel:scoreLevel,testPoint:testPoint,testPointName:testPointName},
+       function(data) {
+	    if(data == "" || data == null || data == undefined){
+		$.unblockUI();
+		alert('Unable to generate download');
+	    }else{
+		$.unblockUI();
+		alert('Your download is processing..');
+	    }
+      });
+  }
+  function getAllDistrict() {
+    var province = $('#province').val();
+    if (province!='' && province!=null) {
+        $.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-district-by-province')); ?>",{province: province},
+           function(data) {
+            $('.districtFilter').html(data);
+        });
+    }else{
+        $('#district').html('');
+    }
+  }
+</script>

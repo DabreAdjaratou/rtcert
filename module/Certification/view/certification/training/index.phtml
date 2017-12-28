@@ -1,0 +1,149 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/responsive.bootstrap.min.css'); ?>"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>List of trainings</h2>
+            </div>
+            <div class="col-sm-4">
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'add')) { ?>
+                    <a href="<?php echo $this->url('training', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training</a>
+                <?php } ?>
+
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+                <thead>
+                    <tr>
+                        <th>Certification Registration No</th>
+                        <th>professional registration no</th>
+                        <th>Certification ID</th>
+                        <th>Tester</th>
+                        <th>Type of Competency</th>
+                        <th>Type of Activity/Training</th>
+                        <th>Date of last Training/Activity</th>
+                        <th>Length of Training/Activity</th>
+                        <th  style="width: 10%;">Training organization</th> 
+                        <th  style="width: 10%;">Type of Training organization</th> 
+                        <th style="width: 10%;">Name of Facilitator(s)</th>
+                        <th  style="width: 6%;" >Training certificate(if available)</th>
+                        <th  >Date certificate issued (if available)</th>
+
+<!--<th style="width: 10%;" >Comments</th>-->
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
+                            <th >Edit</th>
+                        <?php } ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'delete')) { ?>
+                            <th>Delete</th>
+                        <?php } ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <?php foreach ($this->trainings as $training) : ?>
+                        <tr>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_reg_no); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->professional_reg_no); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
+                            <td><div style="width:100px;;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_competency); ?></div></td>
+                            <td><div style="width:160px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
+                            <td><div style="width:80px; overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($training->last_training_date))); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($training->length_of_training); ?></div></td>
+                            <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
+                            <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($training->facilitator); ?></div></td>
+                            <?php
+                            if (strcasecmp($training->training_certificate, 'yes') == 0) {
+                                echo "<td><span style='color: green;' class='glyphicon glyphicon glyphicon-ok' >Yes</span></td>";
+                            } else if (strcasecmp($training->training_certificate, 'no') == 0) {
+                                echo "<td><span style='color: red' class='glyphicon glyphicon glyphicon-remove'>No</span></td>";
+                            } else {
+                                echo "<td></td>";
+                            }
+                            ?>
+                            <?php
+                            if (isset($training->date_certificate_issued)) {
+                                echo '<td><div style="width:100px;height:40px;overflow:auto;" >' . date("d-m-Y", strtotime($this->escapeHtml($training->date_certificate_issued))) . '</div></td>';
+                            } else {
+                                echo '<td><div style="width:100px;height:40px;overflow:auto;" >' . $this->escapeHtml($training->date_certificate_issued) . '</div></td>';
+                            };
+                            ?>
+
+         <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);        ?></div></td>-->
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
+                                <td><div style="width:60px;height:40px;overflow:auto;">
+                                        <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => base64_encode($training->training_id))); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
+                                    </div>
+                                </td>
+                            <?php } ?>
+                                
+                                <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                        <a onclick="if (!confirm('Do you really want to remove this training?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('training', array('action' => 'delete', 'training_id' => $training->training_id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                    </div>
+                                </td>
+                            <?php } ?>
+
+                        </tr>
+
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+                   </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery-1.12.4.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.responsive.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/responsive.bootstrap.min.js'); ?>"></script>
+
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" language="javascript" >
+    $(document).ready(function () {
+
+        $('#example').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+        })
+    });
+</script>
+
+
+
+
+

@@ -1,0 +1,407 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<style>
+ td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_open.png'); ?>') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_close.png'); ?>') no-repeat center center;
+}
+.centerText{
+   text-align:center;
+}
+</style> 
+<div class="am-content">
+        <div class="page-head">
+          <?php
+          if($source == 'hv') {
+          ?>
+            <h2>Performance of High Volume Sites</h2>
+          <?php } else if($source == 'la'){ ?>
+            <h2> Latest Audits</h2>
+          <?php } else if($source == 'ad'){ ?>
+            <h2> Audit Dates</h2>
+          <?php } else if($source == 'ap' || $source == 'apspi'){ ?>
+            <h2> Audit Performance</h2>
+          <?php } else if($source == 'apall'){ ?>
+            <h2> Overall Audit Performance</h2>
+          <?php } else if($source == 'apl180'){ ?>
+            <h2> Performance - Last 180 days</h2>
+          <?php }?>
+        </div>
+               <div class="main-content">
+                  <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+                   <?php
+                   if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
+                    <div class="row">
+                     <div class="col-sm-12">
+                       <div class="panel panel-default">
+                         <div class="panel-body">
+                           <form role="form" class="form-horizontal">
+                             <div class="form-group">
+                              <label for="date" class="col-sm-2 control-label">Date Range</label>
+                              <div class=" col-lg-4">
+                               <input type="text" placeholder="Select Date Range" class="form-control" id="date" readonly>
+                              </div>
+                               <label for="auditRndNo" class="col-sm-2 control-label">Audit Round No.</label>
+                               <div class=" col-lg-4">
+                               <select class="form-control" id="auditRndNo">
+                                 <option value=''>All</option>
+                                   <option value="1">1</option>
+                                   <option value="2">2</option>
+                                   <option value="3">3</option>
+                                   <option value="4">4</option>
+                                   <option value="5">5</option>
+                                 </select>
+                               </div>
+                             </div>
+                             
+                             <div class="form-group">
+                               <label for="level" class="col-sm-2 control-label">Level</label>
+                               <div class=" col-lg-4">
+                               <select class="form-control" id="level">
+                                 <option value="">All</option>
+                                 <option value="Region/Province/Zone">Region/Province/Zone</option>         
+                                 <option value="District">District</option>
+                                 <option value="Referral center">Referral center</option>
+                                 <option value="Health center">Health center</option>
+                                 <option value="Dispensary">Dispensary</option>
+                                 <option value="Health Post">Health Post</option>
+                                 <option value="Other">Other</option>
+                                 </select>
+                               </div>
+                               <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+                               <div class=" col-lg-4">
+                               <select class="form-control" id="affiliation">
+                                 <option value="">All</option>
+                                 <option value="Government">Government</option>
+                                 <option value="Private">Private</option>
+                                 <option value="Faith-based Organization">Faith-based Organization</option>
+                                 <option value="Non-governmental organization">Non-governmental organization</option>
+                                 <option value="Other">Other</option>
+                                 </select>
+                               </div>
+                             </div>
+                             <div class="form-group">
+                              <label for="province" class="col-sm-2 control-label">Province/District</label>
+                              <div class=" col-lg-4">
+                              <select class="" id="province" multiple="multiple">
+                                <?php
+                                foreach($levelNamesResult as $levelName){
+                                    if(trim($levelName['level_name'])!= ''){
+                                ?>
+                                <option value="<?php echo $levelName['level_name']; ?>"><?php echo ucwords($levelName['level_name']); ?></option>
+                                <?php
+                                    }
+                                }
+                                ?>
+                              </select>
+                              </div>
+                               <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+                               <div class=" col-lg-4">
+                               <?php
+                               if($level!=''){
+                                ?>
+                                <select class="form-control" id="scoreLevel">
+                                 <option value="">All</option>
+                                 <option value="0" <?php echo($level == 'level0')?'selected="selected"':''; ?>>0</option>
+                                 <option value="1" <?php echo($level == 'level1')?'selected="selected"':''; ?>>1</option>
+                                 <option value="2" <?php echo($level == 'level2')?'selected="selected"':''; ?>>2</option>
+                                 <option value="3" <?php echo($level == 'level3')?'selected="selected"':''; ?>>3</option>
+                                 <option value="4" <?php echo($level == 'level4')?'selected="selected"':''; ?>>4</option>
+                                 </select>
+                                <?php
+                               }else{
+                               ?>
+                               <select class="form-control" id="scoreLevel">
+                                 <option value="">All</option>
+                                 <option value="0">0</option>
+                                 <option value="1">1</option>
+                                 <option value="2">2</option>
+                                 <option value="3">3</option>
+                                 <option value="4">4</option>
+                                 </select>
+                               <?php } ?>
+                               </div>
+                             </div>
+                             <div class="form-group ">
+                               <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
+                               <div class=" col-lg-4">
+                               <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
+                                 <option value="">All</option>
+                                 <?php
+                                 foreach($testingPointResult as $val){
+                                 ?>
+                                 <option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+                                 <?php
+                                 }
+                                 ?>
+                                 </select>
+                               </div>
+                               <div class="testPointNameSection">
+                                
+                               </div>
+                             </div>
+                             <div class="form-group" style="text-align:center;">
+                               <button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
+                             </div>
+                           </form>
+                         </div>
+                       </div>
+                     </div>
+                  </div>
+                <?php } ?>
+                <table id="<?php echo $source; ?>" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+                  <thead>
+                    <?php
+                    if($source == 'hv') {
+                        $columns = 6;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+                        $descColumn = 3;
+                    ?>
+                        <tr>
+                          <th style="width:20%;">Assesment of Audit</th>
+                          <th style="width:20%;">Facility Name</th>
+                          <th style="width:20%;">Testing Point Name</th>
+                          <th style="width:20%;">Testing Volume</th>
+                          <th style="width:10%;">Testers</th>
+                          <th style="width:10%;">Level</th>
+                        </tr>
+                    <?php } else if($source == 'la'){
+                        $columns = 5;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+                        $descColumn = 4;
+                        ?>
+                        <tr>
+                          <th style="width:20%;">Assesment of Audit</th>
+                          <th style="width:20%;">Facility Name</th>
+                          <th style="width:20%;">Testing Point Name</th>
+                          <th style="width:20%;">Audit Score Percentage</th>
+                          <th style="width:20%;">Testing Volume</th>
+                        </tr>
+                    <?php } else if($source == 'ad'){
+                        $columns = 2;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center","bSortable":false}';
+                        $descColumn = 0;
+                        ?>
+                        <tr>
+                          <th style="width:50%;">Audit Date</th>
+                          <th style="width:50%;">Audit Count</th>
+                        </tr>
+                    <?php } else if($source == 'apl180' || $source == 'apall' || $source == 'ap'){
+                        $columns = 10;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"centerText"},{"sClass":"center"}';
+                        $descColumn = 3;
+                        ?>
+                        <tr>
+                          <th style="width:8%;">Facility Id</th>
+                          <th style="width:12%;">Facility Name</th>
+                          <th style="width:10%;">Audit Round No.</th>
+                          <th style="width:10%;">Audit Date</th>
+                          <th style="width:10%;">Testing Point Type</th>
+                          <th style="width:10%;">Testing Point Name</th>
+                          <th style="width:10%;">Level</th>
+                          <th style="width:10%;">Affiliation</th>
+                          <th style="width:10%;">Score Level</th>
+                          <th style="width:10%;">Percentage</th>
+                        </tr>
+                    <?php } else if($source == 'apspi'){
+                        $columns = 8;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+                        $descColumn = 0;
+                        ?>
+                        <tr>
+                          <th style="width:10%;">Audit Date</th>
+                          <th style="width:14%;">Personal Training and Certifications</th>
+                          <th style="width:14%;">Physical</th>
+                          <th style="width:10%;">Saftey</th>
+                          <th style="width:14%;">Pre-Testing</th>
+                          <th style="width:10%;">Testing</th>
+                          <th style="width:14%;">Post Testing Phase</th>
+                          <th style="width:14%;">External Quality Audit</th>
+                        </tr>
+                    <?php }?>
+                  </thead>
+                  <tbody>
+                  <tr>
+                       <td colspan="<?php echo $columns; ?>" class="dataTables_empty">Loading data from server</td>
+                   </tr>
+                  </tbody>
+                    <!--<tfoot>
+                      <tr>
+                          <td><strong>Avg.Score</strong></td>
+                          <td><strong></strong></td>
+                          <td><strong></strong></td>
+                          <td><strong></strong></td>
+                          <td><strong></strong></td>
+                          <td><strong></strong></td>
+                          <td><strong></strong></td>
+                          <td><strong></strong></td>
+                      </tr>
+                    </tfoot>-->
+                </table>
+            </div>
+            <?php
+            if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
+              <div class="spacer col-lg-12">
+              <table style="width:100%;background-color:#fff;margin-bottom:20px;font-size:13px;">
+                  <tr>
+                      <td>&nbsp;<strong>No.of Audit(s)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="totalAudit" style=""></td>
+                      <td style="padding-left:1%;"><strong>Avg. Audit Score</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="avgAuditScore"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:red;"></td>
+                      <td style="padding-left:1%;"><strong>Level 0<br>(Below 40)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level0"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:orange;"></td>
+                      <td style="padding-left:1%;"><strong>Level 1<br>(40-59)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level1"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:yellow;"></td>
+                      <td style="padding-left:1%;"><strong>Level 2<br>(60-79)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level2"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:#8DD63E;"></td>
+                      <td style="padding-left:1%;"><strong>Level 3<br>(80-89)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level3"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:#528A16;"></td>
+                      <td style="padding-left:1%;"><strong>Level 4<br>(90 and above)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level4"></td>
+                  </tr>
+              </table>
+            </div>
+          <?php } ?>
+        <br>
+        <br>
+        <br>
+        <br>
+        </div>
+</div>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script>
+    $(document).ready(function () {
+        var startDate = "";
+        var endDate = "";
+        $("#province").multipleSelect({placeholder:'Select Province/District(s)',width: '100%'});
+        $('#date').daterangepicker({
+            format: 'DD-MMM-YYYY',
+            startDate: moment().subtract('days', 29),
+            endDate: moment(),
+            maxDate: moment(),
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                'Last 7 Days': [moment().subtract('days', 6), moment()],
+                'Last 30 Days': [moment().subtract('days', 29), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            }
+        },
+        function(start, end) {
+            startDate = start.format('YYYY-MM-DD');
+            endDate = end.format('YYYY-MM-DD');
+        });
+        table = $('#<?php echo $source; ?>').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                <?php echo $aColumns; ?>
+            ],
+         "iDisplayLength": 50,
+         "pageLength": 50,
+         <?php
+          if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
+         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            $(nRow.childNodes[8]).css("font-weight","bold");
+            $(nRow.childNodes[8]).css("color","black");
+            if(aData[8] == 0){
+              $(nRow.childNodes[8]).css("background-color","red");
+            }else if(aData[8] == 1){
+              $(nRow.childNodes[8]).css("background-color","orange");
+            }else if(aData[8] == 2){
+              $(nRow.childNodes[8]).css("background-color","yellow");
+            }else if(aData[8] == 3){
+              $(nRow.childNodes[8]).css("background-color","#8DD63E");
+            }else if(aData[8] == 4){
+              $(nRow.childNodes[8]).css("background-color","#528A16");
+            }
+         },
+         <?php } ?>
+         "aaSorting": [[ <?php echo $descColumn; ?>, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('view-data'); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+          aoData.push( { "name":"source","value": '<?php echo $source; ?>'} );
+          aoData.push( { "name":"roundno","value": '<?php echo $roundno; ?>'} );
+          aoData.push( { "name":"drange","value": '<?php echo $drange; ?>'} );
+          <?php
+          if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
+           aoData.push( { "name":"auditRndNo","value": $("#auditRndNo").val()} );
+           aoData.push( { "name":"date","value": $("#date").val()} );
+           aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );
+           aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
+           aoData.push( { "name":"level","value": $("#level").val()} );
+           aoData.push( { "name":"province","value": $("#province").val()} );
+           aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
+           aoData.push( { "name":"scoreLevel","value": $("#scoreLevel").val()} );
+          <?php } ?>
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                     <?php
+                     if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
+                      $.unblockUI();
+                      $("#totalAudit").html(json.iTotalDisplayRecords);
+                      $("#avgAuditScore").html(json.avgAuditScore+"%");
+                      $("#level0").html(json.levelZeroCount);
+                      $("#level1").html(json.levelOneCount);
+                      $("#level2").html(json.levelTwoCount);
+                      $("#level3").html(json.levelThreeCount);
+                      $("#level4").html(json.levelFourCount+"&nbsp;");
+                      <?php } ?>
+                      fnCallback(json);
+                     }
+                });
+            }
+       });
+    });
+    
+  function search(){
+   $.blockUI({ message: '<h1>Loading...</h1>' });
+   table.draw();
+  }
+  
+  function getTestingPointTypeNames(){
+     $.blockUI();
+     var testingPointType = $('#testPoint').val();
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-testing-point-type-names')); ?>",{testingPointType: testingPointType},
+       function(data) {
+        $('.testPointNameSection').html(data);
+        $.unblockUI();
+      });
+  }
+</script>

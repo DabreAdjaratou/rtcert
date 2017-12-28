@@ -1,0 +1,148 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/responsive.bootstrap.min.css'); ?>"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>written Exam </h2>
+            </div>
+            <div class="col-sm-4">
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'add')) {  ?>
+                <a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add written exam</a>
+                <?php }  ?>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr>
+
+                        <th style="width: 8%">Number of Attempts </th>
+                        <th>Tester </th>
+                        <th style="width: 10%" >Exam administered by </th>
+                        <th style="width: 8%">Date </th>
+                        <th style="width: 5%">1.<br> QA (points)<br><br> </th>
+                        <th style="width: 5%">2. <br>RT (points) <br><br></th>
+                        <th style="width: 5%">3.<br> Safety (points) <br><br></th>
+                        <th style="width: 5%">4.<br> Specimen collection (points) </th>
+                        <th style="width: 5%">5.<br> Testing algorithm (points) <br></th>
+                        <th style="width: 5%">6.<br> Record keeping (points)</th>
+                        <th style="width: 5%">7.<br> EQA/PT (points)<br><br></th>
+                        <th style="width: 5%">8.<br> Ethics (points)<br><br> </th>
+                        <th style="width: 5%">9.<br> Inventory (points)<br><br> </th>
+                        <th style="width: 5%">Total Points (=25)</th>
+                        <th style="width: 5%"> Final Score (≥80%)</th>
+
+
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                        <th>Edit</th>
+                        <th>Another Attempt</th>
+                        <?php }  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                            <th>Delete</th>
+                        <?php } ?>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <?php foreach ($this->writtens as $written) : ?>
+                    <tr>
+                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($written->exam_type); ?></div></td>
+
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($written->last_name . ' ' . $written->first_name . ' ' . $written->middle_name); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($written->exam_admin); ?></div></td>
+                            <td><?php echo date("d-m-Y", strtotime($this->escapeHtml($written->date))); ?></div></td>
+                            <td><?php echo $this->escapeHtml($written->qa_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->rt_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->safety_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->specimen_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->testing_algo_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->report_keeping_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->EQA_PT_points); ?></td>
+                            <td><?php echo $this->escapeHtml($written->ethics_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->inventory_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->total_points); ?></td>
+                            <td><div style="font-weight: bold"><?php echo $this->escapeHtml($written->final_score . ' %'); ?></div></td>
+                           <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                        <td>
+                                <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('written-exam', array('action' => 'edit', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
+                            </td>
+
+                            <?php
+                            if ($written->final_score < 80 || strcasecmp($written->exam_type, '3rd attempt') == 0) {
+                                echo "<td><div style='width:135px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Add practical exam </div></td>";
+                            } else {
+                                echo "<td><div style='width:135px;height:40px;overflow:auto;'><p><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array(base64_encode('id_written_exam') => base64_encode($written->id_written_exam)))) . "><span class='glyphicon glyphicon-repeat'></span> Add practical exam</a> </div></td>";
+                            }
+                            ?>
+                        <?php }  ?>
+                            
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove this written exam?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('written-exam', array('action' => 'delete', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                   </div>
+                                </td>
+                            <?php } ?>
+                            
+                            
+</tr>
+
+
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery-1.12.4.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.responsive.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/responsive.bootstrap.min.js'); ?>"></script>
+
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" language="javascript" >
+    $(document).ready(function () {
+
+        $('#example').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+        })
+    });
+</script>
+
+
+

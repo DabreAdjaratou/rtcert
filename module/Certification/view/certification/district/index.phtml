@@ -1,0 +1,165 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+?>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/responsive.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>Manage districts</h2>
+            </div>
+            <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+
+            <div>
+
+                <form action="<?php $this->url('district', array('action' => 'add')); ?>" name="form" method="post" onsubmit="return validateForm()">
+                    <?php
+                    $form->prepare();
+                    $form->get('district_name')->setAttributes([
+                        'class' => 'form-control',
+                        'placeholder' => 'Name of District',
+                        'autocomplete' => 'off',
+                        'id' => 'District Name',
+                        'onclick' => 'emptyInput(this)',
+//                           
+                    ]);
+
+                    $form->get('region')->setAttributes([
+                        'class' => 'form-control',
+                        'placeholder' => 'Region',
+                        'autocomplete' => 'off',
+                        'id' => 'Region',
+                        'onclick' => 'emptyInput(this)',
+//                           
+                    ]);
+
+                    $form->get('submit')->setAttributes([
+//                            
+                    ]);
+
+
+                    echo $this->form()->openTag($form);
+                    ?>
+                    <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
+
+                    <div class="row">
+                        <div class="form-group col-lg-6"> 
+                            <?= $this->formLabel($form->get('region')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('region')); ?>
+                            <?= $this->formElementErrors($form->get('region')); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-6"> 
+                            <?= $this->formLabel($form->get('district_name')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('district_name')); ?>
+                            <?= $this->formElementErrors($form->get('district_name')); ?>
+                        </div>
+                    </div>
+
+
+                    <div class="row col-sm-3" style="margin-top: 10px;">
+                        <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
+                        <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('district', array('action' => 'index')); ?>" >CANCEL</a> 
+                    </div>
+                    <?php echo $this->form()->closeTag(); ?>
+
+                </form>
+            </div>
+
+
+            <div style="margin-top:120px;">
+                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 70%;">
+                    <thead>
+                        <tr>
+
+                            <th style="width:50%">District Name </th>
+                            <th style="width:50%"> Region </th>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'edit')) { ?>
+                                <th>Edit</th>
+                            <?php } ?>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'delete')) { ?>
+                                <th>Delete</th>
+                            <?php } ?>
+                        </tr>
+
+
+                    </thead>
+                    <tbody>
+                        <?php foreach ($districts as $district): ?>
+                            <tr>
+                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district->district_name); ?></div>
+                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district->region_name); ?></div>
+                                </td>
+                                <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'edit')) { ?>
+                                    <td>
+                                        <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('district', array('action' => 'edit', 'id' => base64_encode($district->id))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></div>
+
+                                        </a> 
+                                    </td>
+                                <?php } ?>
+                                    <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($district->district_name); ?> '+'?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('district', array('action' => 'delete', 'id' => $district->id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                  </div>
+                                </td>
+                            <?php } ?>
+
+
+                            </tr>
+                        <?php endforeach; ?>               
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src = "<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type = "text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery-1.12.4.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.responsive.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/responsive.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/personnel_certification/district.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" language="javascript" >
+                    $(document).ready(function () {
+
+                        $('#example').dataTable({
+                            "aProcessing": true,
+                            "aServerSide": true,
+                        })
+                    });
+</script>
+

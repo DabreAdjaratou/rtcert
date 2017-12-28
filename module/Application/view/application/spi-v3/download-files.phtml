@@ -1,0 +1,50 @@
+<div class="am-content">
+    <div class="page-head">
+      <h2>SPI-RT 3.0 Checklist (Download Audits in Bulk)</h2>
+    </div>
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">         
+            <table id="downloadTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+              <thead>
+                <tr>
+                  <th>Audit Round No.</th>  
+                  <th>Audit Date</th>
+                  <th>Testing Point Type</th>
+                  <th>Testing Point Name</th>
+                  <th>Level</th>
+                  <th>Affiliation</th>
+                  <th>Level Name</th>
+                  <th>Audit Score</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                if(count($result)>0){
+                    foreach($result as $row){
+                        $file_content = '<i class="fa fa-exclamation" aria-hidden="true" title="Download data not available" style="color:red;"></i>';
+                        if(file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $row['r_download_id'].'.zip')){
+                            $file_content = '<a href="/temporary/download/'. $row['r_download_id'].'.zip"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Zip</a>';
+                        }
+                        ?>
+                    <tr>
+                        <td style="text-align:center;"><?php echo (trim($row['auditroundno']) == '')?'All':$row['auditroundno']; ?></td>
+                        <td><?php echo $row['assesmentofaudit']; ?></td>
+                        <td><?php echo (trim($row['testingpointtype']) == '')?'All':$row['testingpointtype']; ?></td>
+                        <td><?php echo (trim($row['testingpointname']) == '')?'All':$row['testingpointname']; ?></td>
+                        <td><?php echo (trim($row['level']) == '')?'All':$row['level']; ?></td>
+                        <td><?php echo (trim($row['affiliation']) == '')?'All':$row['affiliation']; ?></td>
+                        <td><?php echo (trim($row['level_name']) == '')?'All':$row['level_name']; ?></td>
+                        <td style="text-align:center;"><?php echo (trim($row['AUDIT_SCORE_PERCANTAGE']) == '')?'All':$row['AUDIT_SCORE_PERCANTAGE']; ?></td>
+                        <td style="text-align:center;"><?php echo $file_content; ?></td>
+                    </tr>
+                <?php } }else { ?>
+                <tr>
+                    <td colspan="9" class="dataTables_empty" style="text-align:center;">No Data Available</td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,141 @@
+<?php
+$resourceResult = $resourceResult->{$result->role_code};
+?>
+<div class="am-content">
+        <div class="page-head">
+          <h2>Edit Role</h2>
+		  <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+        </div>
+        
+        
+        <div class="main-content">
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+				<div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form role="form" name="addRoleInformation" id="addRoleInformation" method="post" action="<?php echo $this->url('roles', array('action' => 'edit')); ?>" autocomplete="off" >
+                    <div class="form-group col-lg-6">
+                      <label>Role Name <span class="mandatory">*</span> </label>
+                      <input type="text" placeholder="Role Name" class="form-control isRequired" name="roleName" id="roleName" title="Please enter the role name" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" .$result->role_id; ?>', 'Already exist this name . Please choose another name.')" value="<?php echo $result->role_name; ?>">
+					  <input type="hidden" class="form-control isRequired" id="roleId" name="roleId" value="<?php echo base64_encode($result->role_id); ?>"/>
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Role Code <span class="mandatory">*</span></label>
+                      <input type="text" placeholder="Role Code" class="form-control isRequired" name="roleCode" id="roleCode" title="Please enter role code" onblur="checkNameValidation('roles', 'role_code', this,'<?php echo "role_id##" .$result->role_id; ?>', 'Already exist this code . Please choose another code.')" value="<?php echo $result->role_code; ?>">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Description</label>
+					  <textarea class="form-control" placeholder="Description" name="description" id="description"><?php echo $result->description; ?></textarea>
+                    </div>
+                     <div class="form-group col-lg-6">
+                      <label>Status <span class="mandatory">*</span></label>
+                      <select class="form-control isRequired" name="status" id="status">
+						<option value="active" <?php if($result->status=='active'){echo 'selected=selected';}?>>Active</option>
+						<option value="inactive" <?php if($result->status=='inactive'){echo 'selected=selected';}?>>Inactive</option>
+					  </select>
+                    </div>
+						<div class="form-group col-sm-12">
+								<div class="form-group">
+							<label class="col-sm-1 control-label">Note :</label>
+							<div class="col-sm-10">
+								<p class="">Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc.</p>
+							</div>
+						</div>
+						<div class="form-group col-sm-12" style="padding-left:14px;">
+                            <strong>Select All</strong>
+							<a style="color: #333;" href="javascript:void(0);" id="cekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll'/> <i class='fa fa-check'></i></a>
+							&nbsp<strong>
+							Unselect All</strong> <a style="color: #333;" href="javascript:void(0);" id="unCekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' checked='checked'/> <i class='fa fa-times'></i></a>
+                        </div>
+						<table class="table table-striped table-hover table-bordered responsive-utilities jambo_table">
+                        <?php
+                        foreach ($rolesresult as $value) {
+echo "<tr class=''>";
+echo "<td><strong>" . ucwords($value['display_name']) . "</strong></td>";
+
+foreach ($value['privileges'] as $privilege) {
+if(isset($resourceResult[$value['resource_id']][$privilege['privilege_name']]) && $resourceResult[$value['resource_id']][$privilege['privilege_name']] == 'allow'){
+                       $allowActive = ' active ';
+                       $allowChecked = " checked='' ";
+                       $denyActive = "";
+                       $denyChecked = "";
+                   }else{
+                       $denyActive = ' active ';
+                       $denyChecked = " checked='' ";
+                       $allowActive = "";
+                       $allowChecked = "";
+                   }
+echo "<td>"
+. "<label class='labelName'>" . ucwords($privilege['display_name']) . "</label> <br>
+		
+								<label>
+										<input type='radio' class='cekAll layCek'  name='resource[" . $value['resource_id'] . "][" . $privilege['privilege_name'] . "]" . "' value='allow' $allowChecked> <i class='fa fa-check'></i>
+								</label> &nbsp; 
+								<label>
+										<input type='radio' class='unCekAll layCek'  name='resource[" . $value['resource_id'] . "][" . $privilege['privilege_name'] . "]" . "' value='deny' $denyChecked>  <i class='fa fa-times'></i>
+								</label>
+												   
+						</td>";
+						}
+						echo "</tr>";
+				}
+				?>	
+                        </table>
+						</div>
+                    <div class="spacer  col-lg-12">
+                      <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
+                     <a href="<?php echo $this->url('roles', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+
+            </div>
+        
+        <br>
+        <br>
+ 
+        </div>
+</div>
+
+<script type="text/javascript">
+		duplicateName = true;
+		function validateNow() {
+			   flag = deforayValidator.init({
+				   formId: 'addRoleInformation'
+			   });
+			   if (flag) {
+				   if (duplicateName) {
+					   document.getElementById('addRoleInformation').submit();
+				   }
+			   }
+		}
+		function checkNameValidation(tableName, fieldName, obj, fnct, msg)
+		{
+			checkValue = document.getElementById(obj.id).value;
+			$.post("<?php echo $this->url('common', array('action' => 'index')); ?>", {tableName: tableName, fieldName: fieldName, value: checkValue, fnct: fnct},
+			function(data) {
+				if (data > 0)
+				{
+					alert(msg);
+					duplicateName = false;
+					document.getElementById(obj.id).value = "";
+				}
+				else {
+					duplicateName = true;
+				}
+			});
+		}
+		$("#cekAllPrivileges").click(function(){
+		$('.unCekAll').prop('checked', false);
+		$(".cekAll").prop( "checked", true );
+		});
+	
+		$("#unCekAllPrivileges").click(function(){
+		$('.unCekAll').prop('checked', true);
+		$(".cekAll").prop( "checked", false );
+		});
+</script>

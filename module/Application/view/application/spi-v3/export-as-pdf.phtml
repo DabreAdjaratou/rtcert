@@ -1,0 +1,178 @@
+<?php
+$common = new \Application\Service\CommonService();
+// Extend the TCPDF class to create custom Header and Footer
+class MYPDF extends TCPDF {
+
+    public function setSchemeName($header,$logo) {
+	$this->header = $header;
+	$this->logo = $logo;
+    }
+    
+    //Page header
+    public function Header() {
+        // Logo
+        if(trim($this->logo)!="" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo'. DIRECTORY_SEPARATOR.$this->logo)){
+	    $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo'. DIRECTORY_SEPARATOR.$this->logo;
+	    $this->Image($image_file, 12,3,20, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
+	}
+        // Set font
+        $this->SetFont('helvetica', 'B', 12);
+        // Title
+        $this->writeHTMLCell(0,'',33,10,$this->header,0,1,false,true,'C',true);
+        $this->writeHTMLCell(180,'',15,20,'<br/><br/><br/>',0,1,false,true,'C',true);
+    }
+
+    // Page footer
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', 'I', 8);
+        // Page number
+        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    }
+}
+
+// create new PDF document
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+$pdf->setSchemeName(ucwords($configData['header']),$configData['logo']);
+
+// set document information
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Nicola Asuni');
+$pdf->SetTitle('SPI-RT Checklist');
+$pdf->SetSubject('SPI-RT 3.0 Checklist');
+
+// set default header data
+$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+// set header and footer fonts
+$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+// set default monospaced font
+$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+// set margins
+$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+// set auto page breaks
+$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+// set image scale factor
+$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+    require_once(dirname(__FILE__).'/lang/eng.php');
+    $pdf->setLanguageArray($l);
+}
+// ---------------------------------------------------------
+
+// set font
+$pdf->SetFont('times', '', 10);
+
+// add a page
+
+$pdf->AddPage('L');
+
+if($argument['dateRange']==''){
+   $argument['dateRange'] = $common->humanDateFormat($result['eDate'])." - " .date('d-M-Y');
+}if($argument['auditRndNo']==''){
+    $argument['auditRndNo'] = "All";
+}if($argument['level']==''){
+    $argument['level'] = "All";
+}if($argument['affiliation']==''){
+    $argument['affiliation'] = "All";
+}
+if($argument['province']==''){
+    $argument['province'] = "All";
+}else if(is_array($argument['province'])){
+	$argument['province'] = implode(",",$argument['province']);
+}
+if($argument['district']==''){
+    $argument['district'] = "All";
+}else if(is_array($argument['district'])){
+	$argument['district'] = implode(",",$argument['district']);
+}
+if($argument['scoreLevel']==''){
+    $argument['scoreLevel'] = "All";
+}if($argument['testPoint']==''){
+    $argument['testPoint'] = "All";
+}
+$filter = '';
+$filter.= "<tr><td><b>Date Range </b>: ".$argument['dateRange']."</td><td><b>Audit Round No. </b>: ".$argument['auditRndNo']."</td><td><b>Level </b>: ".$argument['level']."</td></tr>";
+$filter.= "<tr><td><b>Affiliation </b>: ".$argument['affiliation']."</td><td><b>Province </b>: ".$argument['province']."</td><td><b>District </b>: ".$argument['district']."</td></tr>";
+$filter .="<tr><td><b>Score Level </b>: ".$argument['scoreLevel']."</td><td><b>Type Of Testing Point </b>: ".$argument['testPoint']."</td></tr>";
+$partA = '';
+$partA.='<table border="1" cellspacing="0" cellpadding="5" style="width:97%;" >'.$filter.'</table>';
+$pdf->writeHTML($partA, true, 0, true, 0);
+$h = $pdf->getY();
+
+if($h<52)
+{
+    $style1 = "height:470px;width:500px;";
+    $style2 = "height:460px;width:450px;";
+}else{
+    $diff = $h-52;
+    $h1 = 450-($diff*3.5);
+    $h2 = 440-($diff*3.5);
+    $style1 = "height:".$h1."px;width:500px;";
+    $style2 = "height:".$h2."px;width:450px;";
+}
+$pdfContent = '';
+$pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
+    $pdfContent .= '<tr>';
+        $pdfContent .='<td><img style="'.$style1.'" src="'.$this->basePath('temporary/radar.png').'" alt="PDF" /></td>';
+        $pdfContent .='<td><img style="'.$style2.'" src="'.$this->basePath('temporary/piechart.png').'" alt="PDF" /></td>';
+    $pdfContent .= '</tr>';
+$pdfContent .= '</table>';
+
+$pdf->writeHTML($pdfContent,true,0,true,0);
+
+$testingResult='<table border="1" BORDERCOLOR=RED cellspacing="0" cellpadding="5" >';
+    $testingResult.='<tr style="background-color:#3598DC;color:#fff;text-align:center">';
+        $testingResult.='<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Personnel Training & Certification</b></th><th><b>Physical</b></th><th><b>Safety</b></th><th><b>Pre-Testing</b></th><th><b>Testing</b></th><th><b>Post-Testing</b></th><th><b>External QA</b></th><th><b>Total(%)</b></th>';
+    $testingResult.='</tr>';
+    foreach($result['aaData'] as $aRow){
+        $testingResult.='<tr style="border:1px solid #dddddd;">';
+            $testingResult.='<td>'.$aRow[1].'</td><td>'.$aRow[2].'</td><td>'.$aRow[3].'</td><td>'.$aRow[4].'</td><td>'.$aRow[5].'</td><td>'.$aRow[6].'</td><td>'.$aRow[7].'</td><td>'.$aRow[11].'</td><td>'.$aRow[12].'</td><td>'.$aRow[13].'</td><td>'.$aRow[14].'</td><td>'.$aRow[15].'</td><td>'.$aRow[16].'</td><td>'.$aRow[17].'</td><td>'.$aRow[18].'</td>';
+        $testingResult.='</tr>';
+    }
+$testingResult.='</table>';
+
+$pdf->writeHTML($testingResult, true, 0, true, 0);
+
+$testingResultAvg = '';
+$testingResultAvg .= '<table style="background-color:#fff;margin-bottom:20px;font-size:13px;">';
+    $testingResultAvg .= '<tr>';
+        $testingResultAvg .= '<td style="width:25%;">&nbsp;<strong>No.of Audit(s):&nbsp;</strong>'.count($result['aaData']).'</td>';
+        $testingResultAvg .= '<td style="padding-left:1%;width:25%;"><strong>Avg. Audit Score:&nbsp;</strong>'.$result['avgAuditScore'].'</td>';
+        $testingResultAvg .= '<td style="width:1%;"></td>';
+        $testingResultAvg .= '<td style="width:1%;background-color:red;"></td>';
+        $testingResultAvg .= '<td style="padding-left:1%;width:25%;"><strong>Level 0(Below 40):&nbsp;</strong>'.$result['levelZeroCount'].'</td>';
+        $testingResultAvg .= '<td style="width:1%;"></td>';
+        $testingResultAvg .= '<td style="width:1%;background-color:orange;"></td>';
+        $testingResultAvg .= '<td style="padding-left:1%;width:25%;"><strong>Level 1(40-59):&nbsp;</strong>'.$result['levelOneCount'].'</td>';
+    $testingResultAvg .= '</tr>';
+    $testingResultAvg .= '<tr>';
+        $testingResultAvg .= '<td colspan="4"><br/></td>';
+    $testingResultAvg .= '</tr>';
+    $testingResultAvg .= '<tr>';
+        $testingResultAvg .= '<td style="width:1%;background-color:yellow;"></td>';
+        $testingResultAvg .= '<td style="padding-left:1%;width:25%;"><strong>Level 2 (60-79):&nbsp;</strong>'.$result['levelTwoCount'].'</td>';
+        $testingResultAvg .= '<td style="width:1%;background-color:#8DD63E;"></td>';
+        $testingResultAvg .= '<td style="padding-left:0%;width:25%;"><strong>Level 3 (80-89):&nbsp;</strong>'.$result['levelThreeCount'].'</td>';
+        $testingResultAvg .= '<td style="width:1%;background-color:#528A16;"></td>';
+        $testingResultAvg .= '<td style="padding-left:0%;width:25%;"><strong>Level 4 (90 and above):&nbsp;</strong>'.$result['levelFourCount'].'</td>';
+    $testingResultAvg .= '</tr>';
+$testingResultAvg .= '</table>';
+$pdf->writeHTML($testingResultAvg, true, 0, true, 0);
+
+$fileName = "SPI-V3.pdf";
+$filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. $fileName;
+$pdf->Output($filePath, "F");
+echo $fileName;
