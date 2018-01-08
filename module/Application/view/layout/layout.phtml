@@ -133,8 +133,19 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
 
                             <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage <span class="caret"></span></a>
                             <ul role="menu" class="dropdown-menu">
-                                                <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Manage Testers </a></li>
-                                                <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Manage Trainings</a></li>
+                            <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
+                                        ?>
+                                        
+                                       
+                                    <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
+                                    <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
+                                    <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+                                    <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
+                                    <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>"> PDF Setting</a></li>
+
+
+                                    <?php } ?>
+                                                
                                                 <?php echo $adminMenu; ?>
                                             </ul>
                                         </li>
@@ -147,6 +158,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
 
                                         <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Examination<span class="caret"></span></a>
                                         <ul role="menu" class="dropdown-menu">
+                                        <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Manage Testers </a></li>
+                                                <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Manage Trainings</a></li>                                        
                                                 <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
                                                 <li><a href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>">Practical Exam</a></li>
                                                 <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
@@ -177,24 +190,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                                     
 
 
-                                    <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
-                                        ?>
-                                        
-                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Config<span class="caret"></span></a>
-                                        <ul role="menu" class="dropdown-menu">
-                                                    <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
-                                                    <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
-                                                    <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
-                                                    <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
-                                                    <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>"> PDF Setting</a></li>
-
-                                                </ul>
-
-                                            </li>
-                                        
-
-
-                                    <?php } ?>
+                                   
 
                                 </ul> 
                         <?php } ?>

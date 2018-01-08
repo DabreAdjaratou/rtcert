@@ -14,8 +14,6 @@
 return array(
         'db' => array(
         'username' => 'root',
-        'password' => 'zaq12345',
-        'data-base-name' => 'odkcert',
-        'data-base-host' => 'localhost'
+        'password' => 'zaq12345'
     )
 );
