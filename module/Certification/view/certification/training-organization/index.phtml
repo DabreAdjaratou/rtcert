@@ -36,12 +36,12 @@ $acl = $this->layout()->acl;
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width:65%;">
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width:100%;">
                 <thead>
                     <tr>
 
-                        <th style="width:50%;">Training Organization </th>
-                        <th>Type of Training Organization </th>
+                        <th style="width:60%;">Training Organization </th>
+                        <th style="width:30%;">Type of Organization </th>
 
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\TrainingOrganization', 'edit')) { ?>
                             <th>Edit</th>

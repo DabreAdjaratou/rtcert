@@ -11453,7 +11453,7 @@ pre {
   [Buttons]
 */
 .btn {
-  border-radius: 0;
+  border-radius: 3px;
 }
 .btn:active,
 .btn.active {

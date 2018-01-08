@@ -65,7 +65,7 @@ $acl = $this->layout()->acl;
 
                     <div class="row col-sm-3" style="margin-top: 30px; margin-left: 5px">
                         <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                        <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('region', array('action' => 'index')); ?>" >CANCEL</a> 
+                        <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('region', array('action' => 'index')); ?>" >Cancel</a> 
                     </div>
                     <?php echo $this->form()->closeTag(); ?>
 
@@ -74,11 +74,11 @@ $acl = $this->layout()->acl;
 
 
             <div style="margin-top:120px;">
-                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 50%;">
+                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 100%;">
                     <thead>
                         <tr>
 
-                            <th style="width:60%">Region Name </th>
+                            <th style="width:90%">Region Name </th>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'edit')) { ?>
                             <th style="width:30%;">Edit</th>
                             <?php }   ?>
@@ -91,22 +91,17 @@ $acl = $this->layout()->acl;
                     <tbody>
                         <?php foreach ($regions as $region): ?>
                             <tr>
-                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($region->region_name); ?></div>
-
-                                </td>
+                                <td><?php echo $this->escapeHtml($region->region_name); ?></td>
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'edit')) { ?>
-                                    <td>
-                                        <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('region', array('action' => 'edit', 'id' => base64_encode($region->id))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></div>
-
-                                        </a> 
+                                    <td><a href="<?php echo $this->url('region', array('action' => 'edit', 'id' => base64_encode($region->id))); ?>"> <span class="glyphicon glyphicon-pencil"> Edit</span></a> 
                                     </td>
                                 <?php } ?>
                                     <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'delete')) { ?>
-                                <td><div style="overflow:auto;">
+                                <td>
                                          <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($region->region_name); ?> '+'?')) {
                                                     alert('Canceled!');
-                                                    return false;};"  href="<?php echo $this->url('region', array('action' => 'delete', 'id' => $region->id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
-                                  </div>
+                                                    return false;};"  href="<?php echo $this->url('region', array('action' => 'delete', 'id' => $region->id)); ?>"> <span class="glyphicon glyphicon-trash"> Delete</span></a> 
+                                  
                                 </td>
                             <?php } ?>
                             
@@ -138,6 +133,7 @@ $acl = $this->layout()->acl;
                         $('#example').dataTable({
                             "aProcessing": true,
                             "aServerSide": true,
+                            "autoWidth": false
                         })
                     });
 </script>
