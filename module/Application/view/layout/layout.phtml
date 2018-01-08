@@ -131,7 +131,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                             <ul class="nav navbar-nav am-top-menu">
                                     
 
-                            <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage <span class="caret"></span></a>
+                            <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Configure <span class="caret"></span></a>
                             <ul role="menu" class="dropdown-menu">
                             <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
                                         ?>
@@ -156,18 +156,18 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                                             
                                     
 
-                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Examination<span class="caret"></span></a>
+                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Tester Evaluation<span class="caret"></span></a>
                                         <ul role="menu" class="dropdown-menu">
                                         <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Manage Testers </a></li>
                                                 <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Manage Trainings</a></li>                                        
                                                 <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
                                                 <li><a href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>">Practical Exam</a></li>
-                                                <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
+                                                <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Result Approval</a></li>
                                             </ul>
                                         </li>
                                     
 
-                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Certification<span class="caret"></span></a>
+                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Certifications<span class="caret"></span></a>
                                         <ul role="menu" class="dropdown-menu">
                                                 <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certifications</a></li>
                                                 <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Recertifications</a></li>
@@ -222,6 +222,12 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                             }
                         }
                         ?>
+
+          <?php if(!isset($sessionLogin->userId)){ ?>
+                <ul class="nav navbar-nav navbar-right am-user-nav">
+                  <li class=""><a href="/login" class="btn btn-warning">Login</a></li>
+                </ul>
+          <?php } ?>                
           </div>
         </div>
       </nav>

@@ -9,10 +9,9 @@
 
 namespace Application;
 
-use Application\Model\SpiFormVer3Table;
-use Application\Model\SpiFormVer3DuplicateTable;
+
 use Application\Model\UsersTable;
-use Application\Model\SpiFormLabelsTable;
+
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
@@ -22,8 +21,6 @@ use Application\Model\ResourcesTable;
 use Application\Model\TempMailTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\AuditMailTable;
-use Application\Model\SpiFormVer3DownloadTable;
-use Application\Model\SpiFormVer3TempTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -144,11 +141,6 @@ class Module
                     $rolesTable = $sm->get('RolesTable');
                     return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles());
 				},
-                'SpiFormVer3Table' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3Table($dbAdapter);
-                    return $table;
-                },
                 'UsersTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UsersTable($dbAdapter);
@@ -186,22 +178,6 @@ class Module
                 },'UserTokenMapTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UserTokenMapTable($dbAdapter);
-                    return $table;
-                },'AuditMailTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new AuditMailTable($dbAdapter);
-                    return $table;
-                },'SpiFormVer3DownloadTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3DownloadTable($dbAdapter);
-                    return $table;
-                },'SpiFormVer3DuplicateTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3DuplicateTable($dbAdapter);
-                    return $table;
-                },'SpiFormVer3TempTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3TempTable($dbAdapter);
                     return $table;
                 },
 		

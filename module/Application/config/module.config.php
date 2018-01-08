@@ -66,16 +66,6 @@ return array(
                         'action' => 'index',
                     ),
                 ),
-            ),     
-            'spi-v3-form' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v3[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3',
-                        'action' => 'index',
-                    ),
-                ),
             ),
             'spi-facility' => array(
                 'type' => 'segment',
@@ -83,16 +73,6 @@ return array(
                     'route' => '/facility[/:action][/][:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Facility',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'spi-v3-reports' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v3-reports[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3Reports',
                         'action' => 'index',
                     ),
                 ),
@@ -154,16 +134,6 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\Dashboard',
                         'action' => 'index',
-                    ),
-                ),
-            ),
-            'view-data' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/view-data',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3',
-                        'action' => 'view-data',
                     ),
                 ),
             ),

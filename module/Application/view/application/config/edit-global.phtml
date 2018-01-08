@@ -52,27 +52,6 @@
                             <input name="country-name" id="country-name" class="form-control isRequired" placeholder="Country/Instance Name" title="Please enter country/instance name" value="<?php echo $config['country-name']; ?>" />
                         </div>
                     </div>
-                    <div class="form-group">
-                      <label for="approve_status" class="col-sm-2 control-label">Auto Approval<span class="mandatory">*</span></label>
-                        <div class="col-lg-4">
-                            <select name="approve_status" id="approve_status" class="form-control isRequired" title="Please select audit approval status">
-                                <option value="">--select</option>
-                                <option value="yes" <?php echo ($config['approve_status'] == 'yes' ? " selected='selected'" : ""); ?>>Yes</option>
-                                <option value="no"<?php echo ($config['approve_status'] == 'no' ? " selected='selected'" : ""); ?>>No</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                     <label for="approve_status" class="col-sm-2 control-label">Language <span class="mandatory">*</span></label>
-                       <div class="col-lg-4">
-                           <select name="language" id="language" class="form-control isRequired" title="Please select language">
-                               <option value="English" <?php echo ($config['language'] == 'English' ? " selected='selected'" : ""); ?>>English</option>
-                               <option value="French"<?php echo ($config['language'] == 'French' ? " selected='selected'" : ""); ?>>French</option>
-                               <option value="Spanish"<?php echo ($config['language'] == 'Spanish' ? " selected='selected'" : ""); ?>>Spanish</option>
-                               <option value="Portuguese"<?php echo ($config['language'] == 'Portuguese' ? " selected='selected'" : ""); ?>>Portuguese</option>
-                           </select>
-                       </div>
-                   </div>
                     <hr>
                     <div class="spacer col-lg-5" align="center">
                      <input type="hidden" name="removedLogoImage" id="removedLogoImage"/>  

@@ -19,13 +19,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'approve-status' => 'allow',
-            'download-pdf' => 'allow',
-            'edit' => 'allow',
-            'audit-locations' => 'allow',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -64,25 +57,10 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'view-data' => 'allow',
-            'delete' => 'allow',
-            'edit' => 'allow',
-            'manage-facility' => 'allow',
-            'download-pdf' => 'allow',
-            'validate-spiv3-data' => 'allow',
-            'download-files' => 'allow',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-        ),
-        'Application\\Controller\\SpiV3Reports' => array(
-            'facility-report' => 'allow',
         ),
         'Certification\\Controller\\Certification' => array(
             'index' => 'allow',
@@ -180,14 +158,6 @@ return array(
             'add' => 'deny',
             'edit' => 'deny',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'manage-facility' => 'deny',
-            'approve-status' => 'deny',
-            'download-pdf' => 'allow',
-            'edit' => 'deny',
-            'audit-locations' => 'allow',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'deny',
             'add' => 'deny',
@@ -223,22 +193,10 @@ return array(
             'add' => 'deny',
             'edit' => 'deny',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'approve-status' => 'deny',
-            'corrective-action-pdf' => 'deny',
-            'delete' => 'deny',
-            'edit' => 'deny',
-            'manage-facility' => 'deny',
-            'download-pdf' => 'deny',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'deny',
             'edit' => 'deny',
-        ),
-        'Application\\Controller\\SpiV3Reports' => array(
-            'facility-report' => 'allow',
         ),
     ),
     'DE' => array(
@@ -266,22 +224,10 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'delete' => 'allow',
-            'edit' => 'allow',
-            'manage-facility' => 'allow',
-            'download-pdf' => 'allow',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-        ),
-        'Application\\Controller\\SpiV3Reports' => array(
-            'facility-report' => 'allow',
         ),
     ),
     'PCA' => array(
@@ -342,20 +288,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'view-data' => 'allow',
-            'delete' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
-            'edit' => 'allow',
-            'manage-facility' => 'allow',
-            'download-pdf' => 'allow',
-            'validate-spiv3-data' => 'allow',
-            'spiv3-import-csv-file' => 'allow',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -388,9 +320,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'xls' => 'allow',
-        ),
-        'Application\\Controller\\SpiV3Reports' => array(
-            'facility-report' => 'allow',
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
@@ -471,20 +400,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
-            'index' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'view-data' => 'allow',
-            'delete' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
-            'edit' => 'allow',
-            'manage-facility' => 'allow',
-            'download-pdf' => 'allow',
-            'validate-spiv3-data' => 'allow',
-            'spiv3-import-csv-file' => 'allow',
-        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -517,9 +432,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'xls' => 'allow',
-        ),
-        'Application\\Controller\\SpiV3Reports' => array(
-            'facility-report' => 'allow',
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
