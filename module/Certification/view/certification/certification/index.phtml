@@ -32,7 +32,7 @@ $acl = $this->layout()->acl;
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
             <h1 style="text-align: center; color: #FF7F50;margin-bottom: 50px;">List of certificates to be sent</h1>
 
-            <table id="example3" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+            <table id="toBeSentTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
                         <th  style="width:10%;">Professional Registration No(if available </th>
@@ -114,7 +114,7 @@ $acl = $this->layout()->acl;
 <hr>
 <br>
             <h1 style="text-align: center;color: #32CD32;margin-bottom: 50px;">List of certified testers</h1>
-            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+            <table id="certifiedTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr >
                         <th  style="width:10%;">Professional Registration No(if available </th>
@@ -192,7 +192,7 @@ $acl = $this->layout()->acl;
 
         <div class="widget widget-fullwidth widget-small" style="padding:5px; margin-top:100px;" >
             <h1 style="text-align: center; color:#1E90FF;margin-bottom: 50px;">List of pending or failed testers</h1>
-            <table id="example2" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+            <table id="pendingTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
                         <th  style="width:10%;">Professional Registration No(if available </th>
@@ -265,29 +265,34 @@ $acl = $this->layout()->acl;
 
 
 <script type="text/javascript" language="javascript" >
-                            $(document).ready(function () {
 
-                                $('#example').dataTable({
-                                    "aProcessing": true,
-                                    "aServerSide": true,
-                                })
-                            });
+function toBeSentInit(){
+    $('#toBeSentTable').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+    });
+}
+function certifiedInit(){
+    $('#certifiedTable').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+    });
+}
+function pendingInit(){
+    $('#pendingTable').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+    });
+}
 
-                            $(document).ready(function () {
 
-                                $('#example2').dataTable({
-                                    "aProcessing": true,
-                                    "aServerSide": true,
-                                })
-                            });
+    $(document).ready(function () {
 
-                            $(document).ready(function () {
-
-                                $('#example3').dataTable({
-                                    "aProcessing": true,
-                                    "aServerSide": true,
-                                })
-                            });
+        toBeSentInit();
+        certifiedInit();
+        pendingInit();
+    
+    });
 
 </script>
 

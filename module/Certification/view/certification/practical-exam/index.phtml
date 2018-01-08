@@ -37,7 +37,7 @@ $acl = $this->layout()->acl;
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+            <table id="practicalExamsTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
                         <th style="width: 10%;">Date</th>
@@ -112,7 +112,7 @@ $acl = $this->layout()->acl;
 <script type="text/javascript" language="javascript" >
     $(document).ready(function () {
 
-        $('#example').dataTable({
+        $('#practicalExamsTable').dataTable({
             "aProcessing": true,
             "aServerSide": true,
         })

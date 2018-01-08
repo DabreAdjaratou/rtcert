@@ -3,6 +3,10 @@
 use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
+
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
 ?>
 <html>
 
@@ -25,7 +29,7 @@ $sessionLogin = new Container('credo');
         <div class="page-head">
             <div class="row">
                 <div class="col-sm-8">
-                    <h2>Add a new Written Exam</h2>
+                    <h1>Written Exam</h1>
                 </div>
                 <div class="col-sm-4 ">
                     <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
@@ -35,10 +39,11 @@ $sessionLogin = new Container('credo');
                 </div>
             </div>
             <div class="row">
-                <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
-            </div>
-            <div class="row">
-                <span class="muted pull-right" style="font-size:15px; "><span class="mandatory" style="color: green;">*</span> indicates read only field</span>
+                <span class="muted pull-right" style="font-size:15px;">
+                <span class="mandatory">*</span> indicates required field
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="mandatory" style="color: green;">*</span> indicates read only field
+                </span>
             </div>
         </div>
 
@@ -227,6 +232,92 @@ $sessionLogin = new Container('credo');
                 </form>
 
             </div>
+            <div class="widget widget-fullwidth widget-small" style="padding:20px;padding-top:70px; ">
+            <h1>Written Exams </h1>
+            <br>
+            <table id="writtenExamTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr>
+
+                        <th style="width: 8%">Tester </th>
+                        <th>No. of Attempts </th>
+                        <th style="width: 10%" >Exam Administered by </th>
+                        <th style="width: 8%">Date </th>
+                        <th style="width: 5%">1.<br> QA (points)<br><br> </th>
+                        <th style="width: 5%">2. <br>RT (points) <br><br></th>
+                        <th style="width: 5%">3.<br> Safety (points) <br><br></th>
+                        <th style="width: 5%">4.<br> Specimen Collection (points) </th>
+                        <th style="width: 5%">5.<br> Testing Algorithm (points) <br></th>
+                        <th style="width: 5%">6.<br> Record Keeping (points)</th>
+                        <th style="width: 5%">7.<br> EQA/PT (points)<br><br></th>
+                        <th style="width: 5%">8.<br> Ethics (points)<br><br> </th>
+                        <th style="width: 5%">9.<br> Inventory (points)<br><br> </th>
+                        <th style="width: 5%">Total Points (=25)</th>
+                        <th style="width: 5%"> Final Score (≥80%)</th>
+
+
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                        <th>Edit</th>
+                        <th>Another Attempt</th>
+                        <?php }  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                            <th>Delete</th>
+                        <?php } ?>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <?php foreach ($this->writtens as $written) : ?>
+                    <tr>
+                        
+
+                            <td><?php echo $this->escapeHtml($written->last_name . ' ' . $written->first_name . ' ' . $written->middle_name); ?></td>
+                            <td><?php echo $this->escapeHtml($written->exam_type); ?></td>
+                            <td><?php echo $this->escapeHtml($written->exam_admin); ?></td>
+                            <td><?php echo date("d-m-Y", strtotime($this->escapeHtml($written->date))); ?></div></td>
+                            <td><?php echo $this->escapeHtml($written->qa_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->rt_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->safety_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->specimen_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->testing_algo_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->report_keeping_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->EQA_PT_points); ?></td>
+                            <td><?php echo $this->escapeHtml($written->ethics_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->inventory_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->total_points); ?></td>
+                            <td><?php echo $this->escapeHtml($written->final_score . ' %'); ?></td>
+                           <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                        <td>
+                                <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('written-exam', array('action' => 'edit', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
+                            </td>
+
+                            <?php
+                            if ($written->final_score < 80 || strcasecmp($written->exam_type, '3rd attempt') == 0) {
+                                echo "<td><span class='glyphicon glyphicon-repeat'></span> Add practical exam</td>";
+                            } else {
+                                echo "<td><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array(base64_encode('id_written_exam') => base64_encode($written->id_written_exam)))) . "><span class='glyphicon glyphicon-repeat'></span> Add practical exam</a></td>";
+                            }
+                            ?>
+                        <?php }  ?>
+                            
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                                <td>
+                                         <a onclick="if (!confirm('Do you really want to remove this written exam?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('written-exam', array('action' => 'delete', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"> <span class="glyphicon glyphicon-trash"> Delete</span></a> 
+                                  
+                                </td>
+                            <?php } ?>
+                            
+                            
+</tr>
+
+
+                    <?php endforeach; ?>
+                </tbody>
+            </table>            
+        </div>
         </div>
     </div>
 </html>
@@ -288,7 +379,13 @@ $sessionLogin = new Container('credo');
                         }
                     }
 
+                    $(document).ready(function () {
 
+$('#writtenExamTable').dataTable({
+    "aProcessing": true,
+    "aServerSide": true,
+});
+});
 
 </script>
 

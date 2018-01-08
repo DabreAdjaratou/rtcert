@@ -89,12 +89,13 @@ class WrittenExamController extends AbstractActionController {
         if (isset($provider['id'])) {
             $nombre = $this->getWrittenExamTable()->attemptNumber($provider['id']);
         }
-
-        return array('form' => $form,
+        
+        return new ViewModel(array('form' => $form,
             'practical' => $practical,
             'nombre' => $nombre,
             'provider' => $provider,
-        );
+            'writtens' => $this->getWrittenExamTable()->fetchAll(),
+        ));
     }
 
     public function editAction() {

@@ -91,6 +91,7 @@ class PracticalExamController extends AbstractActionController {
             'written' => $id_written,
             'nombre' => $nombre,
             'provider' => $provider,
+            'practicals' => $this->getPracticalExamTable()->fetchAll()
         );
     }
 
