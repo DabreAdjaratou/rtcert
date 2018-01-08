@@ -53,13 +53,13 @@ $acl = $this->layout()->acl;
                         <th style="width:10%;">Date Certificate Sent</th>
                         <th style="width:10%;">Type of Certification</th> 
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'pdf')) { ?>
-                            <th style="width:5%;">PDF</th>
+                            <th style="width:5%;">Download PDF</th>
                         <?php } ?>
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
-                            <th style="width:5%;">E-Mail</th>
+                            <th style="width:5%;">E-Mail Certificate</th>
                         <?php } ?>
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
-                            <th style="width:5%;">Status</th>
+                            <th style="width:5%;">Update Status</th>
                         <?php } ?>
 
                     </tr>
@@ -109,7 +109,7 @@ $acl = $this->layout()->acl;
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
                                 <td> <div style='width:120px;height:40px;overflow:auto;' onclick="if (!confirm('Do you really want to mark this certificate as sent?')) {
                                             return false;
-                                        }" name="via_mail"><a  href="<?php echo $this->url('certification', array('action' => 'index'), array('query' => array(base64_encode('certification_id') => base64_encode($certification->id), base64_encode('key') => base64_encode('key')))); ?>"><span class="glyphicon glyphicon-send"></span>&nbsp;send via mail</a></div> </td>
+                                        }" name="via_mail"><a  href="<?php echo $this->url('certification', array('action' => 'index'), array('query' => array(base64_encode('certification_id') => base64_encode($certification->id), base64_encode('key') => base64_encode('key')))); ?>"><span class="glyphicon glyphicon-send"></span>&nbsp;Mark as sent</a></div> </td>
                                       <?php } ?>  
                         </tr>
                         <?php
