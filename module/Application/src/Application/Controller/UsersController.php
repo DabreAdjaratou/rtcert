@@ -28,9 +28,9 @@ class UsersController extends AbstractActionController {
             return $this->redirect()->toRoute("users");
         }
         $roleSerive = $this->getServiceLocator()->get('RoleService');
-        $odkFormSerive = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormSerive = $this->getServiceLocator()->get('OdkFormService');
         $roleResult = $roleSerive->getAllActiveRoles();
-        $tokenResult = $odkFormSerive->getSpiV3FormUniqueTokens();
+        //$tokenResult = $odkFormSerive->getSpiV3FormUniqueTokens();
         return new ViewModel(array('roleResults' => $roleResult,'tokenResults' => $tokenResult));
     }
 
@@ -45,13 +45,12 @@ class UsersController extends AbstractActionController {
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $userSerive->getUser($id);
             $roleSerive = $this->getServiceLocator()->get('RoleService');
-            $odkFormSerive = $this->getServiceLocator()->get('OdkFormService');
+            
             $roleResult = $roleSerive->getAllActiveRoles();
-            $tokenResult = $odkFormSerive->getSpiV3FormUniqueTokens();
+            
             return new ViewModel(array(
                 'result' => $result,
-                'roleResults' => $roleResult,
-                'tokenResults' => $tokenResult
+                'roleResults' => $roleResult
             ));
         }
     }

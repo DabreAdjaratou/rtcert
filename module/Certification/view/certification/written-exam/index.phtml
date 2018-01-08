@@ -21,11 +21,11 @@ $acl = $this->layout()->acl;
 
         <div class="row">
             <div class="col-sm-8">
-                <h2>written Exam </h2>
+                <h2>Written Exams </h2>
             </div>
             <div class="col-sm-4">
                 <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'add')) {  ?>
-                <a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add written exam</a>
+                <a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Written Exam</a>
                 <?php }  ?>
 
             </div>
@@ -39,16 +39,16 @@ $acl = $this->layout()->acl;
                 <thead>
                     <tr>
 
-                        <th style="width: 8%">Number of Attempts </th>
+                        <th style="width: 8%">No. of Attempts </th>
                         <th>Tester </th>
-                        <th style="width: 10%" >Exam administered by </th>
+                        <th style="width: 10%" >Exam Administered by </th>
                         <th style="width: 8%">Date </th>
                         <th style="width: 5%">1.<br> QA (points)<br><br> </th>
                         <th style="width: 5%">2. <br>RT (points) <br><br></th>
                         <th style="width: 5%">3.<br> Safety (points) <br><br></th>
-                        <th style="width: 5%">4.<br> Specimen collection (points) </th>
-                        <th style="width: 5%">5.<br> Testing algorithm (points) <br></th>
-                        <th style="width: 5%">6.<br> Record keeping (points)</th>
+                        <th style="width: 5%">4.<br> Specimen Collection (points) </th>
+                        <th style="width: 5%">5.<br> Testing Algorithm (points) <br></th>
+                        <th style="width: 5%">6.<br> Record Keeping (points)</th>
                         <th style="width: 5%">7.<br> EQA/PT (points)<br><br></th>
                         <th style="width: 5%">8.<br> Ethics (points)<br><br> </th>
                         <th style="width: 5%">9.<br> Inventory (points)<br><br> </th>

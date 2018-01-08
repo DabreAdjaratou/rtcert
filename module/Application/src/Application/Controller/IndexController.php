@@ -18,19 +18,8 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $params = array();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
-        $testingVolume = $odkFormService->getAllApprovedTestingVolume('');        
-  
-        
-        //$viewModel = new ViewModel();
-        //$viewModel->setVariables(array('allSubmissions' => $allSubmissions,'testingVolume' => $testingVolume))
-        //              ->setTerminal(true);
-        //return $viewModel;
-        return new ViewModel(array(
-                                   'allSubmissions' => $allSubmissions,
-                                   'testingVolume' => $testingVolume,
-                                ));
+       
+        return new ViewModel(array());
     }
     
     public function auditLocationsAction()

@@ -49,13 +49,14 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
     
     <style>
       .widget{
-        border: 2px solid #9edcff;
+        border: 2px solid #ccc;
         border-radius:5px;
       }
       
       .table thead tr th, .table thead tr td {
-        background-color: #194f74;
-        color: #ffffff;
+        background-color: #3598DC;
+        color: #fff;
+        font-weight:normal !important;
         text-align:center;
         vertical-align:middle !important;
       }
@@ -89,20 +90,13 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
             
             <a href="/" class="navbar-brand">
               <?php
-		$config = $this->GlobalConfigHelper();
-		if(isset($config) && count($config)>0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo". DIRECTORY_SEPARATOR . $config['logo']))
-		{
-		  ?>
-              <img src="<?php echo $this->basePath('uploads/logo/'.$config['logo']); ?>" style="width:100%;margin-top:5px;"/>
-              <?php
-              }
-              else{
-                ?>
-                <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;margin-top:5px;"/>
-                <?php
-              }
-              ?>
-              
+                $config = $this->GlobalConfigHelper();
+                if(isset($config) && count($config)>0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo". DIRECTORY_SEPARATOR . $config['logo'])){
+	        	  ?>
+                  <img src="<?php echo $this->basePath('uploads/logo/'.$config['logo']); ?>" style="width:100%;margin-top:5px;"/>
+              <?php } else{ ?>
+                  <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;margin-top:5px;"/>
+              <?php } ?>
             </a>
             
           </div>
@@ -125,10 +119,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                   }?>
                 </ul>
               </li>
-            <?php } else { ?>
-                <li class=""><a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>" class="btn btn-primary">Login</a></li>
-              <?php
-            }?>
+            <?php } ?>
             </ul>
             
 
@@ -165,8 +156,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
 
                                         <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Certification<span class="caret"></span></a>
                                         <ul role="menu" class="dropdown-menu">
-                                                <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certification</a></li>
-                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Re-Certification</a></li>
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certifications</a></li>
+                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Recertifications</a></li>
                                             </ul>
                                         </li>
                                     
@@ -180,10 +171,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                                         </li>
                                     
 
-                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">E-mail </a>
-                                        <ul role="menu" class="dropdown-menu">
-                                                <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
-                                            </ul>
+                                        <li class="dropdown">
+                                          <a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a>
                                         </li>
                                     
 

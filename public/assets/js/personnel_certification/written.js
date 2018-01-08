@@ -64,7 +64,7 @@ function validateForm() {
     else if (d<0 || d>3 || numbers.test(d) == false)
     {
         elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt5.id + ' (point) " Must be a valid nunber between 0 and 3');
+        alert('"'+elmt5.id + ' (point) " must be a valid number between 0 and 3');
         return false;
     } 
     
@@ -76,7 +76,7 @@ function validateForm() {
     else if (e<0 || e>3 || numbers.test(e) == false)
     {
         elmt6.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt6.id + ' (point) " Must be a valid nunber between 0 and 3');
+        alert('"'+elmt6.id + ' (point) " must be a valid number between 0 and 3');
         return false;
     } 
     
@@ -88,7 +88,7 @@ function validateForm() {
     else if (f<0 || f>3 || numbers.test(f) == false)
     {
         elmt7.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt7.id + ' (point) " Must be a valid nunber between 0 and 3');
+        alert('"'+elmt7.id + ' (point) " must be a valid number between 0 and 3');
         return false;
     } 
     
@@ -100,7 +100,7 @@ function validateForm() {
     else if (g<0 || g>2 || numbers.test(g) == false)
     {
         elmt8.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt8.id + ' (point) " Must be a valid nunber between 0 and 2');
+        alert('"'+elmt8.id + ' (point) " must be a valid number between 0 and 2');
         return false;
     } 
     
@@ -112,7 +112,7 @@ function validateForm() {
     else if (h<0 || h>3 || numbers.test(h) == false)
     {
         elmt9.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt9.id + ' (point) " Must be a valid nunber between 0 and 3');
+        alert('"'+elmt9.id + ' (point) " must be a valid number between 0 and 3');
         return false;
     } 
     
@@ -124,7 +124,7 @@ function validateForm() {
     else if (i<0 || i>3 || numbers.test(i) == false)
     {
         elmt10.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt10.id + ' (point) " Must be a valid nunber between 0 and 3');
+        alert('"'+elmt10.id + ' (point) " must be a valid number between 0 and 3');
         return false;
     } 
     
@@ -136,7 +136,7 @@ function validateForm() {
     else if (j<0 || j>4 || numbers.test(j) == false)
     {
         elmt11.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt11.id + ' (point) " Must be a valid nunber between 0 and 4');
+        alert('"'+elmt11.id + ' (point) " must be a valid number between 0 and 4');
         return false;
     } 
     
@@ -148,7 +148,7 @@ function validateForm() {
     else if (k<0 || k>2 || numbers.test(k) == false)
     {
         elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt12.id + ' (point) " Must be a valid nunber between 0 and 2');
+        alert('"'+elmt12.id + ' (point) " must be a valid number between 0 and 2');
         return false;
     } 
     
@@ -160,7 +160,7 @@ function validateForm() {
     else if (l<0 || l>2 || numbers.test(l) == false)
     {
         elmt13.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt13.id + ' (point)" Must be a valid nunber between 0 and 2');
+        alert('"'+elmt13.id + ' (point)" must be a valid number between 0 and 2');
         return false;
     } 
 

@@ -25,7 +25,7 @@ $sessionLogin = new Container('credo');
         <div class="page-head">
             <div class="row">
                 <div class="col-sm-8">
-                    <h2>Add A new Written Exam</h2>
+                    <h2>Add a new Written Exam</h2>
                 </div>
                 <div class="col-sm-4 ">
                     <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
@@ -71,13 +71,14 @@ $sessionLogin = new Container('credo');
                     ]);
                     $form->get('date')->setAttributes([
                         'class' => 'form-control',
-                        'placeholder' => 'date',
+                        'placeholder' => 'Please select a Date',
                         'autocomplete' => 'off',
                         'id' => 'date',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('qa_point')->setAttributes([
                         'class' => 'form-control',
+                        'placeholder' => 'must be a valid number between 0 and 3',
                         'id' => 'QA',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
@@ -85,12 +86,14 @@ $sessionLogin = new Container('credo');
                     $form->get('rt_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'RT',
+                        'placeholder' => 'must be a valid number between 0 and 3',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('safety_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Safety',
+                        'placeholder' => 'must be a valid number between 0 and 3',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
@@ -98,36 +101,42 @@ $sessionLogin = new Container('credo');
                     $form->get('specimen_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Specimen',
+                        'placeholder' => 'must be a valid number between 0 and 2',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('testing_algo_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Testing Algo',
+                        'placeholder' => 'must be a valid number between 0 and 3',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('report_keeping_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Report Keeping',
+                        'placeholder' => 'must be a valid number between 0 and 3',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('EQA_PT_points')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'EQA_PT',
+                        'placeholder' => 'must be a valid number between 0 and 4',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('ethics_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Ethics',
+                        'placeholder' => 'must be a valid number between 0 and 2',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);
                     $form->get('inventory_point')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Inventory',
+                        'placeholder' => 'must be a valid number between 0 and 2',
                         'autocomplete' => 'off',
                         'onclick' => 'emptyInput(this)'
                     ]);

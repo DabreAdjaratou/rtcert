@@ -20,7 +20,7 @@ $acl = $this->layout()->acl;
 
         <div class="row">
             <div class="col-sm-8">
-                <h2>list of Re-certifications</h2>
+                <h2>Recertifications</h2>
             </div>
             <div class="col-sm-4">
                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'add')) { ?>
@@ -34,7 +34,7 @@ $acl = $this->layout()->acl;
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
-            <h1 style="text-align: center;color: #FF7F50;margin-bottom: 50px;">List of reminder to send</h1>
+            <h1 style="text-align: center;color: #FF7F50;margin-bottom: 50px;">List of reminders to send</h1>
 
             <table id="example2" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
@@ -116,7 +116,7 @@ if (isset($certification['date_certificate_sent'])) {
 
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
 
-            <h1 style="text-align: center;color: #FF7F50;margin-bottom: 50px;">List of reminder already sent</h1>
+            <h1 style="text-align: center;color: #FF7F50;margin-bottom: 50px;">List of reminders already sent</h1>
 
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>

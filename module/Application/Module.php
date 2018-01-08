@@ -69,7 +69,6 @@ class Module
 		
 	if ($e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
 		&& $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
-        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
         ) {
             
             if (!isset($session->userId) || $session->userId == "") {
@@ -91,8 +90,7 @@ class Module
                 //Attach the "break" as a listener with a high priority
                 $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
                 return $response;
-            }
-			else {
+            } else {
 				$sm = $e->getApplication()->getServiceManager();
 				$viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
 				$acl = $sm->get('AppAcl');
@@ -115,12 +113,12 @@ class Module
 				   return;
 				 }else{
 					 if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
-					 $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
-					 $e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
-					 }
+					    $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
+					    $e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
+                     }
 				 }
 			}
-        }else{
+        } else{
 			if(isset($session->userId)) {
 				$sm = $e->getApplication()->getServiceManager();
 				$viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
@@ -154,16 +152,6 @@ class Module
                 'UsersTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UsersTable($dbAdapter);
-                    return $table;
-                },
-                'SpiFormLabelsTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new SpiFormLabelsTable($dbAdapter);
-                    return $table;
-                },
-		'SpiRtFacilitiesTable' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $table = new SpiRtFacilitiesTable($dbAdapter);
                     return $table;
                 },
 		'RolesTable' => function($sm) {

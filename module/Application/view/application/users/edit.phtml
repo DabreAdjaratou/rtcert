@@ -1,20 +1,9 @@
 <?php
-$tokenArray = array();
-foreach($tokenResults as $token){
-  $tokenArray[] = $token['token'];
-}
 
-$selectedTokenList = '';
-if(isset($result->userToken) && count($result->userToken)>0){
-	foreach($result->userToken as $selectedToken){
-	  $selectedTokenArray[] = $selectedToken['token'];
-	}
-   $selectedTokenList = implode(",",$selectedTokenArray);
-}
 ?>
 <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/typeahead.min.css'); ?>"/>
-<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/tokenfield.min.css'); ?>"/>
+
 <div class="am-content">
         <div class="page-head">
           <h2>Edit User</h2>
@@ -64,10 +53,7 @@ if(isset($result->userToken) && count($result->userToken)>0){
 						</select>
                     </div>
 		   <div class="form-group col-lg-6">
-                      <label>Token (Note: You can add multiple token by comma separator values)</label>
-                      <input type="text" placeholder="Enter token" class="form-control" name="token" id="token" title="Please enter token" value="<?php echo $selectedTokenList; ?>">
-                    </div>
-			<div class="form-group col-lg-6">
+                      
                       <label>Status <span class="mandatory">*</span></label>
 				<select class="form-control isRequired" name="status" id="status" title="Please select the status">
 					<option value="active" <?php if($result->status=='active'){echo 'selected=selected';}?>>Active</option>
@@ -91,23 +77,7 @@ if(isset($result->userToken) && count($result->userToken)>0){
 </div>
 
 <script type="text/javascript">
-	        $(document).ready(function() {
-		      $('#token').tokenfield({
-			autocomplete: {
-			  source: <?php echo json_encode($tokenArray); ?>,
-			  delay: 100
-			},
-			showAutocompleteOnFocus: false
-		      })
-		      
-		      $('#token').on('tokenfield:createtoken', function (event) {
-			var existingTokens = $(this).tokenfield('getTokens');
-			$.each(existingTokens, function(index, token) {
-			    if (token.value === event.attrs.value)
-				event.preventDefault();
-			});
-		      });
-		});
+	       
 		
 		duplicateName = true;
 		function validateNow() {

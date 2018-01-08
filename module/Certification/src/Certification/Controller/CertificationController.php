@@ -345,6 +345,13 @@ class CertificationController extends AbstractActionController {
 
     function pdfSettingAction() {
         $request = $this->getRequest();
+
+        $nb = $this->getCertificationTable()->countCertificate();
+        $nb2 = $this->getCertificationTable()->countReminder();
+        $this->layout()->setVariable('nb', $nb);
+        $this->layout()->setVariable('nb2', $nb2);
+
+
         if ($request->isPost()) {
             $image_left = $request->getPost('logo_left', null);
             //Stores the filename as it was on the client computer.

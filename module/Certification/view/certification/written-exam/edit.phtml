@@ -68,7 +68,7 @@ $sessionLogin = new Container('credo');
                 ]);
                 $form->get('date')->setAttributes([
                     'class' => 'form-control',
-                    'placeholder' => 'date',
+                    'placeholder' => 'Please select a Date',
                     'autocomplete' => 'off',
                     'id' => 'date',
                     'onclick' => 'emptyInput(this)'
@@ -76,18 +76,21 @@ $sessionLogin = new Container('credo');
                 $form->get('qa_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'QA',
+                    'placeholder' => 'must be a valid number between 0 and 3',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('rt_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'RT',
+                    'placeholder' => 'must be a valid number between 0 and 3',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('safety_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'Safety',
+                    'placeholder' => 'must be a valid number between 0 and 3',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
@@ -95,36 +98,42 @@ $sessionLogin = new Container('credo');
                 $form->get('specimen_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'Specimen',
+                    'placeholder' => 'must be a valid number between 0 and 2',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('testing_algo_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'Testing Algo',
+                    'placeholder' => 'must be a valid number between 0 and 3',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('report_keeping_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'Report Keeping',
+                    'placeholder' => 'must be a valid number between 0 and 3',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('EQA_PT_points')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'EQA_PT',
+                    'placeholder' => 'must be a valid number between 0 and 4',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('ethics_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'Ethics',
+                    'placeholder' => 'must be a valid number between 0 and 2',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);
                 $form->get('inventory_point')->setAttributes([
                     'class' => 'form-control',
                     'id' => 'Inventory',
+                    'placeholder' => 'must be a valid number between 0 and 2',
                     'autocomplete' => 'off',
                     'onclick' => 'emptyInput(this)'
                 ]);

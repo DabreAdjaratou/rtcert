@@ -16,33 +16,9 @@ use Zend\Json\Json;
 class DashboardController extends AbstractActionController
 {
     public function indexAction(){
-        $params = array();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $perf1 = $odkFormService->getPerformance($params);
-        $perflast30 = $odkFormService->getPerformanceLast30Days('');        
-        $perflast180 = $odkFormService->getPerformanceLast180Days();        
-        $allSubmissions = $odkFormService->getAllApprovedSubmissions();
-        $testingVolume = $odkFormService->getAllApprovedTestingVolume('');      
-        $rawSubmissions = $odkFormService->getAllSubmissions();        
-        //$auditRoundWiseData = $odkFormService->getAuditRoundWiseData('');
-        //$zeroCounts = $odkFormService->getZeroQuestionCounts();
-        //$spiV3Labels = $odkFormService->getSpiV3FormLabels();
-        $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
-        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
-        $testingPointResult=$odkFormService->getAllTestingPointType();
+
         
-        return new ViewModel(array('perf1' => $perf1,
-                                   'perflast30' => $perflast30,
-                                   'perflast180' => $perflast180,
-                                   'allSubmissions' => $allSubmissions,
-                                   'testingVolume' => $testingVolume,
-                                   'rawSubmissions' => $rawSubmissions,
-                                   //'auditRoundWiseData' => $auditRoundWiseData,
-                                   //'spiV3Labels' => $spiV3Labels,
-                                   //'zeroCounts' => $zeroCounts,
-                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo,
-                                   'testingPointResult' => $testingPointResult,
-                                    'levelNamesResult' => $levelNamesResult));
+        return new ViewModel(array());
     }
     
     public function auditDetailsAction(){

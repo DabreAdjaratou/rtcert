@@ -48,7 +48,7 @@ function validateForm() {
     } else if (c < 0 || c > 100 || numbers.test(c) == false)
     {
         elmt3.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"' + elmt3.id + '"  Must be a valid nunber between 0 and 100');
+        alert('"' + elmt3.id + '"  Must be a valid number between 0 and 100');
         return false;
     }
 
@@ -59,7 +59,7 @@ function validateForm() {
     } else if (d < 0 || d > 100 || numbers.test(d) == false)
     {
         elmt4.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"' + elmt4.id + '"  Must be a valid nunber between 0 and 100');
+        alert('"' + elmt4.id + '"  Must be a valid number between 0 and 100');
         return false;
     }
 

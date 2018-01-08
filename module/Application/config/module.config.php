@@ -191,8 +191,6 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Application\Controller\Index' => "Application\Controller\IndexController",
-            'Application\Controller\Receiver' => "Application\Controller\ReceiverController",
-            'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller",
             'Application\Controller\Login' => "Application\Controller\LoginController",
             'Application\Controller\Facility' => "Application\Controller\FacilityController",
             'Application\Controller\Roles' => "Application\Controller\RolesController",
@@ -201,7 +199,6 @@ return array(
             'Application\Controller\Config' => "Application\Controller\ConfigController",
             'Application\Controller\Email' => "Application\Controller\EmailController",
             'Application\Controller\Cron' => "Application\Controller\CronController",
-            'Application\Controller\SpiV3Reports' => "Application\Controller\SpiV3ReportsController",
             'Application\Controller\Dashboard' => "Application\Controller\DashboardController",
         ),
     ),
