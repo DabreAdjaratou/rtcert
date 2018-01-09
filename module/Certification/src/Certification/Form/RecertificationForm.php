@@ -54,7 +54,7 @@ class RecertificationForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Reminder Sent To',
-                'empty_option' => 'Please choose a Reminder',
+                'empty_option' => 'Please choose Reminder sent to',
                 'value_options' => array(
                     'District focal person' => 'District focal person',
                     'HTS focal person' => 'HTS focal person',

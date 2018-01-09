@@ -21,7 +21,7 @@ $acl = $this->layout()->acl;
 
         <div class="row">
             <div class="col-sm-8">
-                <h2>Results Approval</h2>
+                <h2>Results Validation</h2>
             </div>
 
 
@@ -34,14 +34,14 @@ $acl = $this->layout()->acl;
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-                        <th  style="width:10%;"> Professional Registration No(if available </th>
-                        <th  style="width:10%;"> Certification Registration no </th>
+                        <th  style="width:10%;"> Professional Registration No.<br>(if available) </th>
+                        <th  style="width:10%;"> Certification Registration no. </th>
                         <th  style="width:10%;">Certification ID  </th>
                         <th  style="width:10%;">Provider</th>
-                        <th  style="width:10%;"> Written Exam Score</th>
-                        <th  style="width:10%;">Practical Exam Score</th>
+                        <th  style="width:10%;"> Written Exam<br>Score</th>
+                        <th  style="width:10%;">Practical Exam<br>Score</th>
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'add')) {  ?>
-                        <th style="width:6%;">Action</th>
+                        <th style="width:10%;">Action</th>
                         <?php } ?>
                     </tr>
 
