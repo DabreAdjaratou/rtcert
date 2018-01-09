@@ -4,7 +4,6 @@ makkacm.komodoproject
 ^backup/(?!index.php)
 ^public/uploads/(?!index.php)
 ^public/temporary/(?!index.php)
-^public/.htaccess
 ^library/Zend/
 error_log
 Thumbs.db
