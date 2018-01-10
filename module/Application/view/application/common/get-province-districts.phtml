@@ -1,0 +1,8 @@
+<?php
+$district = '';
+if(isset($result) && count($result) >0){
+    foreach($result as $row){
+        $district.='<option value="'.$row['location_id'].'">'.ucwords($row['location_name']).'</option>';
+    }
+}
+echo $district;

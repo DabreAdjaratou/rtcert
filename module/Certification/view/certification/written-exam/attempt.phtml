@@ -1,0 +1,13 @@
+<?php
+if($result==0){
+echo '<select><option value="1st attempt">1st attempt</option></select>';
+}elseif($result==1){
+echo '<select><option value="2nd attempt">2nd attempt</option></select>';
+}elseif($result==2){
+echo '<select><option value="3rd attempt">3rd attempt</option></select>';
+} elseif ($result>=3) {
+    $result=$result+1;
+echo '<select><option value="'.$result.'"> </option></select>';
+} 
+?>
+?>

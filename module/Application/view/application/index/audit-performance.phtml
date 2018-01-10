@@ -1,0 +1,85 @@
+<style>
+    .highcharts-legend{display: none;}
+    .highcharts-title{display: none;}
+</style>
+<?php
+$PERSONAL_SCORE=0;
+$PHYSICAL_SCORE=0;
+$SAFETY_SCORE=0;
+$PRETEST_SCORE=0;
+$TEST_SCORE=0;
+$POST_SCORE=0;
+$EQA_SCORE=0;
+foreach ($auditRoundWiseData as $auditNo => $adata){
+	$PERSONAL_SCORE+=round($adata['PERSONAL_SCORE'],2);
+	$PHYSICAL_SCORE+=round($adata['PHYSICAL_SCORE'],2);
+	$SAFETY_SCORE+=round($adata['SAFETY_SCORE'],2);
+	$PRETEST_SCORE+=round($adata['PRETEST_SCORE'],2);
+	$TEST_SCORE+=round($adata['TEST_SCORE'],2);
+	$POST_SCORE+=round($adata['POST_SCORE'],2);
+	$EQA_SCORE+=round($adata['EQA_SCORE'],2);
+}
+?>
+<div id="container" style=" width: 100%; height: 600px; margin: 0 auto"></div>
+            <div class="row chart-info">
+              <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php if(isset($perf1[0]['oldestDate']) && trim($perf1[0]['oldestDate'])!= ''){ echo $this->humanDateFormat($perf1[0]['oldestDate']); } else { echo "-"; } ?></span></div>
+              <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php if(isset($perf1[0]['newestDate']) && trim($perf1[0]['newestDate'])!= ''){ echo $this->humanDateFormat($perf1[0]['newestDate']); } else { echo "-"; } ?></span></div>
+              <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+            </div>
+<script>
+    $(document).ready(function(){
+      	//initialize the javascript
+        radar_chart();
+    });
+    function radar_chart(){
+	$('#container').highcharts({
+
+        chart: {
+            polar: true,
+            type: 'line'
+        },
+
+        title: {
+            text: 'Audit Performance',
+            x: -80
+        },
+
+        pane: {
+            size: '90%'
+        },
+
+        xAxis: {
+            categories: ["Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"],
+            tickmarkPlacement: 'on',
+            lineWidth: 0
+        },
+
+	
+        yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 0,
+            min: 0
+        },
+
+        tooltip: {
+            shared: true,
+            pointFormat: '<span style="color:{series.color}">X: <b>{point.y:0f}</b><br/>'
+        },
+        series: [
+	   
+		{
+		name : 'Total Audit',
+        pointPlacement: 'on',
+		data:[<?php echo $PERSONAL_SCORE; ?>,<?php echo $PHYSICAL_SCORE; ?>,
+				   <?php echo $SAFETY_SCORE; ?>,
+				   <?php echo $PRETEST_SCORE; ?>,
+				   <?php echo $TEST_SCORE; ?>,
+				   <?php echo $POST_SCORE; ?>,
+				   <?php echo $EQA_SCORE; ?>,],
+		},
+		
+        ]
+
+    });
+    }
+</script>

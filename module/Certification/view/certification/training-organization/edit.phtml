@@ -1,0 +1,136 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+        <h2>Edit Training organization</h2>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body" >
+                            <form action="<?php $this->url('training-organization', array( 'action' => 'edit','training_organization_id' => $this->training_organization_id)); ?>" name="form" method="post" onsubmit="return validateForm()">
+                            <?php
+                            $form->setAttribute('action', $this->url(
+                                            'training-organization', array(
+                                        'action' => 'edit',
+                                        'training_organization_id' => $this->training_organization_id,
+                                            )
+                            ));
+                            $form->prepare();
+                            $form->get('training_organization_name')->setAttributes([
+                                'class' => 'form-control',
+                                'placeholder' => 'training organization name',
+                                'autocomplete' => 'off',
+                                'id' => 'Training Organization Name',
+                            ]);
+                            $form->get('type_organization')->setAttributes([
+                                'class' => 'form-control',
+                                'id' => 'Type of Organization',
+                            ]);
+
+                            echo $this->form()->openTag($form);
+                            ?>
+                            <?php echo $this->formHidden($form->get('training_organization_id')->setAttribute('class', 'form-control')) ?>
+                            <div class="form-group col-lg-6"> 
+                                <?= $this->formLabel($form->get('training_organization_name')); ?>
+                                <?= $this->formElement($form->get('training_organization_name')); ?>
+                                <?= $this->formElementErrors($form->get('training_organization_name')); ?>
+                            </div>
+                            <div class="form-group col-lg-6"> 
+                                <?= $this->formLabel($form->get('type_organization')); ?>
+                                <?= $this->formElement($form->get('type_organization')); ?>
+                                <?= $this->formElementErrors($form->get('type_organization')); ?>
+                            </div>
+
+
+                            <div class="row" style="margin-left: 18px;"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
+                                <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>" >CANCEL</a> </div>
+                                <?php echo $this->form()->closeTag();
+                                ?>
+                            </form>
+
+
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <br>
+        <br>
+
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+<script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+                                function validateForm()
+                                {
+                                    var a = document.forms["form"]["training_organization_name"].value;
+                                    var b = document.forms["form"]["type_organization"].value;
+
+                                    var elmt = document.getElementById("Training Organization Name");
+                                    var elmt2 = document.getElementById("Type of Organization");
+
+
+                                    if (a == null || a == "")
+                                    {
+
+                                        elmt.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)"
+                                        alert("Please enter the ''" + elmt.id + "''");
+                                        
+                                        return false;
+                                    } else if (b == null || b == "") {
+
+
+                                        elmt2.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)"
+                                        alert("Please enter the ''" + elmt2.id + "''");
+                                        return false;
+                                    }
+
+                                }
+</script>
+
+
+
+
+
+
+

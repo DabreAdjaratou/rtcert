@@ -1,0 +1,280 @@
+<?php
+use Zend\Session\Container;
+$container = new Container('alert');
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$adminMenu = "";
+$auditMenu = "";
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Roles", "index")) {
+  $adminMenu.="<li><a href=".$this->url('roles',array('action' => 'index')).">Roles</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Users", "index")) {
+  $adminMenu.="<li><a href=".$this->url('users',array('action' => 'index')).">Users</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "index")) {
+  $adminMenu.="<li><a href=" . $this->url('config',array('action' => 'index')) . ">Global Config</a></li>";
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="<?php echo $this->basePath('assets/img/favicon.png'); ?>">
+    <title><?php echo $sessionLogin->countryName; ?> - Tester Certification </title>
+    
+    <style type="text/css">
+      
+    </style>
+    <!-- Latest compiled and minified CSS -->
+    
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/bootstrap.min.css'); ?>" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/datatables.min.css'); ?>"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/stroke-7/style.css'); ?>"/>
+    <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/deforayModal.css'); ?>" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/jquery.nanoscroller/css/nanoscroller.css'); ?>"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/font-awesome.min.css'); ?>"/>
+
+    <!--[if lt IE 9]>
+    <script src="<?php echo $this->basePath('assets/js/html5shiv.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/respond.min.js'); ?>" type="text/javascript"></script>
+    <![endif]-->
+    
+    <style>
+      .widget{
+        border: 2px solid #ccc;
+        border-radius:5px;
+      }
+      
+      .table thead tr th, .table thead tr td {
+        /* background-color: #3598DC;
+        color: #fff; 
+        font-weight:normal !important; */
+        background-color: #eee;
+        color: #666;
+        font-weight:bold !important;
+        font-size:0.95em !important;  
+        text-align:center;
+        vertical-align:middle !important;
+      }
+      
+      .datatables tbody tr td, .datatables tbody tr td a{
+        font-size:0.95em;
+      }
+      
+      .mandatory {
+        color: red;
+      }
+      a.mobLogin:hover{background-color:#194F74}
+    </style>
+    
+    <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/style.css?v=0.3'); ?>" type="text/css"/>
+    <script src="<?php echo $this->basePath('assets/lib/jquery/jquery.min.js'); ?>" type="text/javascript"></script>
+    
+
+  </head>
+  <body>
+    <div class="am-wrapper">
+      <nav class="navbar navbar-default navbar-fixed-top am-top-header">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <div class="page-title"><span>Dashboard</span></div>
+            <?php if(isset($sessionLogin->userId)){ ?>
+                  <a class="mobLogin page-title btn btn-primary" style="font-size: 14px;float: right;margin-right: 3%; cursor: pointer; cursor: hand;" href="<?php echo $this->url('login', array('action' => 'logout')); ?>"> <span class="icon s7-power"></span>Sign Out</a>
+                  <?php } else { ?>
+                  <a class="mobLogin page-title btn btn-primary" style="font-size: 14px;float: right;margin-right: 3%; cursor: pointer; cursor: hand;" style="color: #fff;" class="mobLogin" href="<?php echo $this->url('login', array('action' => 'index')); ?>"> Login</a>
+                  <?php } ?>
+            
+            <a href="/" class="navbar-brand">
+              <?php
+                $config = $this->GlobalConfigHelper();
+                if(isset($config) && count($config)>0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo". DIRECTORY_SEPARATOR . $config['logo'])){
+	        	  ?>
+                  <img src="<?php echo $this->basePath('uploads/logo/'.$config['logo']); ?>" style="width:100%;margin-top:5px;"/>
+              <?php } else{ ?>
+                  <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;margin-top:5px;"/>
+              <?php } ?>
+            </a>
+            
+          </div>
+          
+          <div id="am-navbar-collapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right am-user-nav">
+            <?php if(isset($sessionLogin->userId)){ ?>
+              <li class="dropdown">
+                <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><img src="/assets/img/nobody.jpg">
+                <span class="user-name">John Doe</span><span class="angle-down s7-angle-down"></span></a>
+                <ul role="menu" class="dropdown-menu">
+                  <?php
+                  if(isset($sessionLogin->userId)){
+                  ?>
+                  <li><a href="<?php echo $this->url('login', array('action' => 'logout')); ?>"> <span class="icon s7-power"></span>Sign Out</a></li>
+                  <?php }else{
+                  ?>
+                  <li><a href="<?php echo $this->url('login', array('action' => 'index')); ?>"> Login</a></li>
+                  <?php
+                  }?>
+                </ul>
+              </li>
+            <?php } ?>
+            </ul>
+            
+
+
+          <?php
+                        if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Provider", "index")) {
+                            ?>
+                            
+                            <ul class="nav navbar-nav am-top-menu">
+                                    
+
+                            <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Configure <span class="caret"></span></a>
+                            <ul role="menu" class="dropdown-menu">
+                            <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
+                                        ?>
+                                        
+                                       
+                                    <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
+                                    <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
+                                    <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+                                    <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organizations</a></li>
+                                    <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>">Certificate PDF Settings</a></li>
+
+
+                                    <?php } ?>
+                                                
+                                                <?php echo $adminMenu; ?>
+                                            </ul>
+                                        </li>
+
+
+                                        
+                            
+                                            
+                                    
+                                        
+                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Tester Evaluation<span class="caret"></span></a>
+                                        <ul role="menu" class="dropdown-menu">
+                                        <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Manage Testers </a></li>
+                                                <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Manage Trainings</a></li>                                        
+                                                <li><a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>">Written Examinations</a></li>
+                                                <li><a href="<?php echo $this->url('practical-exam', array('action' => 'add')); ?>">Practical Examinations</a></li>
+                                                <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Results Approval</a></li>
+                                            </ul>
+                                        </li>
+                                    
+
+                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Certifications<span class="caret"></span></a>
+                                        <ul role="menu" class="dropdown-menu">
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certifications</a></li>
+                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Recertifications</a></li>
+                                            </ul>
+                                        </li>
+                                    
+                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Reports<span class="caret"></span></a>
+                                        <ul role="menu" class="dropdown-menu">
+                                                <li><a href="<?php echo $this->url('provider', array('action' => 'xls')); ?>">Provider Reports</a></li>
+                                                <li><a href="<?php echo $this->url('training', array('action' => 'xls')); ?>">Training Reports</a></li>
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'xls')); ?>"> Certification Reports</a></li>
+                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'xls')); ?>"> Recertification Reports</a></li>
+                                            </ul>
+                                        </li>
+                                    
+
+                                        <li class="dropdown">
+                                          <a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a>
+                                        </li>
+                                    
+
+
+                                   
+
+                                </ul> 
+                        <?php } ?>
+
+
+
+
+                                <!--the flashing buttons-->
+                        <?php
+                        if (!empty($nb) && $nb > 0) {
+                            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Certification", "index")) {
+                                ?>
+                                <ul class="nav navbar-nav am-nav-right">
+                                    <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold; margin-top: -5px;"><?php echo $this->nb; ?>&nbsp;Certificate(s)</div></button></a></li>
+                                </ul>
+                                <?php
+                            }
+                        }
+                        ?>
+
+                        <?php
+                        if (!empty($nb2) && $nb2 > 0) {
+                            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Recertification", "index")) {
+                                ?>
+                                <ul class="nav navbar-nav am-nav-right">
+                                    <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante2" style="visibility:visible; font-size: 15px; font-weight: bold;margin-top: -5px;"><?php echo $this->nb2; ?>&nbsp;Reminder(s)</div></button></a></li>
+                                </ul>
+                                <?php
+                            }
+                        }
+                        ?>
+
+          <?php if(!isset($sessionLogin->userId)){ ?>
+                <ul class="nav navbar-nav navbar-right am-user-nav">
+                  <li class=""><a href="/login" class="btn btn-warning">Login</a></li>
+                </ul>
+          <?php } ?>                
+          </div>
+        </div>
+      </nav>
+      
+      
+      <?php echo $this->content; ?>
+      
+    </div>
+    <div id="dDiv" class="dialog"> 
+      <div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div> 
+      <iframe id="dFrame" src="" style="border:none;" scrolling='yes' marginwidth='0' marginheight='0' frameborder='0' vspace='0' hspace='0' >some problem</iframe> 
+    </div>
+    
+    <script src="<?php echo $this->basePath('assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/main.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/lib/bootstrap/dist/js/bootstrap.min.js'); ?>" type="text/javascript"></script>
+  
+    <script src="<?php echo $this->basePath('assets/lib/jquery-ui/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/jasny-bootstrap.min.js'); ?>" type="text/javascript"/>
+    <script src="<?php echo $this->basePath('assets/lib/countup/countUp.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/tokenfield.min.js'); ?>" type="text/javascript"/>
+    <script src="<?php echo $this->basePath('assets/lib/chartjs/Chart.js?v=0.1'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/deforayValidation.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/deforayModal.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/cookie.js'); ?>" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      	//initialize the javascript
+      	App.init();
+      });
+      
+      $(document).ready(function() {
+            <?php
+            if (isset($container->alertMsg) && $container->alertMsg != "") {
+                ?>
+                alert("<?php echo $container->alertMsg; ?>");
+                <?php
+                $container->alertMsg = "";
+                unset($container->alertMsg);
+            }
+            ?>
+      });
+    </script>
+
+  </body>
+</html>

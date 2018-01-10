@@ -1,0 +1,80 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<style>
+  .auditPointName{
+	color:#fff;
+	margin:0;
+	
+	min-width: 200px;
+	vertical-align:top;
+  }
+  
+  .auditPointName:hover{
+	white-space: normal !important;
+	overflow: visible;
+	text-overflow: '';
+  }
+  
+  .event a {
+    background-color: #8eaffe !important;
+    background-image :none !important;
+    color: #ffffff !important;
+	border-radius:50%;
+}
+
+
+.highcharts-tooltip span {
+    width:250px;
+    overflow:auto;
+    white-space:normal !important;
+}
+
+.ms-parent {
+  width:100% !important;
+}
+
+.title h3{
+  display:inline;
+  font-weight:400;
+}
+
+/*multiselect*/
+/*.ui-state-hover, .ui-widget-content .ui-state-hover{color: #1c94c4;border: 1px solid #cccccc;background:none;}
+.ui-state-active{color: #1c94c4;border: 1px solid #cccccc;background:none;}
+.ui-multiselect-header{display: none;}
+*/
+.widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-highlight{
+  background: none !important;
+  color: #888;
+  border:none;
+}
+.limitBar{color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
+  
+.highcharts-legend{display: block !important;}
+ 
+ 
+.center{
+  text-align:center;
+} 
+</style>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+    <div class="am-content">
+      <div class="main-content">        
+				<div class="row" style="margin-bottom:10px;clear:both;">
+					<h1>Work in progress</h1>	  
+				</div>
+			</div>
+          
+    </div>

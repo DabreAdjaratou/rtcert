@@ -1,0 +1,8 @@
+<?php
+$auditRoundNos = '';
+    if(count($spiV3auditRoundNo) > 0){
+        foreach($spiV3auditRoundNo as $auditRoundNo){
+            $auditRoundNos.='<option value="'.$auditRoundNo['auditroundno'].'"> '.$auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")".'</option>';
+        }
+    }
+echo $auditRoundNos;
