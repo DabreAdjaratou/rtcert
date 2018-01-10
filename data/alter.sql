@@ -562,3 +562,38 @@ ALTER TABLE `location_details`
   
 alter table location_details add FOREIGN key(country) REFERENCES country(country_id)
 
+CREATE TABLE `user_country_map` (
+  `map_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `country_id` int(11) NOT NULL
+)
+
+ALTER TABLE `user_country_map`
+  ADD PRIMARY KEY (`map_id`);
+  
+ALTER TABLE `user_country_map`
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT
+  
+CREATE TABLE `user_province_map` (
+  `map_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL
+)
+
+ALTER TABLE `user_province_map`
+  ADD PRIMARY KEY (`map_id`);
+  
+ALTER TABLE `user_province_map`
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT
+  
+CREATE TABLE `user_district_map` (
+  `map_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL
+)
+
+ALTER TABLE `user_district_map`
+  ADD PRIMARY KEY (`map_id`);
+  
+ALTER TABLE `user_district_map`
+  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT
