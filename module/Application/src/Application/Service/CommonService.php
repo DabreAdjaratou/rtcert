@@ -464,18 +464,24 @@ class CommonService {
         return $dbAdapter->query($countryQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     
-    public function getAllProvinces(){
+    public function getAllProvinces($selectedCountries){
         $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
         $sql = new Sql($dbAdapter);
         $provinceQuery = $sql->select()->from(array('l_d' => 'location_details'))->where("l_d.parent_location='0'");
+        if(isset($selectedCountries) && !empty($selectedCountries)){
+            $provinceQuery = $provinceQuery->where('l_d.country IN (' . implode(',',$selectedCountries) . ')');
+        }
         $provinceQueryStr = $sql->getSqlStringForSqlObject($provinceQuery);
         return $dbAdapter->query($provinceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     
-    public function getAllDistricts(){
+    public function getAllDistricts($selectedProvinces){
         $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
         $sql = new Sql($dbAdapter);
         $districtQuery = $sql->select()->from(array('l_d' => 'location_details'))->where("l_d.parent_location !='0'");
+        if(isset($selectedProvinces) && !empty($selectedProvinces)){
+            $districtQuery = $districtQuery->where('l_d.parent_location IN (' . implode(',',$selectedProvinces) . ')');
+        }
         $districtQueryStr = $sql->getSqlStringForSqlObject($districtQuery);
         return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
@@ -509,17 +515,6 @@ class CommonService {
         }
         $districtQueryStr = $sql->getSqlStringForSqlObject($districtQuery);
         return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-    }
-    
-    public function getSelectedCountryProvinces($selectedCountries){
-        $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
-        $sql = new Sql($dbAdapter);
-        $provinceQuery = $sql->select()->from(array('l_d' => 'location_details'))->where("l_d.parent_location ='0'");
-        if(isset($selectedCountries) && !empty($selectedCountries)){
-            $provinceQuery = $provinceQuery->where('l_d.country IN (' . implode(',',$selectedCountries) . ')');
-        }
-        $provinceQueryStr = $sql->getSqlStringForSqlObject($provinceQuery);
-        return $dbAdapter->query($provinceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 }
 

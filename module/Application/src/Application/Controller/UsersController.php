@@ -32,8 +32,8 @@ class UsersController extends AbstractActionController {
         //$odkFormSerive = $this->getServiceLocator()->get('OdkFormService');
         $roleResult = $roleSerive->getAllActiveRoles();
         $countryResult = $commonSerive->getAllActiveCountries();
-        $provinceResult = $commonSerive->getAllProvinces();
-        $districtResult = $commonSerive->getAllDistricts();
+        $provinceResult = $commonSerive->getAllProvinces($selectedCountries = array());
+        $districtResult = $commonSerive->getAllDistricts($selectedProvinces = array());
         //$tokenResult = $odkFormSerive->getSpiV3FormUniqueTokens();
         return new ViewModel(
                             array(
@@ -67,16 +67,16 @@ class UsersController extends AbstractActionController {
             }else if(isset($result['selectedCountries']) && count($result['selectedCountries']) >0){
               $selectedCountries = $result['selectedCountries'];
             }
-            $provinceResult = $commonSerive->getSelectedCountryProvinces($selectedCountries);
-            $params = array();
+            $provinceResult = $commonSerive->getAllProvinces($selectedCountries);
+            $selectedProvinces = array();
             if(isset($result['userProvinces']) && count($result['userProvinces']) >0){
                     foreach($result['userProvinces'] as $province){
-                       $params['province'][] = $province['location_id'];
+                       $selectedProvinces[] = $province['location_id'];
                     }
             }else if(isset($result['selectedProvinces']) && count($result['selectedProvinces']) >0){
-                $params['province'] = $result['selectedProvinces'];
+                $selectedProvinces = $result['selectedProvinces'];
             }
-            $districtResult = $commonSerive->getProvinceDistricts($params);
+            $districtResult = $commonSerive->getAllDistricts($selectedProvinces);
             return new ViewModel(array(
                 'result' => $result,
                 'roleResults' => $roleResult,

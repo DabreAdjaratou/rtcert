@@ -17,86 +17,98 @@ $tokenArray = array();
               <div class="panel panel-default">
                 <div class="panel-body">
                   <form role="form" name="addUserInformation" id="addUserInformation" method="post" action="<?php echo $this->url('users', array('action' => 'add')); ?>" autocomplete="off" >
-                    <div class="form-group col-lg-6">
-                      <label>First Name <span class="mandatory">*</span> </label>
-                      <input type="text" placeholder="First Name" class="form-control isRequired" name="firstName" id="firstName" title="Please enter the first name" >
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Last Name </label>
-                      <input type="text" placeholder="Last Name" class="form-control" name="lastName" id="lastName" title="Please enter the last name" >
-                    </div>
-		    <div class="form-group col-lg-6">
-                      <label>Login Id <span class="mandatory">*</span></label>
-                      <input type="text" placeholder="Login Id" class="form-control isRequired" name="userName" id="userName" title="Please enter the user name" onblur="checkNameValidation('users','login', this, null, 'Already exist this name . Please choose another name.')" >
-                    </div>
-		     <div class="form-group col-lg-6">
-                      <label>Password <span class="mandatory">*</span></label>
-                      <input type="password" placeholder="Password" class="form-control isRequired" name="password" id="password" title="Please enter the password" >
-                    </div>
-		    <div class="form-group col-lg-6">
-                      <label>Confirm Password <span class="mandatory">*</span></label>
-                      <input type="password" placeholder="Confirm Password" class="form-control confirmPassword isRequired" name="password" id="confirmPassword" title="Please check your password and confirm password are same" >
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Email</label>
-                      <input type="text" placeholder="Email" class="form-control isEmail" name="email" id="email" title="Please enter the email id" >
-                    </div>
-                   <div class="form-group col-lg-6">
-                      <label>Role <span class="mandatory">*</span></label>
-			<select class="form-control isRequired" name="roleId" id="roleId" title="Please select the role">
-				<option data-access-level="" value="">--Select--</option>
-				<?php
-				foreach($roleResults as $role){
-				?>
-				    <option data-access-level="<?php echo $role['access_level']; ?>" value="<?php echo $role['role_id']; ?>"><?php echo ucwords($role['role_name']); ?></option>
-				<?php
-				}
-				?>
-			</select>
-                    </div>
-		    <div class="form-group col-lg-6">
-                      <label>Status <span class="mandatory">*</span></label>
-				<select class="form-control isRequired" name="status" id="status" title="Please select the status">
-					<option value="active">Active</option>
-					<option value="inactive">Inactive</option>
-				</select>
-                    </div>
-		    <div class="form-group col-lg-6 accessLevel country province district" onchange="getCountryLocations();" style="display:none;">
-                        <label>Country <span class="mandatory">*</span></label>
-			<select class="form-control" name="country[]" id="country" multiple title="Please select country">
-				<?php
-				foreach($countryResult as $country){
-				?>
-				    <option value="<?php echo $country['country_id']; ?>"><?php echo ucwords($country['country_name']); ?></option>
-				<?php
-				}
-				?>
-			</select>
-                    </div>
-		    <div class="form-group col-lg-6 accessLevel province district" onchange="getProvinceDistricts();" style="display:none;">
-                       <label>Province/State <span class="mandatory">*</span></label>
-			<select class="form-control" name="province[]" id="province" multiple title="Please select province">
-				<?php
-				foreach($provinceResult as $province){
-				?>
-				    <option value="<?php echo $province['location_id']; ?>"><?php echo ucwords($province['location_name']); ?></option>
-				<?php
-				}
-				?>
-			</select>
-                    </div>
-		    <div class="form-group col-lg-6 accessLevel district" style="display:none;">
-                        <label>District/County <span class="mandatory">*</span></label>
-			<select class="form-control" name="district[]" id="district" multiple title="Please select district">
-				<?php
-				foreach($districtResult as $district){
-				?>
-				    <option value="<?php echo $district['location_id']; ?>"><?php echo ucwords($district['location_name']); ?></option>
-				<?php
-				}
-				?>
-			</select>
-                    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			  <label>First Name <span class="mandatory">*</span> </label>
+			  <input type="text" placeholder="First Name" class="form-control isRequired" name="firstName" id="firstName" title="Please enter the first name" >
+			</div>
+			<div class="form-group col-lg-6">
+			  <label>Last Name </label>
+			  <input type="text" placeholder="Last Name" class="form-control" name="lastName" id="lastName" title="Please enter the last name" >
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			  <label>Login Id <span class="mandatory">*</span></label>
+			  <input type="text" placeholder="Login Id" class="form-control isRequired" name="userName" id="userName" title="Please enter the user name" onblur="checkNameValidation('users','login', this, null, 'Already exist this name . Please choose another name.')" >
+			</div>
+			 <div class="form-group col-lg-6">
+			  <label>Password <span class="mandatory">*</span></label>
+			  <input type="password" placeholder="Password" class="form-control isRequired" name="password" id="password" title="Please enter the password" >
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			  <label>Confirm Password <span class="mandatory">*</span></label>
+			  <input type="password" placeholder="Confirm Password" class="form-control confirmPassword isRequired" name="password" id="confirmPassword" title="Please check your password and confirm password are same" >
+			</div>
+			<div class="form-group col-lg-6">
+			  <label>Email</label>
+			  <input type="text" placeholder="Email" class="form-control isEmail" name="email" id="email" title="Please enter the email id" >
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			   <label>Role <span class="mandatory">*</span></label>
+			     <select class="form-control isRequired" name="roleId" id="roleId" title="Please select the role">
+				     <option data-access-level="" value="">--Select--</option>
+				     <?php
+				     foreach($roleResults as $role){
+				     ?>
+					 <option data-access-level="<?php echo $role['access_level']; ?>" value="<?php echo $role['role_id']; ?>"><?php echo ucwords($role['role_name']); ?></option>
+				     <?php
+				     }
+				     ?>
+			     </select>
+			 </div>
+			 <div class="form-group col-lg-6">
+			   <label>Status <span class="mandatory">*</span></label>
+				     <select class="form-control isRequired" name="status" id="status" title="Please select the status">
+					     <option value="active">Active</option>
+					     <option value="inactive">Inactive</option>
+				     </select>
+			 </div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6 accessLevel country province district" onchange="getCountryLocations();" style="display:none;">
+			    <label>Country <span class="mandatory">*</span></label>
+			    <select class="form-control" name="country[]" id="country" multiple title="Please select country">
+				    <?php
+				    foreach($countryResult as $country){
+				    ?>
+					<option value="<?php echo $country['country_id']; ?>"><?php echo ucwords($country['country_name']); ?></option>
+				    <?php
+				    }
+				    ?>
+			    </select>
+			</div>
+			<div class="form-group col-lg-6 accessLevel province district" onchange="getProvinceDistricts();" style="display:none;">
+			   <label>Province/State <span class="mandatory">*</span></label>
+			    <select class="form-control" name="province[]" id="province" multiple title="Please select province">
+				    <?php
+				    foreach($provinceResult as $province){
+				    ?>
+					<option value="<?php echo $province['location_id']; ?>"><?php echo ucwords($province['location_name']); ?></option>
+				    <?php
+				    }
+				    ?>
+			    </select>
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6 accessLevel district" style="display:none;">
+			    <label>District/County <span class="mandatory">*</span></label>
+			    <select class="form-control" name="district[]" id="district" multiple title="Please select district">
+				    <?php
+				    foreach($districtResult as $district){
+				    ?>
+					<option value="<?php echo $district['location_id']; ?>"><?php echo ucwords($district['location_name']); ?></option>
+				    <?php
+				    }
+				    ?>
+			    </select>
+			</div>
+		    </div>
                     <div class="spacer col-lg-12">
                       <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
                      <a href="<?php echo $this->url('users', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
@@ -133,30 +145,30 @@ $tokenArray = array();
 	 
 	duplicateName = true;
 	function validateNow() {
-		   var accessLevel = $('#roleId').find(':selected').attr('data-access-level');
-		   if($('#country').val() == null || $('#country').val() == ''){
-			if(accessLevel == 2 || accessLevel == 3 || accessLevel == 4){
-				alert('Please select country');
-				return false;
-			}
-		   }else if($('#province').val() == null || $('#province').val() == ''){
-			if(accessLevel == 3){
-				alert('Please select province');
-				return false;
-			}
-		   }else if($('#district').val() == null || $('#district').val() == ''){
-			if(accessLevel == 4){
-				alert('Please select district');
-				return false;
-			}
-		   }
 		   flag = deforayValidator.init({
 			   formId: 'addUserInformation'
 		   });
 		   if (flag) {
-			   if (duplicateName) {
-				   document.getElementById('addUserInformation').submit();
-			   }
+			var accessLevel = $('#roleId').find(':selected').attr('data-access-level');
+			if($('#country').val() == null || $('#country').val() == ''){
+			     if(accessLevel == 2 || accessLevel == 3 || accessLevel == 4){
+				     alert('Please select country');
+				     return false;
+			     }
+			}else if($('#province').val() == null || $('#province').val() == ''){
+			     if(accessLevel == 3){
+				     alert('Please select province');
+				     return false;
+			     }
+			}else if($('#district').val() == null || $('#district').val() == ''){
+			     if(accessLevel == 4){
+				     alert('Please select district');
+				     return false;
+			     }
+			}
+			if (duplicateName) {
+				document.getElementById('addUserInformation').submit();
+			}
 		   }
 	}
 	 
