@@ -9324,6 +9324,7 @@ button:focus {
        -o-transition: background-color 0.2s ease;
           transition: background-color 0.2s ease;
   border-radius: 4px;
+  z-index:9999 !important;
 }
 .am-scroll-top:hover {
   background-color: rgba(0, 0, 0, 0.8);

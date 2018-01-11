@@ -17,23 +17,11 @@ class DashboardController extends AbstractActionController
 {
     public function indexAction(){
 
-        
-        return new ViewModel(array());
+        $dashService = $this->getServiceLocator()->get('DashboardService');
+        $quickStats = $dashService->getQuickStats();
+        return new ViewModel(array(
+            'quickStats' => $quickStats,
+        ));
     }
     
-    public function auditDetailsAction(){
-        $request = $this->getRequest();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if ($request->isPost()) {
-            $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getAllApprovedSubmissionsDetailsBasedOnAuditDate($params);
-            return $this->getResponse()->setContent(Json::encode($result));
-        } else {
-            $assesmentOfAuditDate = base64_decode($this->params()->fromRoute('id'));
-            return new ViewModel(array(
-                'assesmentOfAuditDate' => $assesmentOfAuditDate,
-            ));
-        }
-    }
 }
