@@ -15,37 +15,12 @@ use Zend\Json\Json;
 
 class IndexController extends AbstractActionController
 {
-    public function indexAction()
-    {
-        $params = array();
-       
-        return new ViewModel(array());
-    }
-    
-    public function auditLocationsAction()
-    {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $allSubmissions = $odkFormService->getAllApprovedSubmissionLocation($params);
-            $viewModel = new ViewModel();
-            $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
-                        ->setTerminal(true);
-            return $viewModel;
-        }
-    }
-    
-    public function auditPerformanceAction()
-    {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
-            $perf1 = $odkFormService->getPerformance($params);
-            $viewModel = new ViewModel();
-            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
-                      ->setTerminal(true);
-            return $viewModel;
-        }
+    public function indexAction(){
+
+        $dashService = $this->getServiceLocator()->get('DashboardService');
+        $quickStats = $dashService->getQuickStats();
+        return new ViewModel(array(
+            'quickStats' => $quickStats,
+        ));
     }
 }

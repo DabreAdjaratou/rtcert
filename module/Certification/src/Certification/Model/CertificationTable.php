@@ -3,6 +3,13 @@
 namespace Certification\Model;
 
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Debug\Debug;
+use Zend\Db\Sql\Expression;
+//use Zend\Db\Sql\Where;
+use \Application\Service\CommonService;
 
 class CertificationTable {
 
@@ -11,6 +18,44 @@ class CertificationTable {
     public function __construct(TableGateway $tableGateway) {
         $this->tableGateway = $tableGateway;
     }
+
+
+    public function getQuickStats(){
+
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = new Sql($dbAdapter);
+        $query = $sql->select()->from(array('c'=>'certification'))
+                     ->columns(
+                            array(  "total" => new Expression('COUNT(*)'),
+                                    "sent" => new Expression("SUM(CASE 
+                                                                    WHEN ((c.certificate_sent = 'yes')) THEN 1
+                                                                    ELSE 0
+                                                                    END)"),
+                                    "toBeSent" => new Expression("SUM(CASE 
+                                                                        WHEN ((c.certificate_sent != 'yes' AND c.final_decision='Certified')) THEN 1
+                                                                        ELSE 0
+                                                                        END)"),
+                                    "certified" => new Expression("SUM(CASE 
+                                                                        WHEN ((c.certification_type = 'initial'  AND c.date_certificate_issued >= DATE_FORMAT(NOW(),'%Y-%m-01') 
+                                                                        AND c.date_certificate_issued <  DATE_FORMAT(NOW(),'%Y-%m-01') + INTERVAL 1 MONTH)) THEN 1
+                                                                        ELSE 0
+                                                                        END)"),                                                                        
+                                    "recertified" => new Expression("SUM(CASE 
+                                                                        WHEN ((c.certification_type !=  'initial' AND c.date_certificate_issued >= DATE_FORMAT(NOW(),'%Y-%m-01') 
+                                                                        AND c.date_certificate_issued <  DATE_FORMAT(NOW(),'%Y-%m-01') + INTERVAL 1 MONTH)) THEN 1
+                                                                        ELSE 0
+                                                                        END)"),                       
+                                    "pending" => new Expression("SUM(CASE 
+                                                                        WHEN ((c.final_decision = 'Pending')) THEN 1
+                                                                        ELSE 0
+                                                                        END)"),                                                                        
+                            )
+                );  
+                $queryStr = $sql->getSqlStringForSqlObject($query);
+                $res = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+                return $res[0];
+    }
+
 
     /**
      * select all certified tester

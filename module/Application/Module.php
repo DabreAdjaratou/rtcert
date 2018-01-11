@@ -12,7 +12,7 @@ namespace Application;
 
 use Application\Model\UsersTable;
 
-use Application\Model\SpiRtFacilitiesTable;
+//use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
 use Application\Model\GlobalTable;
@@ -26,7 +26,7 @@ use Application\Model\UserCountryMapTable;
 use Application\Model\UserProvinceMapTable;
 use Application\Model\UserDistrictMapTable;
 
-use Application\Service\OdkFormService;
+use Application\Service\DashboardService;
 use Application\Service\UserService;
 use Application\Service\FacilityService;
 use Application\Service\CommonService;
@@ -206,8 +206,8 @@ class Module
                     return $table;
                 },
 		
-                'OdkFormService' => function($sm) {
-                    return new OdkFormService($sm);
+                'DashboardService' => function($sm) {
+                    return new DashboardService($sm);
                 },
                 'CommonService' => function($sm) {
                     return new CommonService($sm);

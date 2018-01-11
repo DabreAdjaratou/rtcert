@@ -92,7 +92,22 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                   <a class="mobLogin page-title btn btn-primary" style="font-size: 14px;float: right;margin-right: 3%; cursor: pointer; cursor: hand;" style="color: #fff;" class="mobLogin" href="<?php echo $this->url('login', array('action' => 'index')); ?>"> Login</a>
                   <?php } ?>
             
-            <a href="/" class="navbar-brand">
+
+
+
+            <?php 
+            
+            // Which page to show when clicking on Logo image - changes based on login status
+            
+            if(isset($sessionLogin->userId)){ 
+              $dashboard = "/dashboard";
+            }else{
+              $dashboard = "/";
+            }
+            ?>
+
+
+            <a href="<?php echo $dashboard; ?>" class="navbar-brand">
               <?php
                 $config = $this->GlobalConfigHelper();
                 if(isset($config) && count($config)>0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo". DIRECTORY_SEPARATOR . $config['logo'])){
