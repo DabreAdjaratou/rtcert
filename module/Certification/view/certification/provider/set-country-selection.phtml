@@ -1,0 +1,9 @@
+<?php
+echo '<select ><option value="">Please choose a Country</option>';
+
+foreach ($result as $res) {
+    $selected = (isset($params['id']) && trim($params['id'])!='' && $params['id'] == $res['country_id'])? 'selected="selected"':'';
+    echo "<option  value=".$res['country_id']." ".$selected.">" . $res['country_name'] . " </option> ";
+}
+
+echo '</select>';

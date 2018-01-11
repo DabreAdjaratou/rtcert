@@ -1,0 +1,10 @@
+<?php
+echo '<select ><option value="">Please choose a Facility</option>';
+
+foreach ($result as $res) {
+    $selected = (isset($id) && trim($id)!='' && $id == $res['id'])? 'selected="selected"':'';
+    echo "<option  value=".$res['id']." ".$selected.">" . $res['facility_name'] . " </option> ";
+}
+
+echo '</select>';
+

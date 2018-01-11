@@ -1,0 +1,246 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/responsive.bootstrap.min.css'); ?>"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+
+
+<style>
+     td.details-control {
+        background: url('/assets/img/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('/assets/img/details_close.png') no-repeat center center;
+    }
+
+    .table th{
+        text-align:center;
+    }
+
+    .table td.center{
+        text-align:center;
+    }
+</style>
+
+
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>Written Exams </h2>
+            </div>
+            <div class="col-sm-4">
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'add')) {  ?>
+                <a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Written Exam</a>
+                <?php }  ?>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+        <table id="writtenExamTable" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+        <thead>
+            <tr>
+                <th></th>
+                <th style="width:17%;">Tester </th>
+                <th style="width:8%;">No. of Attempts </th>
+                <th style="width:15%;">Exam Administered by </th>
+                <th style="width:10%;">Date </th>
+                <th>1.<br> QA (points)<br><br> </th>
+                <th>2. <br>RT (points) <br><br></th>
+                <th>3.<br> Safety (points) <br><br></th>
+                <th>4.<br> Specimen Collection (points) </th>
+                <th>5.<br> Testing Algorithm (points) <br></th>
+                <th>6.<br> Record Keeping (points)</th>
+                <th>7.<br> EQA/PT (points)<br><br></th>
+                <th>8.<br> Ethics (points)<br><br> </th>
+                <th>9.<br> Inventory (points)<br><br> </th>
+                <th style="width:10%;">Total Points (=25)</th>
+                <th style="width:10%;">Final Score (≥80%)</th>
+
+
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                <th>Edit</th>
+                <th>Another Attempt</th>
+                <?php }  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                    <th>Delete</th>
+                <?php } ?>
+
+            </tr>
+
+        </thead>
+        <tbody>
+            <?php foreach ($this->writtens as $written) : ?>
+            <tr>
+                    <td></td>
+                    <td><?php echo $this->escapeHtml($written->last_name . ' ' . $written->first_name . ' ' . $written->middle_name); ?></td>
+                    <td><?php echo $this->escapeHtml($written->exam_type); ?></td>
+                    <td><?php echo $this->escapeHtml($written->exam_admin); ?></td>
+                    <td><?php echo date("d-m-Y", strtotime($this->escapeHtml($written->date))); ?></div></td>
+                    <td><?php echo $this->escapeHtml($written->qa_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->rt_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->safety_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->specimen_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->testing_algo_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->report_keeping_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->EQA_PT_points); ?></td>
+                    <td><?php echo $this->escapeHtml($written->ethics_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->inventory_point); ?></td>
+                    <td><?php echo $this->escapeHtml($written->total_points); ?></td>
+                    <td><?php echo $this->escapeHtml($written->final_score . ' %'); ?></td>
+                   <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                <td>
+                        <a href="<?php echo $this->url('written-exam', array('action' => 'edit', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                    </td>
+
+                    <?php
+                    if ($written->final_score < 80 || strcasecmp($written->exam_type, '3rd attempt') == 0) {
+                        echo "<td><span class='glyphicon glyphicon-repeat'></span> Add practical exam</td>";
+                    } else {
+                        echo "<td><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array(base64_encode('id_written_exam') => base64_encode($written->id_written_exam)))) . "><span class='glyphicon glyphicon-repeat'></span> Add practical exam</a></td>";
+                    }
+                    ?>
+                <?php }  ?>
+                    
+                    <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                        <td>
+                                 <a onclick="if (!confirm('Do you really want to remove this written exam?')) {
+                                            alert('Canceled!');
+                                            return false;};"  href="<?php echo $this->url('written-exam', array('action' => 'delete', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"> <span class="glyphicon glyphicon-trash"> Delete</span></a> 
+                          
+                        </td>
+                    <?php } ?>
+                    
+                    
+                </tr>
+
+
+            <?php endforeach; ?>
+        </tbody>
+    </table>    
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery-1.12.4.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.responsive.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/responsive.bootstrap.min.js'); ?>"></script>
+
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+<script type="text/javascript" language="javascript" >
+
+    var dt = null;
+    
+
+    function format ( d ) {
+        return '<h5>&nbsp;'+d[1]+' - '+ d[2] + ' ('+d[4]+')'+'</h5>'+
+                '<table class="table table-bordered table-condensed table-striped table-hover table-fw-widget">'+
+                    '<tr>'+
+                        '<th>QA (points)</th>'+
+                        '<th>RT (points)</th>'+
+                        '<th>Safety (points)</th>'+
+                        '<th>Specimen Collection (points)</th>'+
+                        '<th>Testing Algorithm (points)</th>'+
+                        '<th>Record Keeping (points)</th>'+
+                        '<th>EQA/PT (points)</th>'+
+                        '<th>Ethics (points)</th>'+
+                        '<th>Inventory (points)</th>'+
+                    '</tr>'+
+                    '<tr>'+
+                        '<td class="center">'+d[5]+'</td>'+
+                        '<td class="center">'+d[6]+'</td>'+
+                        '<td class="center">'+d[7]+'</td>'+
+                        '<td class="center">'+d[8]+'</td>'+
+                        '<td class="center">'+d[9]+'</td>'+
+                        '<td class="center">'+d[10]+'</td>'+
+                        '<td class="center">'+d[11]+'</td>'+
+                        '<td class="center">'+d[12]+'</td>'+
+                        '<td class="center">'+d[13]+'</td>'+
+                    '</tr>'+
+                '</table>';
+    }
+    $(document).ready(function () {
+
+       dt = $('#writtenExamTable').DataTable({
+            "columnDefs": [
+                {
+                    "targets": [ 5,6,7,8,9,10,11,12,13 ],
+                    "visible": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [ 0 ],
+                    "class": "details-control",
+                    "sortable": false,
+                    "searchable": false
+                },
+                {
+                    "targets": [ 14,15,16,17,18 ],
+                    "sortable": false,
+                    "searchable": false
+                }
+            ],
+            "autoWidth" : true,
+            "order": [[1, 'asc']]
+        });
+
+
+
+
+
+        // Array to track the ids of the details displayed rows
+        var detailRows = [];
+        
+        $('#writtenExamTable tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = dt.row( tr );
+     
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        });
+
+
+
+
+
+    });
+</script>
+
+
+

@@ -1,0 +1,194 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+
+    <div class="page-head">
+        <div class="row">
+            <div class="col-sm-4"> <h2>Certification Reports</h2></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body" >
+                            <form action="<?php $this->url('certification', array('action' => 'xls')); ?>" name="form" method="post" >
+                                <div class=" form-group col-lg-6">
+                                    <label for="date" class="col-sm-6 control-label">Date Range</label>
+                                    <input type="text" placeholder="Select Date Range" class="form-control" id="dateRange" name="dateRange" readonly>
+                                </div>
+                                <div class="form-group col-lg-6"> 
+                                    <label>Final Decision</label>
+                                    <select class="form-control" name="decision">
+                                        <option value="">All</option>
+                                        <option value="Certified">Certified</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Failed">Failed</option>
+                                    </select></div>
+                                    <div class="form-group col-lg-6"> 
+                                        <label>Type HIV testing modality/point</label>
+                                        <select class="form-control" name="typeHIV">
+                                            <option value="">All</option>
+                                            <option value="ART clinic">ART clinic</option>
+                                            <option value="Community">Community</option>
+                                            <option value="IPD">IPD</option>
+                                            <option value="LAB">LAB</option>
+                                            <option value="OPD">OPD</option>
+                                            <option value="PITC">PITC</option>
+                                            <option value="PMTCT">PMTCT</option>
+                                            <option value="STI clinic">STI clinic</option>
+                                            <option value="TB clinic">TB clinic</option>
+                                            <option value="VCT/HTC">VCT/HTC</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-lg-6"> 
+                                        <label>Current job title</label>
+                                        <select class="form-control" name="jobTitle">
+                                            <option value="">All</option>
+                                            <option value="Assistant Medical Officer">Assistant Medical Officer</option>
+                                            <option value="Counselor">Counselor</option>
+                                            <option value="Health assistant">Health assistant</option>
+                                            <option value="Health attendant">Health attendant</option>
+                                            <option value="Lab Assistant">Lab Assistant</option>
+                                            <option value="Lab Scientist">Lab Scientist</option>
+                                            <option value="Lab technician">Lab technician</option>
+                                            <option value="Lab technologist">Lab technologist</option>
+                                            <option value="Medical doctor">Medical doctor</option>
+                                            <option value="Midwife">Midwife</option>
+                                            <option value="Nurse">Nurse</option>
+                                            <option value="Nurse assistant">Nurse assistant</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6"> 
+                                        <label>Region</label>
+                                        <select class="form-control" name="region" id="Region" onchange="showDistrict(this.value)">
+                                            <option value="">All</option>
+                                            <?php
+                                            foreach ($regions as $key => $region) {
+                                                echo ' <option value="' . $key . '">' . $region . '</option>';
+                                            };
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6"> 
+                                        <label>District</label>
+                                        <select class="form-control" name="district" id="District" onchange="showFacilities(this.value)">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6" id="District"> 
+                                        <label>Facility</label>
+                                        <select class="form-control" name="facility" id="Facility Name">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6" style="margin-top: 30px">
+                                        <button class="btn btn-primary" type="submit"  >GET REPORT</button> 
+                                        <a class="btn  btn-space btn-default" role="button" style="margin-top: 5px" href="<?php echo $this->url('certification', array('action' => 'xls')); ?>" >CANCEL</a>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+    <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+    <script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+
+    <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+    <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/certification.js'); ?>"></script>
+    <script>
+                                            $('#dateRange').daterangepicker({
+                                                format: 'DD-MM-YYYY',
+                                                startDate: moment().subtract('days', 29),
+                                                endDate: moment(),
+                                                maxDate: moment(),
+                                                ranges: {
+                                                    'Today': [moment(), moment()],
+                                                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                                                    'Last 7 Days': [moment().subtract('days', 6), moment()],
+                                                    'Last 30 Days': [moment().subtract('days', 29), moment()],
+                                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                                                },
+                                            },
+                                                    );
+
+
+                                            function showDistrict(str) {
+
+                                                if (str == "") {
+                                                    document.getElementById("District").innerHTML = "";
+                                                    return;
+                                                } else {
+                                                    if (window.XMLHttpRequest) {
+                                                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                                                        xmlhttp = new XMLHttpRequest();
+                                                    } else {
+                                                        // code for IE6, IE5
+                                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                                    }
+                                                    xmlhttp.onreadystatechange = function () {
+                                                        if (this.readyState == 4 && this.status == 200) {
+                                                            document.getElementById("District").innerHTML = this.responseText;
+                                                        }
+                                                    };
+                                                    xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
+                                                    xmlhttp.send();
+                                                }
+                                            }
+
+                                            function showFacilities(str) {
+
+                                                if (str == "") {
+                                                    document.getElementById("Facility Name").innerHTML = "";
+                                                    return;
+                                                } else {
+                                                    if (window.XMLHttpRequest) {
+                                                        // code for IE7+, Firefox, Chrome, Opera, Safari
+                                                        xmlhttp = new XMLHttpRequest();
+                                                    } else {
+                                                        // code for IE6, IE5
+                                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                                    }
+                                                    xmlhttp.onreadystatechange = function () {
+                                                        if (this.readyState == 4 && this.status == 200) {
+                                                            document.getElementById("Facility Name").innerHTML = this.responseText;
+                                                        }
+                                                    };
+                                                    xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
+                                                    xmlhttp.send();
+                                                }
+                                            }
+    </script>
+

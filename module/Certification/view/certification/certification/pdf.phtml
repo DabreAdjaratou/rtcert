@@ -1,0 +1,95 @@
+<?php
+
+// Extend the TCPDF class to create custom Header and Footer
+class MYPDF extends TCPDF {
+    
+}
+
+// create new PDF document
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+// set document information
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Dabre Adjaratou');
+$pdf->SetTitle('Personnel Certificate');
+$pdf->SetSubject('Certificate');
+$pdf->SetKeywords('TCPDF, PDF, Certificate, test, guide');
+
+
+// set margins
+$pdf->SetMargins(5, 5, 5);
+$pdf->SetHeaderMargin(0);
+$pdf->SetFooterMargin(0);
+
+// remove default footer
+$pdf->setPrintFooter(false);
+
+// set auto page breaks
+//$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+// set image scale factor
+$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
+    require_once(dirname(__FILE__) . '/lang/eng.php');
+    $pdf->setLanguageArray($l);
+}
+
+// ---------------------------------------------------------
+// set font
+$pdf->SetFont('times', '', 20);
+$pdf->setFontSubsetting(false);
+// remove default header
+$pdf->setPrintHeader(false);
+$pdf->SetMargins(10, 20, 10, true);
+// add a page
+$pdf->AddPage('L', 'A4');
+
+
+// -- set new background ---
+$pdf->SetAutoPageBreak(false, 0);
+// set bacground image
+$img_file = dirname(__CLASS__) . 'public/assets/img/microsoft-word-certificate-borders.png';
+$pdf->Image($img_file, 0, 0, 295, 209, '', '', '', false, 300, '', false, false, 0);
+// set the starting point for the page content
+$pdf->setPageMark();
+
+$header_text = '<div style="text-align:center;"><p >' . $this->header_text . '</p></div>';
+
+$certificate_title = '<div style="width=10px; height=10px; text-align:center;"><span style="font-size:200%; line-height: 0.0">Certificate of Competency</span><br>
+ <span style="line-height: 0.0">is issued to</span></div>';
+
+$tester='<div style=" color:blue; font-size:170%; text-align:center;">&nbsp;&nbsp;'.strtoupper($last).' '. strtoupper($first).' '. strtoupper($middle).'&nbsp;&nbsp;</div>';
+ 
+$text_content='<div style="text-align:center;">For Having Successfully Fulfilled the Requirements of the Health Laboratory Practitioners’ Council and  Is Certified to be Competent in the Area of  <span style="Font-Weight: Bold ">HIV Rapid Testing </span>.
+ <br><span style="font-size:80%; font-style: italic;"> Note. This certificate is <span style="Font-Weight: Bold">only </span>issued for HIV Rapid Testing and does not allow to perform any other test.</span>   
+<br>Valid <span style="Font-Weight: Bold "> '.date("d-m-Y", strtotime($date_issued)).' through '.date("d-m-Y", strtotime($date_issued."  + 2 year")) .'</span>
+<br>
+Professional Registration No.: <span style=" color:red;Font-Weight: Bold; "> '.$professional_reg_no.'</span>
+<br>
+Certification No.:<span style=" color:red;Font-Weight: Bold "> '.$certification_id.'</span>
+<p style="text-align:left;" >&nbsp;&nbsp;&nbsp;&nbsp;Signature of Registrar 
+<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Registrar Name and Title </p></div>';
+
+// set different text position
+$pdf->writeHTMLCell(0, 0, 10, 5, $header_text, 0, 0, 0, true, 'J', true);
+$pdf->writeHTMLCell(0, 0, 05, 55, $certificate_title, 0, 0, 0, true, 'J', true);
+$pdf->writeHTMLCell(0, 0, 05, 75, $tester, 0, 0, 0, true, 'J', true);
+$pdf->writeHTMLCell(0, 0, 10, 92, $text_content, 0, 0, 0, true, 'J', true);
+
+
+$img_file = dirname(__CLASS__) . 'public/assets/img/logo_cert1.png';
+$img_file2 = dirname(__CLASS__) . 'public/assets/img/logo_cert2.png';
+
+$pdf->Image($img_file, 20, 35, 50, 35, '', '', '', false, 300, '', false, false, 0);
+
+$pdf->Image($img_file2, 225, 35, 50, 35, '', '', '', false, 300, '', false, false, 0);
+
+///---------------------------------------------------------
+//Close and output PDF document
+$pdf->Output(ucfirst($last) . ' ' . ucfirst($first) . ' ' . ucfirst($middle) . '_HIVRT Certification_' . date('Y') . '.pdf', 'I');
+exit;
+//============================================================+
+// END OF FILE
+//============================================================+

@@ -1,0 +1,16 @@
+<?php
+$province = '';
+$district = '';
+if(isset($result) && count($result) >0){
+    if(isset($result['province']) && count($result['province']) >0){
+        foreach($result['province'] as $provinceRow){
+            $province.='<option value="'.$provinceRow['location_id'].'">'.ucwords($provinceRow['location_name']).'</option>';
+        }
+    }
+    if(isset($result['district']) && count($result['district']) >0){
+        foreach($result['district'] as $districtRow){
+            $district.='<option value="'.$districtRow['location_id'].'">'.ucwords($districtRow['location_name']).'</option>';
+        }
+    }
+}
+echo $province."##".$district;

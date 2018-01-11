@@ -1,0 +1,238 @@
+<?php
+$tokenArray = array();
+?>
+<link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/typeahead.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<div class="am-content">
+        <div class="page-head">
+          <h2>Add User</h2>
+	    <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+        </div>
+        
+        <div class="main-content">
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+	    <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form role="form" name="addUserInformation" id="addUserInformation" method="post" action="<?php echo $this->url('users', array('action' => 'add')); ?>" autocomplete="off" >
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			  <label>First Name <span class="mandatory">*</span> </label>
+			  <input type="text" placeholder="First Name" class="form-control isRequired" name="firstName" id="firstName" title="Please enter the first name" >
+			</div>
+			<div class="form-group col-lg-6">
+			  <label>Last Name </label>
+			  <input type="text" placeholder="Last Name" class="form-control" name="lastName" id="lastName" title="Please enter the last name" >
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			  <label>Login Id <span class="mandatory">*</span></label>
+			  <input type="text" placeholder="Login Id" class="form-control isRequired" name="userName" id="userName" title="Please enter the user name" onblur="checkNameValidation('users','login', this, null, 'Already exist this name . Please choose another name.')" >
+			</div>
+			 <div class="form-group col-lg-6">
+			  <label>Password <span class="mandatory">*</span></label>
+			  <input type="password" placeholder="Password" class="form-control isRequired" name="password" id="password" title="Please enter the password" >
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			  <label>Confirm Password <span class="mandatory">*</span></label>
+			  <input type="password" placeholder="Confirm Password" class="form-control confirmPassword isRequired" name="password" id="confirmPassword" title="Please check your password and confirm password are same" >
+			</div>
+			<div class="form-group col-lg-6">
+			  <label>Email</label>
+			  <input type="text" placeholder="Email" class="form-control isEmail" name="email" id="email" title="Please enter the email id" >
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6">
+			   <label>Role <span class="mandatory">*</span></label>
+			     <select class="form-control isRequired" name="roleId" id="roleId" title="Please select the role">
+				     <option data-access-level="" value="">--Select--</option>
+				     <?php
+				     foreach($roleResults as $role){
+				     ?>
+					 <option data-access-level="<?php echo $role['access_level']; ?>" value="<?php echo $role['role_id']; ?>"><?php echo ucwords($role['role_name']); ?></option>
+				     <?php
+				     }
+				     ?>
+			     </select>
+			 </div>
+			 <div class="form-group col-lg-6">
+			   <label>Status <span class="mandatory">*</span></label>
+				     <select class="form-control isRequired" name="status" id="status" title="Please select the status">
+					     <option value="active">Active</option>
+					     <option value="inactive">Inactive</option>
+				     </select>
+			 </div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6 accessLevel country province district" onchange="getCountryLocations();" style="display:none;">
+			    <label>Country <span class="mandatory">*</span></label>
+			    <select class="form-control" name="country[]" id="country" multiple title="Please select country">
+				    <?php
+				    foreach($countryResult as $country){
+				    ?>
+					<option value="<?php echo $country['country_id']; ?>"><?php echo ucwords($country['country_name']); ?></option>
+				    <?php
+				    }
+				    ?>
+			    </select>
+			</div>
+			<div class="form-group col-lg-6 accessLevel province district" onchange="getProvinceDistricts();" style="display:none;">
+			   <label>Province/State <span class="mandatory">*</span></label>
+			    <select class="form-control" name="province[]" id="province" multiple title="Please select province">
+				    <?php
+				    foreach($provinceResult as $province){
+				    ?>
+					<option value="<?php echo $province['location_id']; ?>"><?php echo ucwords($province['location_name']); ?></option>
+				    <?php
+				    }
+				    ?>
+			    </select>
+			</div>
+		    </div>
+		    <div class="row">
+			<div class="form-group col-lg-6 accessLevel district" style="display:none;">
+			    <label>District/County <span class="mandatory">*</span></label>
+			    <select class="form-control" name="district[]" id="district" multiple title="Please select district">
+				    <?php
+				    foreach($districtResult as $district){
+				    ?>
+					<option value="<?php echo $district['location_id']; ?>"><?php echo ucwords($district['location_name']); ?></option>
+				    <?php
+				    }
+				    ?>
+			    </select>
+			</div>
+		    </div>
+                    <div class="spacer col-lg-12">
+                      <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
+                     <a href="<?php echo $this->url('users', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+        </div>
+        <br>
+        <br>
+        </div>
+</div>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	     $('#country').select2({
+		 placeholder: "<?php echo $this->translate('Select Countries'); ?>",
+		 width:'100%',
+		 allowClear: true
+	     });
+	     $('#province').select2({
+		 placeholder: "<?php echo $this->translate('Select Provinces/States'); ?>",
+		 width:'100%',
+		 allowClear: true
+	     });
+	     $('#district').select2({
+		 placeholder: "<?php echo $this->translate('Select Districts/Counties'); ?>",
+		 width:'100%',
+		 allowClear: true
+	     });
+	});
+	 
+	duplicateName = true;
+	function validateNow() {
+		   flag = deforayValidator.init({
+			   formId: 'addUserInformation'
+		   });
+		   if (flag) {
+			var accessLevel = $('#roleId').find(':selected').attr('data-access-level');
+			if($('#country').val() == null || $('#country').val() == ''){
+			     if(accessLevel == 2 || accessLevel == 3 || accessLevel == 4){
+				     alert('Please select country');
+				     return false;
+			     }
+			}else if($('#province').val() == null || $('#province').val() == ''){
+			     if(accessLevel == 3){
+				     alert('Please select province');
+				     return false;
+			     }
+			}else if($('#district').val() == null || $('#district').val() == ''){
+			     if(accessLevel == 4){
+				     alert('Please select district');
+				     return false;
+			     }
+			}
+			if (duplicateName) {
+				document.getElementById('addUserInformation').submit();
+			}
+		   }
+	}
+	 
+	function checkNameValidation(tableName, fieldName, obj, fnct, msg){
+		checkValue = document.getElementById(obj.id).value;
+		$.post("<?php echo $this->url('common', array('action' => 'index')); ?>", {tableName: tableName, fieldName: fieldName, value: checkValue, fnct: fnct},
+		function(data) {
+			if (data > 0)
+			{
+				alert(msg);
+				duplicateName = false;
+				document.getElementById(obj.id).value = "";
+			}
+			else {
+				duplicateName = true;
+			}
+		});
+	}
+	 
+	$('#roleId').on('change',function() {
+		var roleAccessLevel = $(this).find(':selected').attr('data-access-level');
+		if(roleAccessLevel == 2){
+		      $('.accessLevel').hide();
+		      $('.country').show();
+		      $('#country').val('').change();
+		}else if(roleAccessLevel == 3){
+		      $('.accessLevel').hide();
+		      $('.province').show();
+		      $('#country').val('').change();
+		      $('#province').val('').change();
+		}else if(roleAccessLevel == 4){
+		      $('.accessLevel').hide();
+		      $('.district').show();
+		      $('#country').val('').change();
+		      $('#province').val('').change();
+		      $('#district').val('').change();
+		}else{
+		      $('.accessLevel').hide();
+		      $('#country').val('').change();
+		      $('#province').val('').change();
+		      $('#district').val('').change();
+		}
+	});
+	
+	function getCountryLocations(){
+		if($('#roleId').find(':selected').attr('data-access-level') == 3 || $('#roleId').find(':selected').attr('data-access-level') == 4){
+			var country = ($('#country').val() == null || $('#country').val() == '')?[]:$('#country').val();
+			$.post("<?php echo $this->url('common', array('action' => 'get-country-locations')); ?>", {country: country},
+			function(data) {
+			    var dataArray = data.split("##");
+			    $('#province').val('').change();
+			    $('#district').val('').change();
+			    $('#province').html(dataArray[0]);
+			    $('#district').html(dataArray[1]);
+			});
+		}
+	}
+	
+	function getProvinceDistricts(){
+		var province = ($('#province').val() == null || $('#province').val() == '')?[]:$('#province').val();
+		$.post("<?php echo $this->url('common', array('action' => 'get-province-districts')); ?>", {province: province},
+		function(data) {
+		    $('#district').val('').change();
+		    $('#district').html(data);
+		});
+	}
+</script>

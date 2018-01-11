@@ -1,0 +1,158 @@
+<style>
+    /*.updateButton{padding:15px 0px 0px 45px;}*/
+    .btn{font-weight: bold;}
+    .ui-multiselect-filter input{color: #333 !important;}
+    #facility{width: 100%;}
+    #listProvince{width: 300px !important;}
+    .main-content{margin-top:15px;}
+    .panel-body{height: 250px;}
+    ul li span{padding: 4px; vertical-align: middle;}
+    body{
+	overflow-x:hidden;
+    }
+</style>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<div class="main-content">
+    <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+	<div class="row">
+	    <div class="col-sm-12">
+	      <div class="panel panel-default">
+		<div class="panel-body" style="height:auto !important;">
+		    <table class="col-lg-12">
+			<tr>
+			    <td class="col-lg-4">
+				<b>Province</b><span class="mandatory">*</span>
+			    </td>
+			    <td class="col-lg-8" align="center">
+				<input type="text" class="form-control" id="textProvince" name="textProvince" placeholder="Enter Province" style="width:300px;display:none;"/>
+				<select id="listProvince" name="listProvince" class="form-control">
+				    <option value=""> -- Select -- </option>
+				    <?php
+				    foreach($provinces as $province) {
+					if(isset($province['name']) && trim($province['name'])!= ''){
+				    ?>
+				       <option value="<?php echo $province['name']; ?>"><?php echo ucwords($province['name']); ?></option>
+				    <?php } } ?>
+				    <option value="other">Other</option>
+				</select>
+			   </td>
+			</tr>
+			<tr>
+			    <td colspan="2"><hr></td>
+			</tr>
+			<tr>
+			    <td class="col-lg-4">
+				<b>Facility List</b><span class="mandatory">*</span>
+			    </td>
+			    <td class="col-lg-8">
+				<select id="facility" name="facility[]" multiple="multiple">
+				    <?php
+				    foreach($facilityName['allName'] as $name){
+					if(trim($name['facility_id'])!=''){
+					   $facility = $name['facility_id']." - ".ucwords($name['facility_name']);
+					}else{
+					  $facility = ucwords($name['facility_name']);  
+					}
+					?>
+					<option value="<?php echo $name['facility_name'];?>"><?php echo $facility;?></option>
+					<?php
+				    }
+				    ?>
+				</select>
+			   </td>
+			</tr>
+			<tr>
+			    <td colspan="2"><hr>&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+			    <td colspan="2">
+				<input type="hidden" class="form-control" id="province" name="province"/>
+				<button type="button" onclick="mapProvinceFacility()" class="btn btn-space btn-primary">Map Province</button>
+			    </td>
+			</tr>
+		    </table>
+		</div>
+	      </div>
+	    </div>
+	    
+	</div>
+    </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script>
+    $(document).ready(function(){
+	$('#facility').multipleSelect({
+	    filter: true,
+	    minimumCountSelected:'1',
+	    placeholder:'Please select facility(s)',
+            width: '100%'
+        });
+    });
+    
+    provinces = [];
+    <?php
+    foreach($provinces as $province){
+        if(isset($province['name']) && trim($province['name'])!= ''){
+    ?>
+     provinces.push('<?php echo $province['name']; ?>');
+     provinces.push('<?php echo strtolower($province['name']); ?>');
+    <?php } } ?>
+    
+    $('#listProvince').on('change',function(){
+        if(this.value == 'other'){
+            $('#province').val('');
+            $('#listProvince').css('display','none'); 
+            $('#textProvince').css('display','block');
+        }else{
+           $('#province').val(this.value);  
+           $('#listProvince').css('display','block');
+           $('#textProvince').css('display','none');
+        }
+    });
+
+    $('#textProvince').change(function(){
+        $('#province').val(this.value);
+        if(this.value !=''){
+           if ($.inArray(this.value, provinces) != -1){
+            alert("Province already exists..Please enter different name");
+            $('#province').val('');
+            $('#textProvince').val('');
+            $('#textProvince').focus();
+           }
+        }
+    });
+    
+    function mapProvinceFacility(){
+        var facility = $("#facility").val();
+        var province = $("#province").val();
+        if(facility !=null && facility!='' && province!=''){
+            var cnfm = confirm("Do you wish to merge province with the facility?");
+            if(cnfm){
+		$.blockUI();
+                $.post("<?php echo $this->url('spi-facility',array('action'=>'map-province')); ?>",{province:province,facility:facility},
+		function(data) {
+		    $.unblockUI();
+                    if (data>0) {
+		      alert("Province mapped successfully");
+		      parent.closeModal();
+		      parent.window.location.href=window.parent.location.href;
+		    }else{
+		      alert("We have experienced the problem..Please try again later!");
+		      parent.closeModal();
+		      parent.window.location.href=window.parent.location.href;
+		    }
+                });
+            }
+        }else{
+            if($.trim(facility)== ''){
+		alert("Please choose atleast one facility to continue");
+		$("#facility").focus();
+		return false;
+	    }else if($.trim(province)== ''){
+		alert("Province can not be empty");
+		return false;
+	    }
+        }
+    }
+</script>

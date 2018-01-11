@@ -1,0 +1,93 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
+
+
+<div class="am-content">
+        <div class="page-head">
+          <h2>SPI-RT 3.0 Audit Details (<?php echo $assesmentOfAuditDate; ?>)</h2>
+        </div>
+        
+        <div class="main-content">
+            
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+
+                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+                  <thead>
+                    <tr>
+                      
+                      <th>Facility Name</th>
+                      <th style="width:8%;">Audit Round No.</th>
+                      <th style="width:10%;">Audit Date</th>
+                      <th style="width:10%;">Testing Point Name</th>
+                      <th style="width:6%;">Testing Point Type</th>
+                      <th style="width:8%;">Level</th>
+                      <th>Affiliation</th>
+                      <th style="width:5%;">Audit Score %</th>
+                      <th style="width:8%;">Status</th>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) { ?>
+                      <th>Action</th>
+                      <?php } ?>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                       <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                   </tr>
+                  </tbody>
+                </table>
+
+
+            </div>
+      
+        <br>
+       
+            
+        </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/datatables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+
+<script type="text/javascript">
+    table = null;
+  $(document).ready(function () {
+   
+   table = $('#example').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                <?php echo $editAction;?>
+            ],
+         "iDisplayLength": 50,
+         "pageLength": 50,
+         "aaSorting": [[ 3, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('dashboard',array('action' => 'audit-details')); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name":"assesmentOfAuditDate","value": '<?php echo $assesmentOfAuditDate; ?>'} );
+            $.ajax({
+                "dataType": 'json',
+                "type": "POST",
+                "url": sSource,
+                "data": aoData,
+                "success": function(json){
+                  $.unblockUI();
+                  fnCallback(json);
+                 }
+            });
+        }
+    } );
+      
+  });
+  function downloadPdf(formId){
+   window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+   return false;
+  }
+</script>

@@ -1,0 +1,68 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+
+?>
+<div class="am-content">
+    <div class="page-head">
+        <div class="row">
+				<div class="col-sm-8">
+				<h2>Global Config</h2>
+				</div>
+				<div class="col-sm-4">
+				    <?php if ($acl->isAllowed($role, 'Application\Controller\Config','edit-global')) { ?>
+					<a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;Edit Global Config</a>
+					<?php } ?>
+				</div>
+		  </div>
+      
+    </div>
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;width:100%;">
+            <table id="config" class="table table-bordered table-striped table-hover table-fw-widget"  style="width:100%;">
+              <thead>
+                <tr>
+                    <th style="width:90%;">Config</th>
+                    <th style="width:95%;">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td colspan="2" class="dataTables_empty">Loading data from server</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/datatables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script type="text/javascript">
+    table = null;
+    $(document).ready(function () {
+    table = $('#config').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                {"sClass":"center"},
+                {"sClass":"center"},
+            ],
+         "aaSorting": [[ 0, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('config',array('action' => 'index')); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      $.unblockUI();
+                      fnCallback(json);
+                     }
+                });
+            }
+    } );
+  });  
+</script>

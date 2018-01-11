@@ -1,0 +1,7 @@
+<?php
+$facility ='';
+if($result){
+  $facility.= $result->facility_id.'##'.$result->facility_name.'##'.$result->email.'##'.$result->contact_person.'##'.$result->district.'##'.$result->province.'##'.$result->latitude.'##'.$result->longitude;
+}
+echo $facility;
+?>
