@@ -346,7 +346,7 @@ $acl = $this->layout()->acl;
 
                             <div style="margin-top: 25px">
 
-                                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                                <table id="provider" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                                     <thead>
                                         <tr>
                                             <th>Certification Registration No</th>
@@ -444,7 +444,7 @@ $acl = $this->layout()->acl;
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/provider.js'); ?>"></script>
 <script>
     $(document).ready(function () {
-        $('#example').dataTable({
+        $('#provider').dataTable({
             "aProcessing": true,
             "aServerSide": true,
         })
@@ -549,7 +549,7 @@ $acl = $this->layout()->acl;
         }
 
         filter = input.toUpperCase();
-        table = document.getElementById("example");
+        table = document.getElementById("provider");
         tr = table.getElementsByTagName("tr");
 
         // Loop through all table rows, and hide those who don't match the search query

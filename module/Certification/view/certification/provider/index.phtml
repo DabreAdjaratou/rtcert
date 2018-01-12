@@ -40,7 +40,7 @@ $acl = $this->layout()->acl;
     <div class="main-content">
 
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
-            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+            <table id="provider" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
                         <th>Certification Registration No.</th>
@@ -143,7 +143,7 @@ $acl = $this->layout()->acl;
 
 <script type="text/javascript" language="javascript">
     $(document).ready(function () {
-        $('#example').dataTable({
+        $('#provider').dataTable({
             "aProcessing": true,
             "aServerSide": true,
         })
