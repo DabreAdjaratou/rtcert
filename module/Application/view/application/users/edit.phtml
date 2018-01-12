@@ -176,7 +176,7 @@ if(isset($result['selectedProvinces']) && count($result['selectedProvinces']) >0
 				     return false;
 			     }
 			}else if($('#province').val() == null || $('#province').val() == ''){
-			     if(accessLevel == 3){
+			     if(accessLevel == 3 || accessLevel == 4){
 				     alert('Please select province');
 				     return false;
 			     }

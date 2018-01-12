@@ -101,7 +101,7 @@ function validateForm() {
 
     if (h == null || h == "") {
         elmt18.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt18.id + "''");
+        alert("Please select ''" + elmt18.id + "''");
         return false;
     }
 
@@ -113,13 +113,13 @@ function validateForm() {
 
     if (j == null || j == "") {
         elmt10.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt10.id + "''");
+        alert("Please select ''" + elmt10.id + "''");
         return false;
     }
 
     if (k == null || k == "") {
         elmt11.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt11.id + "''");
+        alert("Please select ''" + elmt11.id + "''");
         return false;
     }
 

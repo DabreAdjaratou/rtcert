@@ -171,20 +171,6 @@ class ProviderTable extends AbstractTableGateway {
         return $result;
     }
 
-//    public function DistrictName($district) {
-//        $db = $this->tableGateway->getAdapter();
-//        $sql = "SELECT id, district_name FROM certification_districts WHERE id = '" . $district . "'";
-//        $statement = $db->query($sql);
-//        $result = $statement->execute();
-//
-//        foreach ($result as $res) {
-//            $district_name = $res['district_name'];
-//            $id = $res['id'];
-//        }
-////       die(print_r($id));
-//        return array('district_id' => $id, 'district_name' => $district_name);
-//    }
-
     public function getCountryIdbyRegion($location) {
         $db = $this->tableGateway->getAdapter();
         $sql = "SELECT country FROM location_details WHERE location_id ='" . $location . "'";
@@ -195,19 +181,6 @@ class ProviderTable extends AbstractTableGateway {
         }
 //       die(print_r($id));
         return array('country_id' => $country_id);
-    }
-
-    public function FacilityName($facility) {
-        $db = $this->tableGateway->getAdapter();
-        $sql = "SELECT id, facility_name FROM certification_facilities where id='" . $facility . "'";
-        $statement = $db->query($sql);
-        $result = $statement->execute();
-        foreach ($result as $res) {
-            $facility_name = $res['facility_name'];
-            $id = $res['id'];
-        }
-//        print_r($result);
-        return array('facility_id' => $id, 'facility_name' => $facility_name);
     }
 
     public function getAllActiveCountries(){

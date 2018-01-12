@@ -401,14 +401,21 @@ $sessionLogin = new Container('credo');
     }
     
     function showRegion(str,ID,frmSrc) {
-        $.post("<?php echo $this->url('provider', array('action' => 'region')); ?>", {q: str,id:ID},
-            function(data) {
-               document.getElementById("Region").innerHTML = data;
-               if(frmSrc == 'change'){
-                    document.getElementById("District").innerHTML = "<option value=''>Please Choose a Region First</option>";
-                    document.getElementById("Facility Name").innerHTML = "<option value=''>Please Choose a District First</option>";
-               }
-            });
+        if(str == "") {
+            document.getElementById("Region").innerHTML = "<option value=''>Please Choose a Country First</option>";
+            document.getElementById("District").innerHTML = "<option value=''>Please Choose a Region First</option>";
+            document.getElementById("Facility Name").innerHTML = "<option value=''>Please Choose a District First</option>";
+           return false;
+        }else{
+            $.post("<?php echo $this->url('provider', array('action' => 'region')); ?>", {q: str,id:ID},
+                function(data) {
+                   document.getElementById("Region").innerHTML = data;
+                   if(frmSrc == 'change'){
+                        document.getElementById("District").innerHTML = "<option value=''>Please Choose a Region First</option>";
+                        document.getElementById("Facility Name").innerHTML = "<option value=''>Please Choose a District First</option>";
+                   }
+                });
+        }
         //if (str == "") {
         //    document.getElementById("Region").innerHTML = "Please Choose a Country First";
         //    return;

@@ -77,7 +77,7 @@ class ProviderForm extends Form {
                 'label' => 'Country',
                 'disable_inarray_validator' => true,
                 'empty_option' => 'Please Choose a Country',
-                'value_options' => $this->getAllActiveCountries(),
+                'value_options' => $this->getAllActiveCountries()
             ),
         ));
          
@@ -87,8 +87,7 @@ class ProviderForm extends Form {
             'options' => array(
                 'label' => 'Region',
                 'disable_inarray_validator' => true,
-                'empty_option' => 'Please Choose a Country First',
-                //'value_options' => $this->getAllRegions(),
+                'empty_option' => 'Please Choose a Country First'
             ),
         ));
         $this->add(array(
@@ -97,8 +96,7 @@ class ProviderForm extends Form {
             'options' => array(
                 'label' => 'District',
                 'disable_inarray_validator' => true,
-                'empty_option' => 'Please Choose a Region First',
-                //'value_options' => $this->getAllDistricts(),
+                'empty_option' => 'Please Choose a Region First'
             ),
         ));
 
@@ -247,18 +245,6 @@ class ProviderForm extends Form {
             ),
         ));
     }
-
-    public function getRegions() {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-        $selectData = [];
-        foreach ($result as $res) {
-            $selectData[$res['id']] = $res['region_name'];
-        }
-        return $selectData;
-    }
     
     public function getAllActiveCountries() {
         $logincontainer = new Container('credo');
@@ -273,30 +259,6 @@ class ProviderForm extends Form {
         $selectData = [];
         foreach ($result as $res) {
             $selectData[$res['country_id']] = $res['country_name'];
-        }
-        return $selectData;
-    }
-    
-    public function getAllRegions(){
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT location_id, location_name FROM location_details WHERE parent_location = 0 ORDER by location_name asc';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-        $selectData = [];
-        foreach ($result as $res) {
-            $selectData[$res['location_id']] = $res['location_name'];
-        }
-        return $selectData;
-    }
-    
-    public function getAllDistricts(){
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT location_id, location_name FROM location_details WHERE parent_location != 0 ORDER by location_name asc';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-        $selectData = [];
-        foreach ($result as $res) {
-            $selectData[$res['location_id']] = $res['location_name'];
         }
         return $selectData;
     }
