@@ -38,6 +38,12 @@ $sessionLogin = new Container('credo');
                 <form action="<?php $this->url('facility', array('action' => 'edit','id'=>$this->id)); ?>" name="form" method="post" onsubmit="return validateForm()">
                     <?php
                     $form->prepare();
+                    $form->get('district')->setAttributes([
+                        'class' => 'form-control',
+                        'id' => 'District',
+                        'onclick' => 'emptyInput(this)',
+//                           
+                    ]);
                     $form->get('facility_name')->setAttributes([
                         'class' => 'form-control',
                         'placeholder' => 'Facility Name',
@@ -52,14 +58,6 @@ $sessionLogin = new Container('credo');
                         'autocomplete' => 'off',
                         'id' => 'Facility Address',
                                                    
-                    ]);
-                    $form->get('district')->setAttributes([
-                        'class' => 'form-control',
-                        'placeholder' => 'District',
-                        'autocomplete' => 'off',
-                        'id' => 'District',
-                        'onclick' => 'emptyInput(this)',
-//                           
                     ]);
 
 

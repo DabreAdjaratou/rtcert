@@ -8,13 +8,15 @@ use Zend\InputFilter\InputFilterInterface;
 
 class Region {
 
-    public $id;
-    public $region_name;
+    public $location_id;
+    public $country;
+    public $location_name;
     protected $inputFilter;
 
     public function exchangeArray($data) {
-        $this->id = (!empty($data['id'])) ? $data['id'] : null;
-        $this->region_name = (!empty($data['region_name'])) ? $data['region_name'] : null;
+        $this->location_id = (!empty($data['location_id'])) ? $data['location_id'] : null;
+        $this->country = (!empty($data['country'])) ? $data['country'] : null;
+        $this->location_name = (!empty($data['location_name'])) ? $data['location_name'] : null;
     }
     public function getArrayCopy()
      {
@@ -31,15 +33,23 @@ class Region {
             $inputFilter = new InputFilter();
 
             $inputFilter->add(array(
-                'name' => 'id',
-                'required' => true,
+                'name' => 'location_id',
+                'required' => false,
                 'filters' => array(
                     array('name' => 'Int'),
                 ),
             ));
 
             $inputFilter->add(array(
-                'name' => 'region_name',
+                'name' => 'country',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+            ));
+            
+            $inputFilter->add(array(
+                'name' => '$location_name',
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),

@@ -1,5 +1,4 @@
 <?php
-
 use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
@@ -30,16 +29,19 @@ $acl = $this->layout()->acl;
         </div>
     </div>
 
-
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-
             <div>
-
                 <form action="<?php $this->url('region', array('action' => 'add')); ?>" name="form" method="post" onsubmit="return validateForm()">
                     <?php
                     $form->prepare();
-                    $form->get('region_name')->setAttributes([
+                    $form->get('country')->setAttributes([
+                        'class' => 'form-control',
+                        'id' => 'Country',
+                        'onclick' => 'emptyInput(this)'
+                    ]);
+                    
+                    $form->get('location_name')->setAttributes([
                         'class' => 'form-control',
                         'placeholder' => 'Region Name',
                         'autocomplete' => 'off',
@@ -56,14 +58,22 @@ $acl = $this->layout()->acl;
 
                     echo $this->form()->openTag($form);
                     ?>
-                    <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-                    <div class="form-group col-lg-6"> 
-                        <?= $this->formLabel($form->get('region_name')); ?><span class="mandatory">*</span>
-                        <?= $this->formElement($form->get('region_name')); ?>
-                        <?= $this->formElementErrors($form->get('region_name')); ?>
+                    <?php echo $this->formHidden($form->get('location_id')->setAttribute('class', 'form-control')) ?>
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <?= $this->formLabel($form->get('country')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('country')); ?>
+                            <?= $this->formElementErrors($form->get('country')); ?>
+                        </div>
                     </div>
-
-                    <div class="row col-sm-3" style="margin-top: 30px; margin-left: 5px">
+                    <div class="row">
+                        <div class="form-group col-lg-6"> 
+                            <?= $this->formLabel($form->get('location_name')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('location_name')); ?>
+                            <?= $this->formElementErrors($form->get('location_name')); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-3" style="margin-top: 30px; margin-left: 5px">
                         <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
                         <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('region', array('action' => 'index')); ?>" >Cancel</a> 
                     </div>
@@ -74,16 +84,16 @@ $acl = $this->layout()->acl;
 
 
             <div style="margin-top:120px;">
-                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 100%;">
+                <table id="region" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 100%;">
                     <thead>
                         <tr>
-
-                            <th style="width:90%">Region Name </th>
+                            <th style="width:50%">Region Name </th>
+                            <th style="width:50%">Country Name </th>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'edit')) { ?>
-                            <th style="width:30%;">Edit</th>
+                            <th>Edit</th>
                             <?php }   ?>
                              <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'delete')) { ?>
-                            <th style="width:30%;">Delete</th>
+                            <th>Delete</th>
                         <?php } ?>
                         </tr>
 
@@ -91,23 +101,24 @@ $acl = $this->layout()->acl;
                     <tbody>
                         <?php foreach ($regions as $region): ?>
                             <tr>
-                                <td><?php echo $this->escapeHtml($region->region_name); ?></td>
+                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($region['location_name']); ?></div></td>
+                                 <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($region['country_name']); ?></div></td>
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'edit')) { ?>
-                                    <td><a href="<?php echo $this->url('region', array('action' => 'edit', 'id' => base64_encode($region->id))); ?>"> <span class="glyphicon glyphicon-pencil"> Edit</span></a> 
+                                    <td>
+                                        <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('region', array('action' => 'edit', 'id' => base64_encode($region['location_id']))); ?>"> <span class="glyphicon glyphicon-pencil"> Edit</span></a></div>
                                     </td>
                                 <?php } ?>
                                     <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'delete')) { ?>
-                                <td>
-                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($region->region_name); ?> '+'?')) {
+                                <td><div style="width:80px;overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($region['location_name']); ?> '+'?')) {
                                                     alert('Canceled!');
-                                                    return false;};"  href="<?php echo $this->url('region', array('action' => 'delete', 'id' => $region->id)); ?>"> <span class="glyphicon glyphicon-trash"> Delete</span></a> 
+                                                    return false;};"  href="<?php echo $this->url('region', array('action' => 'delete', 'id' => $region['location_id'])); ?>"> <span class="glyphicon glyphicon-trash"> Delete</span></a>
+                                                    </div>
                                   
                                 </td>
                             <?php } ?>
-                            
-
                             </tr>
-                        <?php endforeach; ?>               
+                        <?php endforeach; ?>         
                     </tbody>
                 </table>
             </div>
@@ -127,14 +138,13 @@ $acl = $this->layout()->acl;
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/personnel_certification/region.js'); ?>" type="text/javascript"></script>
 
-<script type="text/javascript" language="javascript" >
-                    $(document).ready(function () {
-
-                        $('#example').dataTable({
-                            "aProcessing": true,
-                            "aServerSide": true,
-                            "autoWidth": false
-                        })
-                    });
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $('#region').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+            "autoWidth": false
+        })
+    });
 </script>
 

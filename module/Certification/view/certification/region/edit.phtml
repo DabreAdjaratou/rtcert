@@ -1,7 +1,5 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
 ?>
 
@@ -37,7 +35,13 @@ $sessionLogin = new Container('credo');
             <form action="<?php $this->url('region', array('action' => 'edit','id' => $this->id)); ?>" name="form" method="post" onsubmit="return validateForm()">
                 <?php
                 $form->prepare();
-                $form->get('region_name')->setAttributes([
+                $form->get('country')->setAttributes([
+                    'class' => 'form-control',
+                    'id' => 'Country',
+                    'onclick' => 'emptyInput(this)'
+                ]);
+                
+                $form->get('location_name')->setAttributes([
                     'class' => 'form-control',
                     'placeholder' => 'Region Name',
                     'autocomplete' => 'off',
@@ -54,14 +58,22 @@ $sessionLogin = new Container('credo');
 
                 echo $this->form()->openTag($form);
                 ?>
-                <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-                <div class="form-group col-lg-6"> 
-                    <?= $this->formLabel($form->get('region_name')); ?><span class="mandatory">*</span>
-                    <?= $this->formElement($form->get('region_name')); ?>
-                    <?= $this->formElementErrors($form->get('region_name')); ?>
+                <?php echo $this->formHidden($form->get('location_id')->setAttribute('class', 'form-control')) ?>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <?= $this->formLabel($form->get('country')); ?><span class="mandatory">*</span>
+                        <?= $this->formElement($form->get('country')); ?>
+                        <?= $this->formElementErrors($form->get('country')); ?>
+                    </div>
                 </div>
-
-                <div class="row col-sm-3" style="margin-top: 30px; margin-left: 5px">
+                <div class="row">
+                    <div class="form-group col-lg-6"> 
+                        <?= $this->formLabel($form->get('location_name')); ?><span class="mandatory">*</span>
+                        <?= $this->formElement($form->get('location_name')); ?>
+                        <?= $this->formElementErrors($form->get('location_name')); ?>
+                    </div>
+                </div>
+                <div class="col-sm-3" style="margin-top: 30px; margin-left: 5px">
                     <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
                     <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('region', array('action' => 'index')); ?>" >CANCEL</a> 
                 </div>

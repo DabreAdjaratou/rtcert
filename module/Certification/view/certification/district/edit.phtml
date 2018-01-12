@@ -37,7 +37,15 @@ $sessionLogin = new Container('credo');
                 <form action="<?php $this->url('district', array('action' => 'edit','id' => $this->id)); ?>" name="form" method="post" onsubmit="return validateForm()">
                     <?php
                     $form->prepare();
-                    $form->get('district_name')->setAttributes([
+
+                    $form->get('parent_location')->setAttributes([
+                        'class' => 'form-control',
+                        'id' => 'Region',
+                        'onclick' => 'emptyInput(this)',
+//                           
+                    ]);
+
+                    $form->get('location_name')->setAttributes([
                         'class' => 'form-control',
                         'placeholder' => 'Name of District',
                         'autocomplete' => 'off',
@@ -45,16 +53,7 @@ $sessionLogin = new Container('credo');
                         'onclick' => 'emptyInput(this)',
 //                           
                     ]);
-
-                    $form->get('region')->setAttributes([
-                        'class' => 'form-control',
-                        'placeholder' => 'Region',
-                        'autocomplete' => 'off',
-                        'id' => 'Region',
-                        'onclick' => 'emptyInput(this)',
-//                           
-                    ]);
-
+                    
                     $form->get('submit')->setAttributes([
 //                            
                     ]);
@@ -62,20 +61,20 @@ $sessionLogin = new Container('credo');
 
                     echo $this->form()->openTag($form);
                     ?>
-                    <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
+                    <?php echo $this->formHidden($form->get('location_id')->setAttribute('class', 'form-control')) ?>
                      <div class="row">
                     <div class="form-group col-lg-6"> 
-                        <?= $this->formLabel($form->get('region')); ?><span class="mandatory">*</span>
-                        <?= $this->formElement($form->get('region')); ?>
-                        <?= $this->formElementErrors($form->get('region')); ?>
+                        <?= $this->formLabel($form->get('parent_location')); ?><span class="mandatory">*</span>
+                        <?= $this->formElement($form->get('parent_location')); ?>
+                        <?= $this->formElementErrors($form->get('parent_location')); ?>
                     </div>
                         </div>
                     
                     <div class="row">
                         <div class="form-group col-lg-6"> 
-                            <?= $this->formLabel($form->get('district_name')); ?><span class="mandatory">*</span>
-                            <?= $this->formElement($form->get('district_name')); ?>
-                            <?= $this->formElementErrors($form->get('district_name')); ?>
+                            <?= $this->formLabel($form->get('location_name')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('location_name')); ?>
+                            <?= $this->formElementErrors($form->get('location_name')); ?>
                         </div>
                     </div>
                    

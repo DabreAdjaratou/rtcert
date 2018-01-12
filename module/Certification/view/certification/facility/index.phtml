@@ -40,6 +40,14 @@ $acl = $this->layout()->acl;
                     <form action="<?php $this->url('facility', array('action' => 'add')); ?>" name="form" method="post" onsubmit="return validateForm()">
                         <?php
                         $form->prepare();
+                        $form->get('district')->setAttributes([
+                            'class' => 'form-control',
+                            'placeholder' => 'District',
+                            'autocomplete' => 'off',
+                            'id' => 'District',
+                            'onclick' => 'emptyInput(this)',
+//                           
+                        ]);
                         $form->get('facility_name')->setAttributes([
                             'class' => 'form-control',
                             'placeholder' => 'Facility Name',
@@ -53,14 +61,6 @@ $acl = $this->layout()->acl;
                             'placeholder' => 'Facility Address',
                             'autocomplete' => 'off',
                             'id' => 'Facility Address',
-//                           
-                        ]);
-                        $form->get('district')->setAttributes([
-                            'class' => 'form-control',
-                            'placeholder' => 'District',
-                            'autocomplete' => 'off',
-                            'id' => 'District',
-                            'onclick' => 'emptyInput(this)',
 //                           
                         ]);
 
@@ -107,16 +107,16 @@ $acl = $this->layout()->acl;
                 </div>
 
                 <div style="margin-top:120px;">
-                    <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="margin: auto;">
+                    <table id="facility" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="margin: auto;">
                         <thead>
                             <tr>
 
-                                <th style="width:50%;">Facility Name </th>
-                                <th style="width:50%;">Facility Address</th>
-                                <th style="width:50%;">District</th>
+                                <th style="width:33%;">Facility Name </th>
+                                <th style="width:33%;">Facility Address</th>
+                                <th style="width:33%;">District</th>
 
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'edit')) { ?>
-                                    <th style="width:30%;">Edit</th>
+                                    <th>Edit</th>
                                 <?php } ?>
                                      <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'delete')) { ?>
                                         <th>Delete</th>
@@ -127,19 +127,19 @@ $acl = $this->layout()->acl;
                         <tbody>
                             <?php foreach ($facilities as $facility) : ?>
                                 <tr>
-                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility->facility_name); ?></div></td>
-                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility->facility_address); ?></div></td>
-                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility->district_name); ?></div></td>
+                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility['facility_name']); ?></div></td>
+                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility['facility_address']); ?></div></td>
+                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml((isset($facility['location_name']))?$facility['location_name']:''); ?></div></td>
                                     <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'edit')) { ?>
                                         <td>
-                                            <a href="<?php echo $this->url('facility', array('action' => 'edit', 'id' => base64_encode($facility->id))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                            <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('facility', array('action' => 'edit', 'id' => base64_encode($facility['id']))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> </div>
                                         </td>
                                     <?php } ?>
                                         <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'delete')) { ?>
-                                <td><div style="overflow:auto;">
-                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($facility->facility_name); ?> '+'?')) {
+                                <td><div style="width:80px;overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($facility['facility_name']); ?> '+'?')) {
                                                     alert('Canceled!');
-                                                    return false;};"  href="<?php echo $this->url('facility', array('action' => 'delete', 'id' => $facility->id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                                    return false;};"  href="<?php echo $this->url('facility', array('action' => 'delete', 'id' => $facility['id'])); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
                                   </div>
                                 </td>
                             <?php } ?>
@@ -170,14 +170,11 @@ $acl = $this->layout()->acl;
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/personnel_certification/facility.js'); ?>" type="text/javascript"></script>
 
-<script type="text/javascript" language="javascript" >
-                        $(document).ready(function () {
-
-                            $('#example').dataTable({
-                                "aProcessing": true,
-                                "aServerSide": true,
-                            })
-                        });
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $('#facility').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+        })
+    });
 </script>
-
-

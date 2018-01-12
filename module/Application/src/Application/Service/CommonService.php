@@ -467,7 +467,9 @@ class CommonService {
     public function getAllProvinces($selectedCountries){
         $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
         $sql = new Sql($dbAdapter);
-        $provinceQuery = $sql->select()->from(array('l_d' => 'location_details'))->where("l_d.parent_location='0'");
+        $provinceQuery = $sql->select()->from(array('l_d' => 'location_details'))
+                                       ->join(array('c'=>'country'),'c.country_id=l_d.country',array('country_name'))
+                                       ->where("l_d.parent_location='0'");
         if(isset($selectedCountries) && !empty($selectedCountries)){
             $provinceQuery = $provinceQuery->where('l_d.country IN (' . implode(',',$selectedCountries) . ')');
         }
@@ -478,7 +480,9 @@ class CommonService {
     public function getAllDistricts($selectedProvinces){
         $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
         $sql = new Sql($dbAdapter);
-        $districtQuery = $sql->select()->from(array('l_d' => 'location_details'))->where("l_d.parent_location !='0'");
+        $districtQuery = $sql->select()->from(array('l_d' => 'location_details'))
+                                       ->join(array('l_d_r'=>'location_details'),'l_d_r.location_id=l_d.parent_location',array('region_name'=>'location_name'))
+                                       ->where("l_d.parent_location !='0'");
         if(isset($selectedProvinces) && !empty($selectedProvinces)){
             $districtQuery = $districtQuery->where('l_d.parent_location IN (' . implode(',',$selectedProvinces) . ')');
         }
@@ -515,6 +519,90 @@ class CommonService {
         }
         $districtQueryStr = $sql->getSqlStringForSqlObject($districtQuery);
         return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+    
+    public function saveRegion($region){
+        $container = new Container('alert');
+        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $locationDetailsDb = $this->sm->get('LocationDetailsTable');
+            $response = $locationDetailsDb->saveRegion($region);
+            if ($response > 0) {
+                $adapter->commit();
+                //<-- Event log
+                $id = (int) $region->location_id;
+                if($id == 0){
+                    $subject = $response;
+                    $eventType = 'region-add';
+                    $action = 'added a new region '.$region->location_name;
+                    $resourceName = 'Region';
+                    $eventLogDb = $this->sm->get('EventLogTable');
+                    $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                    $container->alertMsg = 'Region added successfully';
+                }else{
+                    $subject = $response;
+                    $eventType = 'region-update';
+                    $action = 'updates a region '.$region->location_name;
+                    $resourceName = 'Region';
+                    $eventLogDb = $this->sm->get('EventLogTable');
+                    $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                    $container->alertMsg = 'Region updated successfully'; 
+                }
+            }else{
+               $container->alertMsg = 'Oops..';
+            }
+        } catch (Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+    
+    public function saveDistrict($district){
+       $container = new Container('alert');
+        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $locationDetailsDb = $this->sm->get('LocationDetailsTable');
+            $response = $locationDetailsDb->saveDistrict($district);
+            if ($response > 0) {
+                $adapter->commit();
+                //<-- Event log
+                $id = (int) $district->location_id;
+                if($id == 0){
+                    $subject = $response;
+                    $eventType = 'district-add';
+                    $action = 'added a new district '.$district->location_name;
+                    $resourceName = 'District';
+                    $eventLogDb = $this->sm->get('EventLogTable');
+                    $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                    $container->alertMsg = 'District added successfully';
+                }else{
+                    $subject = $response;
+                    $eventType = 'district-update';
+                    $action = 'updates a district '.$district->location_name;
+                    $resourceName = 'District';
+                    $eventLogDb = $this->sm->get('EventLogTable');
+                    $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                    $container->alertMsg = 'District updated successfully'; 
+                }
+            }else{
+               $container->alertMsg = 'Oops..';
+            }
+        } catch (Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+    
+    public function getLocation($id){
+        $locationDetailsDb = $this->sm->get('LocationDetailsTable');
+        return $locationDetailsDb->getLocation($id);
+    }
+    
+    public function deleteLocation($id){
+        $locationDetailsDb = $this->sm->get('LocationDetailsTable');
+        return $locationDetailsDb->delete(array('location_id'=>$id));
     }
 }
 

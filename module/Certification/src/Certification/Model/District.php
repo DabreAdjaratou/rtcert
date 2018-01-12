@@ -6,17 +6,16 @@
 
  class District
  {
-     public $id;
-     public $district_name;
-     public $region;
+     public $location_id;
+     public $parent_location;
+     public $location_name;
      protected $inputFilter;
 
      public function exchangeArray($data)
      {
-         $this->id     = (!empty($data['id'])) ? $data['id'] : null;
-         $this->district_name = (!empty($data['district_name'])) ? $data['district_name'] : null;
-         $this->region  = (!empty($data['region'])) ? $data['region'] : null;
-         $this->region_name  = (!empty($data['region_name'])) ? $data['region_name'] : null;
+         $this->location_id     = (!empty($data['location_id'])) ? $data['location_id'] : null;
+         $this->parent_location  = (!empty($data['parent_location'])) ? $data['parent_location'] : null;
+         $this->location_name = (!empty($data['location_name'])) ? $data['location_name'] : null;
      }
       public function getArrayCopy()
      {
@@ -34,34 +33,23 @@
              $inputFilter = new InputFilter();
 
              $inputFilter->add(array(
-                 'name'     => 'id',
-                 'required' => true,
+                 'name'     => 'location_id',
+                 'required' => false,
                  'filters'  => array(
                      array('name' => 'Int'),
                  ),
              ));
 
              $inputFilter->add(array(
-                 'name'     => 'district_name',
-                 'required' => true,
-                 'filters'  => array(
-                     array('name' => 'StripTags'),
-                     array('name' => 'StringTrim'),
-                 ),
-                 'validators' => array(
-                     array(
-                         'name'    => 'StringLength',
-                         'options' => array(
-                             'encoding' => 'UTF-8',
-                             'min'      => 1,
-                             'max'      => 100,
-                         ),
-                     ),
-                 ),
-             ));
+                'name' => 'parent_location',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+            ));
 
              $inputFilter->add(array(
-                 'name'     => 'region',
+                 'name'     => 'location_name',
                  'required' => true,
                  'filters'  => array(
                      array('name' => 'StripTags'),
@@ -78,7 +66,7 @@
                      ),
                  ),
              ));
-
+             
              $this->inputFilter = $inputFilter;
          }
 

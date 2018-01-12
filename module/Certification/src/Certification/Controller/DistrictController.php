@@ -2,11 +2,11 @@
 
 namespace Certification\Controller;
 
+use Zend\Session\Container;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\District;
 use Certification\Form\DistrictForm;
-use Zend\Session\Container;
 
 class DistrictController extends AbstractActionController {
 
@@ -25,23 +25,21 @@ class DistrictController extends AbstractActionController {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $form = new DistrictForm($dbAdapter);
         $form->get('submit')->setValue('Submit');
-
+        $commonSerive = $this->getServiceLocator()->get('CommonService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $district = new District();
-            $form->setInputFilter($district->getInputFilter());
+            //$form->setInputFilter($district->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
                 $district->exchangeArray($form->getData());
-                $this->getDistrictTable()->saveDistrict($district);
-                $container = new Container('alert');
-                $container->alertMsg = 'District added successfully';
+                $commonSerive->saveDistrict($district);
                 return $this->redirect()->toRoute('district');
             }
         }
         return new ViewModel(array(
-            'districts' => $this->getDistrictTable()->fetchAll(),
+            'districts' => $commonSerive->getAllDistricts($selectedProvinces = array()),
             'form' => $form,
         ));
     }
@@ -49,6 +47,7 @@ class DistrictController extends AbstractActionController {
     public function editAction() {
         $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $commonSerive = $this->getServiceLocator()->get('CommonService');
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));
         if (!$id) {
             return $this->redirect()->toRoute('district', array(
@@ -57,7 +56,7 @@ class DistrictController extends AbstractActionController {
         }
 
         try {
-            $district = $this->getDistrictTable()->getDistrict($id);
+            $district = $commonSerive->getLocation($id);
 //             die(print_r($district));
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('district', array(
@@ -67,17 +66,15 @@ class DistrictController extends AbstractActionController {
 
         $form = new DistrictForm($dbAdapter);
         $form->bind($district);
-        $form->get('submit')->setAttribute('value', 'Updated');
+        $form->get('submit')->setAttribute('value', 'Update');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($district->getInputFilter());
+            //$form->setInputFilter($district->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getDistrictTable()->saveDistrict($district);
-                $container = new Container('alert');
-                $container->alertMsg = 'District updated successfully';
+                $commonSerive->saveDistrict($district);
                 return $this->redirect()->toRoute('district');
             }
         }
@@ -89,14 +86,14 @@ class DistrictController extends AbstractActionController {
     }
     
     public function deleteAction() {
+        $commonSerive = $this->getServiceLocator()->get('CommonService');
         $id = (int) $this->params()->fromRoute('id', 0);
-
         if (!$id) {
             return $this->redirect()->toRoute('district');
         } else {
             $forein_key = $this->getDistrictTable()->foreigne_key($id);
             if ($forein_key == 0) {
-                $this->getDistrictTable()->deleteDistrict($id);
+                $commonSerive->deleteLocation($id);
                 $container = new Container('alert');
                 $container->alertMsg = 'Deleted successfully';
                 return $this->redirect()->toRoute('district');

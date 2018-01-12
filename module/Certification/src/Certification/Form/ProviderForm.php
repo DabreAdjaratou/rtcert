@@ -70,7 +70,7 @@ class ProviderForm extends Form {
             ),
         ));
         
-         $this->add(array(
+        $this->add(array(
             'name' => 'country',
             'type' => 'select',
             'options' => array(
@@ -258,7 +258,7 @@ class ProviderForm extends Form {
         $result = $statement->execute();
         $selectData = [];
         foreach ($result as $res) {
-            $selectData[$res['country_id']] = $res['country_name'];
+            $selectData[$res['country_id']] = ucwords($res['country_name']);
         }
         return $selectData;
     }

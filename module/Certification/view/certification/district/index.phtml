@@ -1,5 +1,4 @@
 <?php
-
 use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
@@ -39,7 +38,15 @@ $acl = $this->layout()->acl;
                 <form action="<?php $this->url('district', array('action' => 'add')); ?>" name="form" method="post" onsubmit="return validateForm()">
                     <?php
                     $form->prepare();
-                    $form->get('district_name')->setAttributes([
+
+                    $form->get('parent_location')->setAttributes([
+                        'class' => 'form-control',
+                        'id' => 'Region',
+                        'onclick' => 'emptyInput(this)',
+//                           
+                    ]);
+
+                    $form->get('location_name')->setAttributes([
                         'class' => 'form-control',
                         'placeholder' => 'Name of District',
                         'autocomplete' => 'off',
@@ -47,16 +54,6 @@ $acl = $this->layout()->acl;
                         'onclick' => 'emptyInput(this)',
 //                           
                     ]);
-
-                    $form->get('region')->setAttributes([
-                        'class' => 'form-control',
-                        'placeholder' => 'Region',
-                        'autocomplete' => 'off',
-                        'id' => 'Region',
-                        'onclick' => 'emptyInput(this)',
-//                           
-                    ]);
-
                     $form->get('submit')->setAttributes([
 //                            
                     ]);
@@ -64,20 +61,20 @@ $acl = $this->layout()->acl;
 
                     echo $this->form()->openTag($form);
                     ?>
-                    <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
+                    <?php echo $this->formHidden($form->get('location_id')->setAttribute('class', 'form-control')) ?>
 
                     <div class="row">
                         <div class="form-group col-lg-6"> 
-                            <?= $this->formLabel($form->get('region')); ?><span class="mandatory">*</span>
-                            <?= $this->formElement($form->get('region')); ?>
-                            <?= $this->formElementErrors($form->get('region')); ?>
+                            <?= $this->formLabel($form->get('parent_location')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('parent_location')); ?>
+                            <?= $this->formElementErrors($form->get('parent_location')); ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-lg-6"> 
-                            <?= $this->formLabel($form->get('district_name')); ?><span class="mandatory">*</span>
-                            <?= $this->formElement($form->get('district_name')); ?>
-                            <?= $this->formElementErrors($form->get('district_name')); ?>
+                            <?= $this->formLabel($form->get('location_name')); ?><span class="mandatory">*</span>
+                            <?= $this->formElement($form->get('location_name')); ?>
+                            <?= $this->formElementErrors($form->get('location_name')); ?>
                         </div>
                     </div>
 
@@ -93,7 +90,7 @@ $acl = $this->layout()->acl;
 
 
             <div style="margin-top:120px;">
-                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 100%;">
+                <table id="district" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 100%;">
                     <thead>
                         <tr>
 
@@ -112,21 +109,21 @@ $acl = $this->layout()->acl;
                     <tbody>
                         <?php foreach ($districts as $district): ?>
                             <tr>
-                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district->district_name); ?></div>
-                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district->region_name); ?></div>
+                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district['location_name']); ?></div>
+                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district['region_name']); ?></div>
                                 </td>
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'edit')) { ?>
                                     <td>
-                                        <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('district', array('action' => 'edit', 'id' => base64_encode($district->id))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></div>
+                                        <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('district', array('action' => 'edit', 'id' => base64_encode($district['location_id']))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></div>
 
                                         </a> 
                                     </td>
                                 <?php } ?>
                                     <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'delete')) { ?>
-                                <td><div style="overflow:auto;">
-                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($district->district_name); ?> '+'?')) {
+                                <td><div style="width:80px;overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($district['location_name']); ?> '+'?')) {
                                                     alert('Canceled!');
-                                                    return false;};"  href="<?php echo $this->url('district', array('action' => 'delete', 'id' => $district->id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                                    return false;};"  href="<?php echo $this->url('district', array('action' => 'delete', 'id' => $district['location_id'])); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
                                   </div>
                                 </td>
                             <?php } ?>
@@ -154,12 +151,11 @@ $acl = $this->layout()->acl;
 <script src="<?php echo $this->basePath('assets/js/personnel_certification/district.js'); ?>" type="text/javascript"></script>
 
 <script type="text/javascript" language="javascript" >
-                    $(document).ready(function () {
-
-                        $('#example').dataTable({
-                            "aProcessing": true,
-                            "aServerSide": true,
-                        })
-                    });
+    $(document).ready(function () {
+        $('#district').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+        })
+    });
 </script>
 

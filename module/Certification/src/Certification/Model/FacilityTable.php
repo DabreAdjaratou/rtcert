@@ -13,15 +13,12 @@
          $this->tableGateway = $tableGateway;
      }
 
-     public function fetchAll()
-     {
-         $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('id', 'facility_name', 'facility_address', 'district'));
-        $sqlSelect->join('certification_districts', 'certification_districts.id= certification_facilities.district ', array('district_name'), 'left');
-        $sqlSelect->order('facility_name asc');
-
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return $resultSet;
+     public function fetchAll(){
+        $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT * FROM certification_facilities as c_f LEFT JOIN location_details as l_d ON l_d.location_id=c_f.district ORDER BY facility_name ASC';
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+       return $result;
      }
 
      public function getFacility($id)
@@ -61,7 +58,7 @@
      }
      
      public function foreigne_key($facility){
-         $db = $this->tableGateway->getAdapter();
+        $db = $this->tableGateway->getAdapter();
         $sql1 = 'SELECT COUNT(facility_id) as nombre from provider  WHERE facility_id='.$facility;
         $statement = $db->query($sql1);
         $result = $statement->execute();

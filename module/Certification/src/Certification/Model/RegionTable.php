@@ -53,8 +53,8 @@ namespace Certification\Model;
      }
      
      public function foreigne_key($region){
-         $db = $this->tableGateway->getAdapter();
-        $sql1 = 'SELECT COUNT(region) as nombre from certification_districts  WHERE region='.$region;
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT COUNT(location_id) as nombre from location_details  WHERE parent_location = '.$region;
         $statement = $db->query($sql1);
         $result = $statement->execute();
         foreach ($result as $res) {

@@ -598,7 +598,10 @@ ALTER TABLE `user_district_map`
 ALTER TABLE `user_district_map`
   MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT
   
- -- Pal 011 Jan 2018 
+ -- Pal 11 Jan 2018 
 alter table provider drop FOREIGN key fk_provider_district
 
 alter table provider drop FOREIGN key fk_provider_region
+
+-- Pal 12 Jan 2018 
+alter table certification_facilities drop FOREIGN key fk_facility_district

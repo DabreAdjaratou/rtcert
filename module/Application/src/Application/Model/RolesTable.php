@@ -29,7 +29,6 @@ class RolesTable extends AbstractTableGateway  {
     }
 
     public function addRolesDetails($params) {
-        
         if (trim($params['roleName']) != "") {
             $rolesdata = array(
                 'category_id' => 1,
