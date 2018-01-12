@@ -21,7 +21,7 @@ class DistrictForm extends Form {
             'type' => 'select',
             'options' => array(
                 'label' => 'Region',
-                'empty_option' => 'Please Choose A Region',
+                'empty_option' => 'Please Choose a Region',
                 'value_options' => $this->getRegion(),
             ),
         ));

@@ -18,7 +18,7 @@ namespace Certification\Form;
              'type' => 'select',
              'options' => array(
                 'label' => 'Type Of Email',
-//                'empty_option' => 'Please Choose An Option',
+//                'empty_option' => 'Please Choose an Option',
                 'value_options' => array(
                     '1'=>'Send Certificate',
                     '2'=>'Send Reminder')
