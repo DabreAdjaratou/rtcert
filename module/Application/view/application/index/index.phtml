@@ -1,10 +1,7 @@
 <?php
 use Zend\Session\Container;
 $sessionLogin = new Container('credo');
-
 //var_dump($quickStats);die;
-
-
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
@@ -409,7 +406,7 @@ $sessionLogin = new Container('credo');
                       </div>
                     </div>
 
-<div class="col-lg-3 col-sm-6">
+                    <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="content">
                                 <div class="row">
@@ -435,9 +432,7 @@ $sessionLogin = new Container('credo');
                             </div>
                         </div>
                     </div>                                                            
-				</div>
-
-
+	      </div>
 
         <div class="row">
                     <div class="col-md-6">
@@ -447,13 +442,11 @@ $sessionLogin = new Container('credo');
                                 <p class="category">Last 12 months</p>
                             </div>
                             <div class="content">
-                                <div id="chartProvince" class="ct-chart"></div>
-
+                                <div id="pieChartContainer"></div>
                                 <div class="footer">
-
                                     <hr>
                                     <div class="stats">
-                                        <i class="ti-timer"></i> Campaign sent 2 days ago
+                                        <i class="ti-info"></i> Showing only approved certificates
                                     </div>
                                 </div>
                             </div>
@@ -466,10 +459,8 @@ $sessionLogin = new Container('credo');
                                 <p class="category">Last 12 months</p>
                             </div>
                             <div class="content">
-                                <div id="chartActivity" class="ct-chart"></div>
-
+			        <div id="barChartContainer"></div>
                                 <div class="footer">
-
                                     <hr>
                                     <div class="stats">
                                         <i class="ti-info"></i> Showing only approved certificates
@@ -479,123 +470,33 @@ $sessionLogin = new Container('credo');
                         </div>
                     </div>
                 </div>
-
-			</div>
-
-
-
-
-
-
-      
-			</div>				          
+	    </div>
+	  </div>				          
     </div>				
-
-
-
-    <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>    
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>  
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/series-label.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
-
-
 <script>
-
-
-$(document).ready(function(){
-
-// Build the chart
-Highcharts.chart('chartProvince', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: ''
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true
-            },
-            showInLegend: false
-        }
-    },
-    series: [{
-        name: 'Certificates',
-        colorByPoint: true,
-        data: [{
-            name: 'Province A',
-            y: 56.33
-        }, {
-            name: 'Province B',
-            y: 24.03,
-            sliced: true,
-            selected: true
-        }, {
-            name: 'Province C',
-            y: 10.38
-        }, {
-            name: 'Province D',
-            y: 4.77
-        }, {
-            name: 'Province E',
-            y: 0.91
-        }, {
-            name: 'Province F',
-            y: 0.2
-        }]
-    }]
-});  
-
-Highcharts.chart('chartActivity', {
-    chart: {
-        type: 'line'
-    },
-    title: {
-        text: ''
-    },
-    subtitle: {
-        text: ''
-    },
-    xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
-    yAxis: {
-        title: {
-            text: 'No. of Certificates Issued'
-        }
-    },
-    plotOptions: {
-        line: {
-            dataLabels: {
-                enabled: false
-            },
-            enableMouseTracking: true
-        }
-    },
-    series: [{
-        name: 'Certifications',
-        data: [70, 69, 95, 145, 184, 215, 252, 265, 233, 183, 139, 96]
-    },{
-        name: 'Recertifications',
-        data: [8, 9, 9, 14, 18, 25, 52, 65, 33, 83, 39, 69]
-    }]
+  $(document).ready(function(){
+    loadCertificationPieChart();
+    loadCertificationBarChart();
   });
 
-});
-
-
+  function loadCertificationPieChart(){
+    $.post("<?php echo $this->url('dashboard', array('action' => 'get-certification-pie-chart-details')); ?>",{ },
+    function(data) {
+       $("#pieChartContainer").html(data);
+    });
+  }
+  
+  function loadCertificationBarChart(){
+    $.post("<?php echo $this->url('dashboard', array('action' => 'get-certification-bar-chart-details')); ?>",{ },
+    function(data) {
+       $("#barChartContainer").html(data);
+    });
+  }
 </script>
-
-

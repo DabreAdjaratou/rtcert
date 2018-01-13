@@ -13,8 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Json\Json;
 
-class IndexController extends AbstractActionController
-{
+class IndexController extends AbstractActionController{
     public function indexAction(){
 
         $dashService = $this->getServiceLocator()->get('DashboardService');
