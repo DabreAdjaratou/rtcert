@@ -32,8 +32,7 @@
          return $row;
      }
 
-     public function saveFacility(Facility $facility)
-     {
+     public function saveFacility(Facility $facility){
          $data = array(
              'facility_name' =>strtoupper( $facility->facility_name),
              'facility_address'  => $facility->facility_address,
@@ -52,8 +51,7 @@
          }
      }
      
-     public function deleteFacility($id)
-     {
+     public function deleteFacility($id){
          $this->tableGateway->delete(array('id' => (int) $id));
      }
      

@@ -2,8 +2,8 @@
 
 namespace Certification\Controller;
 
-use Zend\Session\Container;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Certification\Model\Region;
 use Certification\Form\RegionForm;
@@ -29,9 +29,8 @@ class RegionController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $region = new Region();
-            //$form->setInputFilter($region->getInputFilter());
+            $form->setInputFilter($region->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
                 $region->exchangeArray($form->getData());
                 $commonSerive->saveRegion($region);
@@ -71,10 +70,11 @@ class RegionController extends AbstractActionController {
             $region = new Region();
             $form->setInputFilter($region->getInputFilter());
             $form->setData($request->getPost());
-            //if ($form->isValid()) {
+            if ($form->isValid()) {
+                $region->exchangeArray($form->getData());
                 $commonSerive->saveRegion($request->getPost());
                 return $this->redirect()->toRoute('region');
-            //}
+            }
         }
 
         return array(

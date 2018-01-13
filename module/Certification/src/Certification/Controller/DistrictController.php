@@ -2,8 +2,8 @@
 
 namespace Certification\Controller;
 
-use Zend\Session\Container;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
 use Certification\Model\District;
 use Certification\Form\DistrictForm;
@@ -29,9 +29,8 @@ class DistrictController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $district = new District();
-            //$form->setInputFilter($district->getInputFilter());
+            $form->setInputFilter($district->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
                 $district->exchangeArray($form->getData());
                 $commonSerive->saveDistrict($district);
@@ -70,10 +69,11 @@ class DistrictController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            //$form->setInputFilter($district->getInputFilter());
+            $district = new District();
+            $form->setInputFilter($district->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
+                $district->exchangeArray($form->getData());
                 $commonSerive->saveDistrict($district);
                 return $this->redirect()->toRoute('district');
             }

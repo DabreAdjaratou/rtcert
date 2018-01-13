@@ -31,7 +31,6 @@ class FacilityController extends AbstractActionController {
             $facility = new Facility();
             $form->setInputFilter($facility->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
                 $facility->exchangeArray($form->getData());
                 $this->getFacilityTable()->saveFacility($facility);
@@ -71,10 +70,11 @@ class FacilityController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
+            //$facility = new Facility();
             $form->setInputFilter($facility->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
+                //$facility->exchangeArray($form->getData());
                 $this->getFacilityTable()->saveFacility($facility);
                 $container = new Container('alert');
                 $container->alertMsg = 'Facility updated successfully';

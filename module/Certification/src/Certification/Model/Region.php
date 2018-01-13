@@ -49,7 +49,7 @@ class Region {
             ));
             
             $inputFilter->add(array(
-                'name' => '$location_name',
+                'name' => 'location_name',
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),

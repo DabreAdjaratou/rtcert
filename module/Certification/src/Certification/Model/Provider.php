@@ -185,7 +185,6 @@ class Provider {
                 ),
             ));
 
-
             $inputFilter->add(array(
                 'name' => 'region',
                 'required' => true,
