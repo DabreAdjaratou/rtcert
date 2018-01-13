@@ -109,8 +109,8 @@ $acl = $this->layout()->acl;
                     <tbody>
                         <?php foreach ($districts as $district): ?>
                             <tr>
-                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district['location_name']); ?></div>
-                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($district['region_name']); ?></div>
+                                <td><div style="width:200px;overflow:auto;"><?php echo ucfirst($this->escapeHtml($district['location_name'])); ?></div>
+                                <td><div style="width:200px;overflow:auto;"><?php echo ucfirst($this->escapeHtml($district['region_name'])); ?></div>
                                 </td>
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\District', 'edit')) { ?>
                                     <td>

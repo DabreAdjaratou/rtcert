@@ -20,14 +20,18 @@ class DashboardService {
     }
 
     public function getQuickStats(){
-
         $certificationDb = $this->sm->get('Certification\Model\CertificationTable');
-
         return $certificationDb->getQuickStats();
-
     }
 
-
-
+    public function getCertificationPieChartResults($params){
+        $certificationDb = $this->sm->get('Certification\Model\CertificationTable');
+        return $certificationDb->getCertificationPieChartResults($params);
+    }
+    
+    public function getCertificationBarChartResults($params){
+        $certificationDb = $this->sm->get('Certification\Model\CertificationTable');
+        return $certificationDb->getCertificationBarChartResults($params);
+    }
 
 }

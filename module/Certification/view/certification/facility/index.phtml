@@ -127,9 +127,9 @@ $acl = $this->layout()->acl;
                         <tbody>
                             <?php foreach ($facilities as $facility) : ?>
                                 <tr>
-                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility['facility_name']); ?></div></td>
-                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($facility['facility_address']); ?></div></td>
-                                    <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml((isset($facility['location_name']))?$facility['location_name']:''); ?></div></td>
+                                    <td><div style="width:200px;overflow:auto;"><?php echo ucfirst($this->escapeHtml($facility['facility_name'])); ?></div></td>
+                                    <td><div style="width:200px;overflow:auto;"><?php echo ucfirst($this->escapeHtml($facility['facility_address'])); ?></div></td>
+                                    <td><div style="width:200px;overflow:auto;"><?php echo (isset($facility['location_name']))?ucfirst($this->escapeHtml($facility['location_name'])):''; ?></div></td>
                                     <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'edit')) { ?>
                                         <td>
                                             <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('facility', array('action' => 'edit', 'id' => base64_encode($facility['id']))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> </div>

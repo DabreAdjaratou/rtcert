@@ -101,8 +101,8 @@ $acl = $this->layout()->acl;
                     <tbody>
                         <?php foreach ($regions as $region): ?>
                             <tr>
-                                <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($region['location_name']); ?></div></td>
-                                 <td><div style="width:200px;overflow:auto;"><?php echo $this->escapeHtml($region['country_name']); ?></div></td>
+                                <td><div style="width:200px;overflow:auto;"><?php echo ucfirst($this->escapeHtml($region['location_name'])); ?></div></td>
+                                 <td><div style="width:200px;overflow:auto;"><?php echo ucfirst($this->escapeHtml($region['country_name'])); ?></div></td>
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'edit')) { ?>
                                     <td>
                                         <div style="width:80px;overflow:auto;"><a href="<?php echo $this->url('region', array('action' => 'edit', 'id' => base64_encode($region['location_id']))); ?>"> <span class="glyphicon glyphicon-pencil"> Edit</span></a></div>

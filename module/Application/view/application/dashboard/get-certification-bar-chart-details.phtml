@@ -1,0 +1,63 @@
+<div id="chartStats" class="ct-chart"></div>
+<script>
+    Highcharts.chart('chartStats', {
+    chart: {
+        type: 'line'
+    },
+    credits: {
+        enabled: false
+    },
+    title: {
+        text: ''
+    },
+    subtitle: {
+        text: ''
+    },
+    exporting:{
+        chartOptions:{
+            subtitle: {
+                text:'Certification Stats',
+            }
+        }
+    },
+    xAxis: {
+        categories: [
+                   <?php
+                   foreach($result['month'] as $month){
+                       echo '"'.$month.'",';
+                   }
+                   ?>
+                ]
+    },
+    yAxis: {
+        title: {
+            text: 'No. of Certificates Issued'
+        },
+        allowDecimals: false
+    },
+    plotOptions: {
+        line: {
+            dataLabels: {
+                enabled: false
+            },
+            enableMouseTracking: true
+        }
+    },
+    series: [
+            <?php
+            foreach($result['certification'] as $key=>$certification){
+            ?>
+            {
+              name: '<?php echo $key; ?>',
+              data: [
+                <?php
+                  foreach($certification as $count){
+                    echo '{y:'.$count.'},';
+                  }
+              ?>
+              ]
+            },
+          <?php } ?>
+    ]
+  });
+</script>

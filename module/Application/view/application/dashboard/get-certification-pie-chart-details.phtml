@@ -1,0 +1,52 @@
+<div id="chartProvince" class="ct-chart"></div>
+<script>
+    Highcharts.chart('chartProvince', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    credits: {
+        enabled: false
+    },
+    title: {
+        text: ''
+    },
+    exporting:{
+        chartOptions:{
+            subtitle: {
+                text:'Performance',
+            }
+        }
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false,
+                //distance: -60
+            },
+            showInLegend: true
+        }
+    },
+    series: [{
+        name: 'Certificates',
+        colorByPoint: true,
+        data: [
+        <?php  if(isset($result) && count($result) > 0) {
+            foreach($result as $region){
+            ?>
+        {
+            name: '<?php echo ucfirst($region['location_name']); ?>',
+            y: <?php echo $region['total_certification']; ?>
+        },
+        <?php } } ?>
+        ]
+    }]
+});
+</script>

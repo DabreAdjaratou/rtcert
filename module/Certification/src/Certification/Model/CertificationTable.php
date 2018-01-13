@@ -21,7 +21,6 @@ class CertificationTable {
 
 
     public function getQuickStats(){
-
         $dbAdapter = $this->tableGateway->getAdapter();
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from(array('c'=>'certification'))
@@ -56,7 +55,54 @@ class CertificationTable {
                 return $res[0];
     }
 
-
+    public function getCertificationPieChartResults($params){
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = new Sql($dbAdapter);
+        $query = $sql->select()->from(array('c'=>'certification'))
+                     ->columns(array("total_certification" => new Expression('COUNT(*)')))
+                     ->join(array('e'=>'examination'),'e.id=c.examination',array())
+                     ->join(array('p'=>'provider'),'p.id=e.provider',array())
+                     ->join(array('l_d'=>'location_details'),'l_d.location_id=p.region',array('location_name'))
+                     ->where('(c.final_decision = "Certified" OR c.final_decision = "certified") AND date_certificate_issued > DATE_SUB(NOW(), INTERVAL 12 MONTH) AND date_end_validity > NOW()')
+                     ->group('p.region');
+        $queryStr = $sql->getSqlStringForSqlObject($query);
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+    
+    public function getCertificationBarChartResults($params){
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = new Sql($dbAdapter);
+        $start = strtotime(date("Y", strtotime("-1 year")).'-'.date('m', strtotime('+1 month', strtotime('-1 year'))));
+        $end = strtotime(date('Y').'-'.date('m'));
+        $j = 0;
+        $certificationResult = array();
+        while($start <= $end){
+            $month = date('m', $start); $year = date('Y', $start); $monthYearFormat = date("M 'y", $start);
+            $query = $sql->select()->from(array('c'=>'certification'))
+                         ->columns(
+                                   array(
+                                        "certifications" => new Expression("SUM(CASE 
+                                                                                    WHEN ((c.certification_type IS NOT NULL AND c.certification_type != 'NULL' AND c.certification_type != '' AND (c.certification_type = 'Initial' OR c.certification_type = 'initial'))) THEN 1
+                                                                                    ELSE 0
+                                                                                    END)"),
+                                         "recertifications" => new Expression("SUM(CASE 
+                                                                                    WHEN ((c.certification_type IS NOT NULL AND c.certification_type != 'NULL' AND c.certification_type != '' AND (c.certification_type = 'Recertification' OR c.certification_type = 'recertification'))) THEN 1
+                                                                                    ELSE 0
+                                                                                    END)")
+                                    )
+                                )
+                         ->where('(c.final_decision = "Certified" OR c.final_decision = "certified") AND Month(date_certificate_issued)="'.$month.'" AND Year(date_certificate_issued)="'.$year.'" AND date_end_validity > NOW()');
+            $queryStr = $sql->getSqlStringForSqlObject($query);
+            $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $certificationResult['certification']['Certifications'][$j] = (isset($result[0]["certifications"]))?$result[0]["certifications"]:0;
+            $certificationResult['certification']['Recertifications'][$j] = (isset($result[0]["recertifications"]))?$result[0]["recertifications"]:0;
+            $certificationResult['month'][$j] = $monthYearFormat;
+          $start = strtotime("+1 month", $start);
+          $j++;
+        }
+      return $certificationResult;
+    }
+    
     /**
      * select all certified tester
      * @return type
