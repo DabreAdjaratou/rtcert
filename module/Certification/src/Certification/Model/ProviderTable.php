@@ -20,12 +20,16 @@ class ProviderTable extends AbstractTableGateway {
         $logincontainer = new Container('credo');
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
-        $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left')
-                  ->join(array('l_d_r'=>'location_details'), 'l_d_r.location_id = provider.region', array('region_name'=>'location_name'), 'left')
-                  ->join(array('l_d_d'=>'location_details'), 'l_d_d.location_id = provider.district', array('district_name'=>'location_name'), 'left');
+        $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'))
+                  ->join(array('l_d_r'=>'location_details'), 'l_d_r.location_id = provider.region', array('region_name'=>'location_name'))
+                  ->join(array('l_d_d'=>'location_details'), 'l_d_d.location_id = provider.district', array('district_name'=>'location_name'));
         $sqlSelect->order('certification_reg_no desc');
         if(isset($logincontainer->district) && count($logincontainer->district) > 0){
             $sqlSelect->where('provider.district IN('.implode(',',$logincontainer->district).')');
+        }else if(isset($logincontainer->region) && count($logincontainer->region) > 0){
+            $sqlSelect->where('provider.region IN('.implode(',',$logincontainer->region).')');
+        }else if(isset($logincontainer->country) && count($logincontainer->country) > 0){
+            $sqlSelect->where('l_d_r.country IN('.implode(',',$logincontainer->country).')');
         }
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
