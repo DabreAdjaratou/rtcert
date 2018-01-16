@@ -1,7 +1,5 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
 ?>
 
@@ -77,14 +75,20 @@ $sessionLogin = new Container('credo');
                                         </select>
                                     </div>
                                     <div class="form-group col-lg-6"> 
+                                        <label>Country</label>
+                                        <select class="form-control" name="country" id="country" onchange="showRegion(this.value)">
+                                            <option value="">All</option>
+                                            <?php
+                                            foreach ($countries as $key => $country) {
+                                                echo ' <option value="' . $key . '">' . $country . '</option>';
+                                            };
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-lg-6"> 
                                         <label>Region</label>
                                         <select class="form-control" name="region" id="Region" onchange="showDistrict(this.value)">
                                             <option value="">All</option>
-                                            <?php
-                                            foreach ($regions as $key => $region) {
-                                                echo ' <option value="' . $key . '">' . $region . '</option>';
-                                            };
-                                            ?>
                                         </select>
                                     </div>
                                     <div class="form-group col-lg-6"> 
@@ -99,13 +103,13 @@ $sessionLogin = new Container('credo');
                                             <option value="">All</option>
                                         </select>
                                     </div>
-                                    <div class="form-group col-lg-6" style="margin-top: 30px">
-                                        <button class="btn btn-primary" type="submit"  >GET REPORT</button> 
-                                        <a class="btn  btn-space btn-default" role="button" style="margin-top: 5px" href="<?php echo $this->url('certification', array('action' => 'xls')); ?>" >CANCEL</a>
+                                    <div class="row" style="text-align:center;">
+                                        <div class="form-group col-lg-12" style="margin-top: 30px">
+                                            <button class="btn btn-primary" type="submit"  >GET REPORT</button> 
+                                            <a class="btn  btn-space btn-default" role="button" style="margin-top: 5px" href="<?php echo $this->url('certification', array('action' => 'xls')); ?>" >CANCEL</a>
+                                        </div>
                                     </div>
-                                </div>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -128,67 +132,79 @@ $sessionLogin = new Container('credo');
     <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/certification.js'); ?>"></script>
     <script>
-                                            $('#dateRange').daterangepicker({
-                                                format: 'DD-MM-YYYY',
-                                                startDate: moment().subtract('days', 29),
-                                                endDate: moment(),
-                                                maxDate: moment(),
-                                                ranges: {
-                                                    'Today': [moment(), moment()],
-                                                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-                                                    'Last 7 Days': [moment().subtract('days', 6), moment()],
-                                                    'Last 30 Days': [moment().subtract('days', 29), moment()],
-                                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-                                                },
-                                            },
-                                                    );
+    $('#dateRange').daterangepicker({
+        format: 'DD-MM-YYYY',
+        startDate: moment().subtract('days', 29),
+        endDate: moment(),
+        maxDate: moment(),
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+            'Last 7 Days': [moment().subtract('days', 6), moment()],
+            'Last 30 Days': [moment().subtract('days', 29), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+        },
+    });
 
+    function showRegion(str) {
+            if (str == "") {
+               document.getElementById("Region").innerHTML = "<option value=''>All</option>";
+               document.getElementById("District").innerHTML = "<option value=''>All</option>";
+               document.getElementById("Facility Name").innerHTML = "<option value=''>All</option>";
+              return false;
+            }else{
+                $.post("<?php echo $this->url('provider', array('action' => 'region')); ?>", {q: str},
+                function(data) {
+                   document.getElementById("Region").innerHTML = data;
+                   document.getElementById("District").innerHTML = "<option value=''>All</option>";
+                   document.getElementById("Facility Name").innerHTML = "<option value=''>All</option>";
+                });
+            }
+    }
+    
+    function showDistrict(str) {
+        if (str == "") {
+            document.getElementById("District").innerHTML = "";
+            return;
+        } else {
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("District").innerHTML = this.responseText;
+                }
+            };
+            xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
+            xmlhttp.send();
+        }
+    }
 
-                                            function showDistrict(str) {
-
-                                                if (str == "") {
-                                                    document.getElementById("District").innerHTML = "";
-                                                    return;
-                                                } else {
-                                                    if (window.XMLHttpRequest) {
-                                                        // code for IE7+, Firefox, Chrome, Opera, Safari
-                                                        xmlhttp = new XMLHttpRequest();
-                                                    } else {
-                                                        // code for IE6, IE5
-                                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                                                    }
-                                                    xmlhttp.onreadystatechange = function () {
-                                                        if (this.readyState == 4 && this.status == 200) {
-                                                            document.getElementById("District").innerHTML = this.responseText;
-                                                        }
-                                                    };
-                                                    xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
-                                                    xmlhttp.send();
-                                                }
-                                            }
-
-                                            function showFacilities(str) {
-
-                                                if (str == "") {
-                                                    document.getElementById("Facility Name").innerHTML = "";
-                                                    return;
-                                                } else {
-                                                    if (window.XMLHttpRequest) {
-                                                        // code for IE7+, Firefox, Chrome, Opera, Safari
-                                                        xmlhttp = new XMLHttpRequest();
-                                                    } else {
-                                                        // code for IE6, IE5
-                                                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                                                    }
-                                                    xmlhttp.onreadystatechange = function () {
-                                                        if (this.readyState == 4 && this.status == 200) {
-                                                            document.getElementById("Facility Name").innerHTML = this.responseText;
-                                                        }
-                                                    };
-                                                    xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
-                                                    xmlhttp.send();
-                                                }
-                                            }
+    function showFacilities(str) {
+        if (str == "") {
+            document.getElementById("Facility Name").innerHTML = "";
+            return;
+        } else {
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("Facility Name").innerHTML = this.responseText;
+                }
+            };
+            xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
+            xmlhttp.send();
+        }
+    }
     </script>
 

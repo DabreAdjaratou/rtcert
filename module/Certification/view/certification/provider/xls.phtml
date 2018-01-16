@@ -1,7 +1,5 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
 ?>
 
@@ -32,7 +30,13 @@ $sessionLogin = new Container('credo');
 
                                 <?php
                                 $form->prepare();
-
+                                $form->get('country')->setAttributes([
+                                    'class' => 'form-control',
+                                    'autocomplete' => 'off',
+                                    'id' => 'Country',
+                                    'onclick' => 'emptyInput(this)',
+                                    'onchange' => 'showRegion(this.value)'
+                                ]);
                                 $form->get('region')->setAttributes([
                                     'class' => 'form-control',
                                     'autocomplete' => 'off',
@@ -83,7 +87,11 @@ $sessionLogin = new Container('credo');
                                 echo $this->form()->openTag($form);
                                 ?>
                                 <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-
+                                <div class="form-group col-lg-6">
+                                    <?= $this->formLabel($form->get('country')); ?>
+                                    <?= $this->formElement($form->get('country')); ?>
+                                    <?= $this->formElementErrors($form->get('country')); ?>
+                                </div>
 
                                 <div class="form-group col-lg-6">
                                     <?= $this->formLabel($form->get('region')); ?>
@@ -116,12 +124,10 @@ $sessionLogin = new Container('credo');
                                     <?= $this->formElement($form->get('current_jod')); ?>
                                     <?= $this->formElementErrors($form->get('current_jod')); ?>
                                 </div>
-
-
-
-                                <div class="form-group col-lg-4" style="margin-top: 30px"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                                    <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('provider', array('action' => 'xls')); ?>" >CANCEL</a> </div>
-
+                                <div class="form-group col-lg-12" style="margin-top: 30px;text-align:center;">
+                                    <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
+                                    <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('provider', array('action' => 'xls')); ?>" >CANCEL</a>
+                                </div>
                                 <?php echo $this->form()->closeTag();
                                 ?>
                             </form>
@@ -147,50 +153,65 @@ $sessionLogin = new Container('credo');
     <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/certification.js'); ?>"></script>
     <script>
-        function showDistrict(str) {
-
+    function showRegion(str) {
             if (str == "") {
-                document.getElementById("District").innerHTML = "";
-                return;
-            } else {
-                if (window.XMLHttpRequest) {
-                    // code for IE7+, Firefox, Chrome, Opera, Safari
-                    xmlhttp = new XMLHttpRequest();
-                } else {
-                    // code for IE6, IE5
-                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-                xmlhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        document.getElementById("District").innerHTML = this.responseText;
-                    }
-                };
-                xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
-                xmlhttp.send();
+               document.getElementById("Region").innerHTML = "<option value=''>Please Choose a Country First</option>";
+               document.getElementById("District").innerHTML = "<option value=''>Please Choose a Region First</option>";
+               document.getElementById("Facility Name").innerHTML = "<option value=''>Please Choose a District First</option>";
+              return false;
+            }else{
+                $.post("<?php echo $this->url('provider', array('action' => 'region')); ?>", {q: str},
+                function(data) {
+                   document.getElementById("Region").innerHTML = data;
+                   document.getElementById("District").innerHTML = "<option value=''>Please Choose a Region First</option>";
+                   document.getElementById("Facility Name").innerHTML = "<option value=''>Please Choose a District First</option>";
+                });
             }
-        }
-
-        function showFacilities(str) {
-
-            if (str == "") {
-                document.getElementById("Facility Name").innerHTML = "";
-                return;
+    }
+    
+    function showDistrict(str) {
+        if (str == "") {
+            document.getElementById("District").innerHTML = "Please Choose a Region First";
+            return;
+        } else {
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
             } else {
-                if (window.XMLHttpRequest) {
-                    // code for IE7+, Firefox, Chrome, Opera, Safari
-                    xmlhttp = new XMLHttpRequest();
-                } else {
-                    // code for IE6, IE5
-                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-                xmlhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        document.getElementById("Facility Name").innerHTML = this.responseText;
-                    }
-                };
-                xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
-                xmlhttp.send();
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
             }
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("District").innerHTML = this.responseText;
+                    document.getElementById("Facility Name").innerHTML = "<option value=''>Please Choose a District First</option>";
+                }
+            };
+            xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
+            xmlhttp.send();
         }
+    }
+
+    function showFacilities(str) {
+        if (str == "") {
+            document.getElementById("Facility Name").innerHTML = "Please Choose a District First";
+            return;
+        } else {
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("Facility Name").innerHTML = this.responseText;
+                }
+            };
+            xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
+            xmlhttp.send();
+        }
+    }
     </script>
 

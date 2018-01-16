@@ -19,7 +19,6 @@ class TrainingTable extends AbstractTableGateway {
     }
 
     public function fetchAll() {
-
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('training_id', 'Provider_id', 'type_of_competency', 'last_training_date', 'type_of_training', 'length_of_training', 'training_organization_id', 'facilitator', 'training_certificate', 'date_certificate_issued', 'Comments'));
         $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id', 'certification_reg_no'), 'left')
@@ -94,9 +93,9 @@ class TrainingTable extends AbstractTableGateway {
          $this->tableGateway->delete(array('training_id' => (int) $training_id));
      }
 
-     public function report($type_of_competency,$type_of_training,$training_organization_id,$training_certificate,$typeHiv,$jobTitle,$region,$district,$facility) {
+     public function report($type_of_competency,$type_of_training,$training_organization_id,$training_certificate,$typeHiv,$jobTitle,$country,$region,$district,$facility) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT provider.certification_reg_no, provider.certification_id, provider.professional_reg_no, provider.first_name, provider.last_name, provider.middle_name,certification_regions.region_name,certification_districts.district_name, provider.type_vih_test, provider.phone,provider.email, provider.prefered_contact_method,provider.current_jod, provider.time_worked,provider.test_site_in_charge_name, provider.test_site_in_charge_phone,provider.test_site_in_charge_email, provider.facility_in_charge_name, provider.facility_in_charge_phone, provider.facility_in_charge_email,certification_facilities.facility_name, type_of_competency, last_training_date, type_of_training, length_of_training, facilitator, training_certificate, date_certificate_issued, Comments, training_organization_name, type_organization FROM provider,training, certification_regions,certification_districts,certification_facilities, training_organization where provider.id=training.Provider_id and provider.region=certification_regions.id and provider.district=certification_districts.id and provider.facility_id=certification_facilities.id and training.training_organization_id=training_organization.training_organization_id';
+        $sql = 'SELECT provider.certification_reg_no, provider.certification_id, provider.professional_reg_no, provider.first_name, provider.last_name, provider.middle_name,l_d_r.location_name as region_name,l_d_d.location_name as district_name,c.country_name, provider.type_vih_test, provider.phone,provider.email, provider.prefered_contact_method,provider.current_jod, provider.time_worked,provider.test_site_in_charge_name, provider.test_site_in_charge_phone,provider.test_site_in_charge_email, provider.facility_in_charge_name, provider.facility_in_charge_phone, provider.facility_in_charge_email,certification_facilities.facility_name, type_of_competency, last_training_date, type_of_training, length_of_training, facilitator, training_certificate, date_certificate_issued, Comments, training_organization_name, type_organization FROM provider,training, location_details as l_d_r,location_details as l_d_d,country as c,certification_facilities, training_organization where provider.id=training.Provider_id and provider.region=l_d_r.location_id and provider.district=l_d_d.location_id and l_d_r.country=c.country_id and provider.facility_id=certification_facilities.id and training.training_organization_id=training_organization.training_organization_id';
        
         if (!empty($type_of_competency)) {
             $sql = $sql . ' and type_of_competency="' . $type_of_competency . '"';
@@ -121,12 +120,16 @@ class TrainingTable extends AbstractTableGateway {
             $sql = $sql . ' and provider.current_jod="' . $jobTitle . '"';
         }
 
+        if (!empty($country)) {
+            $sql = $sql . ' and c.country_id=' . $country;
+        }
+        
         if (!empty($region)) {
-            $sql = $sql . ' and certification_regions.id=' . $region;
+            $sql = $sql . ' and l_d_r.location_id=' . $region;
         }
 
         if (!empty($district)) {
-            $sql = $sql . ' and certification_districts.id=' . $district;
+            $sql = $sql . ' and l_d_d.location_id=' . $district;
         }
 
         if (!empty($facility)) {
@@ -139,6 +142,19 @@ class TrainingTable extends AbstractTableGateway {
         return $result;
     }
     
+    public function getAllActiveCountries(){
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = 'SELECT * FROM country ORDER by country_name asc ';
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        $selectData = [];
+        foreach ($result as $res) {
+            $selectData[$res['country_id']] = ucwords($res['country_name']);
+        }
+//        die(print_r($selectData));
+        return $selectData;
+    }
+    
     public function getRegions() {
         $dbAdapter = $this->tableGateway->getAdapter();
         $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
@@ -146,7 +162,7 @@ class TrainingTable extends AbstractTableGateway {
         $result = $statement->execute();
         $selectData = [];
         foreach ($result as $res) {
-            $selectData[$res['id']] = $res['region_name'];
+            $selectData[$res['id']] = ucwords($res['region_name']);
         }
 //        die(print_r($selectData));
         return $selectData;
