@@ -138,7 +138,7 @@ class RolesTable extends AbstractTableGateway  {
          */
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from('roles')->where("role_code !='daemon'");
+        $sQuery = $sql->select()->from('roles')->where("role_code !='AD'");
         //$sQuery=$this->select();
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
@@ -165,7 +165,7 @@ class RolesTable extends AbstractTableGateway  {
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $iTotal = $this->select("role_code !='daemon'")->count();
+        $iTotal = $this->select("role_code !='AD'")->count();
 
         $output = array(
             "sEcho" => intval($parameters['sEcho']),

@@ -47,11 +47,11 @@ class Acl extends ZendAcl {
             }
         }
 
-        if (!$this->hasRole('daemon')) {
-            $this->addRole('daemon');
+        if (!$this->hasRole('AD')) {
+            $this->addRole('AD');
         }
 
-        $this->allow('daemon');
+        $this->allow('AD');
     }
 
 }

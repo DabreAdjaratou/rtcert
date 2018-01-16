@@ -74,8 +74,7 @@ class UsersTable extends AbstractTableGateway {
                         if(!in_array($userDistrict['country'],$country)){ $country[] = $userDistrict['country']; }
                     }
                 }
-            }
-            if(isset($sResult->access_level) && $sResult->access_level!= null && trim($sResult->access_level)!= '' && (int)$sResult->access_level == 3){
+            }else if(isset($sResult->access_level) && $sResult->access_level!= null && trim($sResult->access_level)!= '' && (int)$sResult->access_level == 3){
                 $userProvinceQuery = $sql->select()->from(array('u_p_map' => 'user_province_map'))
                                          ->join(array('l_d'=>'location_details'),'l_d.location_id=u_p_map.location_id',array('location_id','country'))
                                          ->where(array('u_p_map.user_id'=>$sResult->id))
@@ -88,8 +87,7 @@ class UsersTable extends AbstractTableGateway {
                         if(!in_array($userProvince['country'],$country)){ $country[] = $userProvince['country']; }
                     }
                 }
-            }
-            if(isset($sResult->access_level) && $sResult->access_level!= null && trim($sResult->access_level)!= '' && (int)$sResult->access_level == 2){
+            }else if(isset($sResult->access_level) && $sResult->access_level!= null && trim($sResult->access_level)!= '' && (int)$sResult->access_level == 2){
                 $userCountryQuery = $sql->select()->from(array('u_c_map' => 'user_country_map'))
                                         ->where(array('u_c_map.user_id'=>$sResult->id));
                 $userCountryQueryStr = $sql->getSqlStringForSqlObject($userCountryQuery);
@@ -100,8 +98,10 @@ class UsersTable extends AbstractTableGateway {
                     }
                 }
             }
+        
             $logincontainer->userId = $sResult->id;
             $logincontainer->login = $sResult->login;
+            $logincontainer->roleId = $sResult->role_id;
             $logincontainer->roleCode = $sResult->role_code;
             $logincontainer->token = $token;
             $logincontainer->district = $district;

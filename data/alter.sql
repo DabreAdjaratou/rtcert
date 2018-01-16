@@ -605,3 +605,12 @@ alter table provider drop FOREIGN key fk_provider_region
 
 -- Pal 12 Jan 2018 
 alter table certification_facilities drop FOREIGN key fk_facility_district
+
+
+-- Pal 16 Jan 2018
+
+INSERT INTO `roles` (`role_id`, `category_id`, `role_code`, `role_name`, `access_level`, `description`, `status`) VALUES
+(1, 1, 'AD', 'Super Admin', 1, NULL, 'active'),
+(2, 1, 'CM', 'Country Manager', 2, NULL, 'active'),
+(3, 1, 'DM', 'Data Manager', 3, NULL, 'active'),
+(4, 1, 'DEO', 'Data Entry Operator', 3, NULL, 'active');
