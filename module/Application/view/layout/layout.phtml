@@ -141,15 +141,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
             <?php } ?>
             </ul>
             
-
-
-          <?php
-                        if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Provider", "index")) {
-                            ?>
                             
                             <ul class="nav navbar-nav am-top-menu">
-                                    
-
                             <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">System Admin <span class="caret"></span></a>
                             <ul role="menu" class="dropdown-menu">
                             <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
@@ -209,21 +202,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                                             </ul>
                                         </li>
                                     
-
                                         <li class="dropdown">
                                           
                                         </li>
-                                    
-
-
-                                   
-
                                 </ul> 
-                        <?php } ?>
-
-
-
-
                                 <!--the flashing buttons-->
                         <?php
                         if (!empty($nb) && $nb > 0) {
