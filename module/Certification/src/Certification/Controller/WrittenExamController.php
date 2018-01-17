@@ -2,10 +2,10 @@
 
 namespace Certification\Controller;
 
+use Zend\Session\Container;
 use Zend\Mvc\Controller\AbstractActionController;
 use Certification\Form\WrittenExamForm;
 use Zend\View\Model\ViewModel;
-use Zend\Session\Container;
 
 class WrittenExamController extends AbstractActionController {
 
@@ -52,7 +52,6 @@ class WrittenExamController extends AbstractActionController {
 
             $nb_days = $this->getWrittenExamTable()->numberOfDays($provider_id);
             if (isset($nb_days) && $nb_days <= 30) {
-
                 $container->alertMsg = 'The last attempt of this tester was ' . $nb_days . ' day(s) ago. Please wait at lease ' . date("d-m-Y", strtotime(date("Y-m-d") . "  + " . (31 - $nb_days) . " day"));
                 return array(
                     'form' => $form,);

@@ -614,3 +614,12 @@ INSERT INTO `roles` (`role_id`, `category_id`, `role_code`, `role_name`, `access
 (2, 1, 'CM', 'Country Manager', 2, NULL, 'active'),
 (3, 1, 'DM', 'Data Manager', 3, NULL, 'active'),
 (4, 1, 'DEO', 'Data Entry Operator', 3, NULL, 'active');
+
+-- Pal 17 Jan 2018
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Months certification is valid', 'month-validity', NULL);
+
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Flex limit of months allowed for recertification after validity period', 'month-flex-limit', NULL), (NULL, 'Month allowed prior to certification to give recertification exam', 'month-prior', NULL);
+
+UPDATE `global_config` SET `global_name` = 'month-prior-to-certification' WHERE `global_config`.`config_id` = 9;
+
+UPDATE `global_config` SET `global_name` = 'month-valid' WHERE `global_config`.`config_id` = 7; 

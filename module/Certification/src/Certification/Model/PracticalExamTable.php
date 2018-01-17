@@ -4,17 +4,20 @@ namespace Certification\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
+use \Application\Model\GlobalTable;
 
 class PracticalExamTable extends AbstractTableGateway {
 
     private $tableGateway;
 
-    public function __construct(TableGateway $tableGateway) {
+    public function __construct(TableGateway $tableGateway, Adapter $adapter) {
         $this->tableGateway = $tableGateway;
+        $this->adapter = $adapter;
     }
 
     public function fetchAll() {
@@ -40,11 +43,9 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     public function savePracticalExam(PracticalExam $practicalExam) {
-
         $date = $practicalExam->date;
         $date_explode = explode("-", $date);
         $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
-
 
         $data = array(
             'exam_type' => $practicalExam->exam_type,
@@ -134,26 +135,49 @@ class PracticalExamTable extends AbstractTableGateway {
      */
     public function attemptNumber($provider) {
         $db = $this->tableGateway->getAdapter();
-
-        $sql1 = 'select max(date_certificate_issued) as max_date  from certification, examination WHERE certification.examination=examination.id and final_decision="certified" and provider=' . $provider;
+        $sql1 = 'select max(date_certificate_issued) as max_date, date_end_validity, certification_id from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider;
         $statement1 = $db->query($sql1);
         $result1 = $statement1->execute();
         foreach ($result1 as $res1) {
             $max_date = $res1['max_date'];
+            $date_end_validity = $res1['date_end_validity'];
+            $certification_id = $res1['certification_id'];
         }
 
         if ($max_date == null) {
             $max_date = '0000-00-00';
+            $date_end_validity = '0000-00-00';
         }
-
+        if($certification_id != NULL){
+            $dbAdapter = $this->adapter;
+            $globalDb = new GlobalTable($dbAdapter);
+            $monthFlexLimit = $globalDb->getGlobalValue('month-flex-limit');
+            $monthPriortoCertification = $globalDb->getGlobalValue('month-prior-to-certification');
+            $startdate = strtotime(date('Y-m-d'));
+            $enddate = strtotime($date_end_validity);
+            $startyear = date('Y', $startdate);
+            $endyear = date('Y', $enddate);
+            $startmonth = date('m', $startdate);
+            $endmonth = date('m', $enddate);
+            $remmonths = (($endyear - $startyear) * 12) + ($endmonth - $startmonth);
+            if($remmonths > $monthFlexLimit){
+                $date_after = date("Y-m-d", strtotime($date_end_validity . '- '.$monthPriortoCertification.' month'));
+                $date_before = date("Y-m-d", strtotime($date_end_validity . '+ 6 month'));
+                return 'flex##'.$certification_id.'##'.$max_date.'##'.$date_after.'##'.$date_before;
+            }/*else if($remmonths < $monthPriortoCertification){
+                return '';
+            }*/
+        }
         $sql = 'SELECT COUNT(*) as nombre from (select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, 
                 date_certificate_sent, certification_type, provider,last_name, first_name, middle_name, certification_id,
                 certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where examination.id = certification.examination and provider.id = examination.provider and final_decision in ("failed","pending") and date_certificate_issued >' . $max_date . ' and provider=' . $provider . ') as tab';
+//        die($sql);
         $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
             $nombre = $res['nombre'];
         }
+//        die($nombre);
         return $nombre;
     }
 

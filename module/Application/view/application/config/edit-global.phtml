@@ -52,6 +52,24 @@
                             <input name="country-name" id="country-name" class="form-control isRequired" placeholder="Country/Instance Name" title="Please enter country/instance name" value="<?php echo $config['country-name']; ?>" />
                         </div>
                     </div>
+                    <div class="form-group">
+                      <label for="month-valid" class="col-sm-2 control-label">Months certification is valid<span class="mandatory">*</span></label>
+                        <div class="col-lg-4">
+                            <input name="month-valid" id="month-valid" class="form-control isNumeric isRequired" placeholder="Month(s)" title="Please enter month(s)" value="<?php echo $config['month-valid']; ?>" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="month-flex-limit" class="col-sm-2 control-label">Flex limit of months allowed for recertification after validity period<span class="mandatory">*</span></label>
+                        <div class="col-lg-4">
+                            <input name="month-flex-limit" id="month-flex-limit" class="form-control isNumeric isRequired" placeholder="Month(s)" title="Please enter month(s)" value="<?php echo $config['month-flex-limit']; ?>" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="month-prior-to-certification" class="col-sm-2 control-label">Month allowed prior to certification to give recertification exam<span class="mandatory">*</span></label>
+                        <div class="col-lg-4">
+                            <input name="month-prior-to-certification" id="month-prior-to-certification" class="form-control isNumeric isRequired" placeholder="Month(s)" title="Please enter month(s)" value="<?php echo $config['month-prior-to-certification']; ?>" />
+                        </div>
+                    </div>
                     <hr>
                     <div class="spacer col-lg-5" align="center">
                      <input type="hidden" name="removedLogoImage" id="removedLogoImage"/>  

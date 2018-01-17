@@ -1,9 +1,5 @@
 <?php
-
 use Zend\Session\Container;
-
-$sessionLogin = new Container('credo');
-
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
@@ -177,6 +173,7 @@ $acl = $this->layout()->acl;
                         <?= $this->formLabel($form->get('provider_id')); ?><span class="mandatory">*</span>
                         <?= $this->formElement($form->get('provider_id')); ?>
                         <?= $this->formElementErrors($form->get('provider_id')); ?>
+                        <div id="alertMsg"></div>
                     </div>
                     <div class="form-group col-lg-6"> 
                         <?= $this->formLabel($form->get('exam_type')); ?><span class="mandatory" style="color: green;">*</span>
@@ -383,13 +380,22 @@ $acl = $this->layout()->acl;
                             }
                             xmlhttp.onreadystatechange = function () {
                                 if (this.readyState == 4 && this.status == 200) {
-                                    document.getElementById("Type of Exam").innerHTML = this.responseText;
+                                    var responseArray = this.responseText.split('##');
+                                    if(responseArray.length > 1){
+                                      $('#alertMsg').html('<span>Last Certificate for <strong>'+responseArray[1]+'</strong> was issued on '+responseArray[2]+'. You can do re-certification only after '+responseArray[3]+' or before '+responseArray[4]+'</span>');
+                                      document.getElementById("Type of Exam").innerHTML = "";
+                                    }else{
+                                        $('#alertMsg').html('');
+                                        document.getElementById("Type of Exam").innerHTML = this.responseText;
+                                        if (document.getElementById("Type of Exam").value >= 4) {
+                                            alert('This tester has already made three unsuccessful attempts');
+                                            window.location = '<?php echo $this->url('practical-exam', array('action' => 'index')); ?>';
+                                        }
+                                    }
+                                    
                                 }
 
-                                if (document.getElementById("Type of Exam").value >= 4) {
-                                    alert('This tester has already made three unsuccessful attempts');
-                                    window.location = '<?php echo $this->url('practical-exam', array('action' => 'index')); ?>';
-                                }
+                                
 
                             };
 //                            alert(str);
@@ -455,10 +461,6 @@ $acl = $this->layout()->acl;
             "order": [[1, 'asc']]
         });
 
-
-
-
-
         // Array to track the ids of the details displayed rows
         var detailRows = [];
         
@@ -477,10 +479,6 @@ $acl = $this->layout()->acl;
                 tr.addClass('shown');
             }
         });
-
-
-
-
 
     });
 </script>

@@ -9,14 +9,16 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Debug\Debug;
 use Zend\Db\Sql\Expression;
 //use Zend\Db\Sql\Where;
+use \Application\Model\GlobalTable;
 use \Application\Service\CommonService;
 
 class CertificationTable {
 
     protected $tableGateway;
 
-    public function __construct(TableGateway $tableGateway) {
+    public function __construct(TableGateway $tableGateway, Adapter $adapter) {
         $this->tableGateway = $tableGateway;
+        $this->adapter = $adapter;
     }
 
 
@@ -147,12 +149,14 @@ class CertificationTable {
     }
 
     public function saveCertification(Certification $certification) {
+        $dbAdapter = $this->adapter;
+        $globalDb = new GlobalTable($dbAdapter);
+        $monthValid = $globalDb->getGlobalValue('month-valid');
+        $date_validity_end = (isset($monthValid) && (int)$monthValid > 0)?' + '.$monthValid.' month':' + 2 year';
         $date_issued = $certification->date_certificate_issued;
         $date_explode = explode("-", $date_issued);
         $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
-
-        $date_end = date("Y-m-d", strtotime($date_issued . "  + 2 year"));
-
+        $date_end = date("Y-m-d", strtotime($date_issued . $date_validity_end));
         $data = array(
             'examination' => $certification->examination,
             'final_decision' => $certification->final_decision,

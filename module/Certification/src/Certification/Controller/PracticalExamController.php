@@ -2,10 +2,10 @@
 
 namespace Certification\Controller;
 
+use Zend\Session\Container;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\PracticalExam;
-use Zend\Session\Container;
 
 class PracticalExamController extends AbstractActionController {
 

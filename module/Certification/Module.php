@@ -46,8 +46,9 @@ class Module implements ConfigProviderInterface {
                     return new TableGateway('training', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Certification\Model\WrittenExamTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $tableGateway = $sm->get('WrittenExamTableGateway');
-                    $table = new \Certification\Model\WrittenExamTable($tableGateway);
+                    $table = new \Certification\Model\WrittenExamTable($tableGateway,$dbAdapter);
                     return $table;
                 },
                 'WrittenExamTableGateway' => function ($sm) {
@@ -57,8 +58,9 @@ class Module implements ConfigProviderInterface {
                     return new TableGateway('written_exam', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Certification\Model\PracticalExamTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $tableGateway = $sm->get('PracticalExamTableGateway');
-                    $table = new \Certification\Model\PracticalExamTable($tableGateway);
+                    $table = new \Certification\Model\PracticalExamTable($tableGateway,$dbAdapter);
                     return $table;
                 },
                 'PracticalExamTableGateway' => function ($sm) {
@@ -68,8 +70,9 @@ class Module implements ConfigProviderInterface {
                     return new TableGateway('practical_exam', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Certification\Model\CertificationTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $tableGateway = $sm->get('CertificationTableGateway');
-                    $table = new \Certification\Model\CertificationTable($tableGateway);
+                    $table = new \Certification\Model\CertificationTable($tableGateway,$dbAdapter);
                     return $table;
                 },
                 'CertificationTableGateway' => function ($sm) {
