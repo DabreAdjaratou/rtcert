@@ -25,7 +25,6 @@ function issued(){
 issued();
 
 $(document).ready(function () {
-
     $("#date").datepicker(
             {
                 showButtonPanel: true

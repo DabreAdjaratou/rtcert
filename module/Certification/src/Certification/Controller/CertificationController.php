@@ -113,8 +113,10 @@ class CertificationController extends AbstractActionController {
             ));
         }
         $certification->date_certificate_issued = date("d-m-Y", strtotime($certification->date_certificate_issued));
-        if (isset($certification->date_certificate_sent)) {
+        if (isset($certification->date_certificate_sent) && $certification->date_certificate_sent!= null && $certification->date_certificate_sent!= '' && $certification->date_certificate_sent!= '0000-00-00') {
             $certification->date_certificate_sent = date("d-m-Y", strtotime($certification->date_certificate_sent));
+        }else{
+            $certification->date_certificate_sent = '';
         }
         $provider = $this->getCertificationTable()->getProvider($id);
         $form = new CertificationForm($dbAdapter);

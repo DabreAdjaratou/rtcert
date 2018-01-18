@@ -167,6 +167,9 @@ class CertificationTable {
         $date_issued = $certification->date_certificate_issued;
         $date_explode = explode("-", $date_issued);
         $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+        if (isset($certification->date_certificate_sent) && $certification->date_certificate_sent!= '' && $certification->date_certificate_sent!= '0000-00-00') {
+            $certification->date_certificate_sent = date("Y-m-d", strtotime($certification->date_certificate_sent));
+        }
         if($certification->certification_type == 'Recertification' || $certification->certification_type == 'recertification'){
             $db = $this->tableGateway->getAdapter();
             $sql = 'select date_end_validity from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $certification->provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
@@ -182,21 +185,18 @@ class CertificationTable {
             $date_end = date("Y-m-d", strtotime($date_issued . $validity_end));
         }
 
-        if (isset($certification->date_certificate_sent) && $certification->date_certificate_sent!= '' && $certification->date_certificate_sent!= '0000-00-00') {
-            $certification->date_certificate_sent = date("Y-m-d", strtotime($certification->date_certificate_sent));
-        }
         $data = array(
             'examination' => $certification->examination,
             'final_decision' => $certification->final_decision,
             'certification_issuer' => strtoupper($certification->certification_issuer),
             'date_certificate_issued' => $newsdate,
             'date_certificate_sent' => $certification->date_certificate_sent,
-            'certification_type' => $certification->certification_type,
-            'date_end_validity' => $date_end
+            'certification_type' => $certification->certification_type
         );
 //        die(print_r($data));
         $id = (int) $certification->id;
         if ($id == 0) {
+            $data['date_end_validity'] = $date_end;
             $this->tableGateway->insert($data);
         } else {
             if ($this->getCertification($id)) {
