@@ -26,7 +26,7 @@ class WrittenExamTable extends AbstractTableGateway {
         $sqlSelect->columns(array('id_written_exam', 'exam_type', 'provider_id', 'exam_admin', 'date', 'qa_point', 'rt_point',
             'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'inventory_point', 'total_points', 'final_score'));
         $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
-                ->where(array('display' => 'no'));
+                ->where(array('display' => 'yes'));
         $sqlSelect->order('id_written_exam desc');
 
         $resultSet = $this->tableGateway->selectWith($sqlSelect);

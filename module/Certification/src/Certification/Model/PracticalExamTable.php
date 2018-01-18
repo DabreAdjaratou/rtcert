@@ -25,7 +25,7 @@ class PracticalExamTable extends AbstractTableGateway {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin', 'provider_id', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
         $sqlSelect->join('provider', ' provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
-                ->where(array('display' => 'no'));
+                ->where(array('display' => 'yes'));
         $sqlSelect->order('practice_exam_id desc');
 
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
