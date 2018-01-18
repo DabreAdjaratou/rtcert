@@ -63,7 +63,7 @@ class CertificationController extends AbstractActionController {
 
         $form = new CertificationForm($dbAdapter);
         $form->get('submit')->setValue('Submit');
-
+        $form->get('provider')->setValue($provider);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $certification = new Certification();
@@ -84,13 +84,15 @@ class CertificationController extends AbstractActionController {
                 return $this->redirect()->toRoute('examination');
             }
         }
-        return array('id' => $id,
+        return array(
+            'id' => $id,
             'written' => $written,
             'practical' => $practical,
             'sample' => $sample,
             'direct' => $direct,
             'certification_id' => $certification_id,
-            'form' => $form);
+            'form' => $form
+            );
     }
 
     public function editAction() {

@@ -9,6 +9,7 @@ use Zend\InputFilter\InputFilterInterface;
 class Certification {
 
     public $id;
+    public $provider;
     public $examination;
     public $final_decision;
     public $certification_issuer;
@@ -19,6 +20,7 @@ class Certification {
 
     public function exchangeArray($data) {
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
+        $this->provider = (!empty($data['provider'])) ? $data['provider'] : null;
         $this->examination = (!empty($data['examination'])) ? $data['examination'] : null;
         $this->final_decision = (!empty($data['final_decision'])) ? $data['final_decision'] : null;
         $this->certification_issuer = (!empty($data['certification_issuer'])) ? $data['certification_issuer'] : null;
@@ -49,6 +51,14 @@ class Certification {
 
             $inputFilter->add(array(
                 'name' => 'id',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'provider',
                 'required' => false,
                 'filters' => array(
                     array('name' => 'Int'),

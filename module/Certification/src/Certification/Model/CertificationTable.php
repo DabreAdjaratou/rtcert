@@ -152,11 +152,25 @@ class CertificationTable {
         $dbAdapter = $this->adapter;
         $globalDb = new GlobalTable($dbAdapter);
         $monthValid = $globalDb->getGlobalValue('month-valid');
-        $date_validity_end = (isset($monthValid) && (int)$monthValid > 0)?' + '.$monthValid.' month':' + 2 year';
+        $validity_end = (isset($monthValid) && trim($monthValid)!= '')?' + '.$monthValid.' month':' + 2 year';
         $date_issued = $certification->date_certificate_issued;
         $date_explode = explode("-", $date_issued);
         $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
-        $date_end = date("Y-m-d", strtotime($date_issued . $date_validity_end));
+        if($certification->certification_type == 'Recertification' || $certification->certification_type == 'recertification'){
+            $db = $this->tableGateway->getAdapter();
+            $sql = 'select date_end_validity from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $certification->provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
+            $statement = $db->query($sql);
+            $result = $statement->execute();
+            foreach ($result as $res) {
+                $certification_validity = $res['date_end_validity'];
+            }
+        }
+        if(isset($certification_validity) && $certification_validity!= null && $certification_validity!= '' && $certification_validity!= '0000-00-00'){
+            $date_end = date("Y-m-d", strtotime($certification_validity . $validity_end));
+        }else{
+            $date_end = date("Y-m-d", strtotime($date_issued . $validity_end));
+        }
+
         $data = array(
             'examination' => $certification->examination,
             'final_decision' => $certification->final_decision,
@@ -225,15 +239,31 @@ class CertificationTable {
     }
 
     public function certificationType($provider) {
+        $dbAdapter = $this->adapter;
+        $globalDb = new GlobalTable($dbAdapter);
+        $monthFlexLimit = $globalDb->getGlobalValue('month-flex-limit');
+        
         $db = $this->tableGateway->getAdapter();
-        $sql1 = 'SELECT certification_id FROM provider WHERE id =' . $provider;
-//        die($sql1);
+        $sql1 = 'select date_end_validity from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
+        //die($sql1);
         $statement = $db->query($sql1);
         $result = $statement->execute();
         foreach ($result as $res) {
             $certification_id = $res['certification_id'];
+            $date_end_validity = $res['date_end_validity'];
         }
-
+        if(isset($certification_id) && $certification_id!= null && $certification_id!= ''){
+            $startdate = strtotime(date('Y-m-d'));
+            $enddate = strtotime($date_end_validity);
+            $startyear = date('Y', $startdate);
+            $endyear = date('Y', $enddate);
+            $startmonth = date('m', $startdate);
+            $endmonth = date('m', $enddate);
+            $remmonths = abs((($endyear - $startyear) * 12) + ($endmonth - $startmonth));
+            if($remmonths > $monthFlexLimit){
+                $certification_id = null;
+            }
+        }
         return $certification_id;
     }
 

@@ -26,7 +26,7 @@ class WrittenExamTable extends AbstractTableGateway {
         $sqlSelect->columns(array('id_written_exam', 'exam_type', 'provider_id', 'exam_admin', 'date', 'qa_point', 'rt_point',
             'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'inventory_point', 'total_points', 'final_score'));
         $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
-                ->where(array('display' => 'yes'));
+                ->where(array('display' => 'no'));
         $sqlSelect->order('id_written_exam desc');
 
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
@@ -142,23 +142,22 @@ class WrittenExamTable extends AbstractTableGateway {
      */
     public function attemptNumber($provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql1 = 'select max(date_certificate_issued) as max_date, date_end_validity, certification_id from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider;
+        $sql1 = 'select date_certificate_issued, date_end_validity, certification_id from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
         $statement1 = $db->query($sql1);
         $result1 = $statement1->execute();
         foreach ($result1 as $res1) {
-            $max_date = $res1['max_date'];
+            $date_certificate_issued = $res1['date_certificate_issued'];
             $date_end_validity = $res1['date_end_validity'];
             $certification_id = $res1['certification_id'];
         }
 
-        if ($max_date == null) {
-            $max_date = '0000-00-00';
+        if ($date_certificate_issued == null) {
+            $date_certificate_issued = '0000-00-00';
             $date_end_validity = '0000-00-00';
         }
-        if($certification_id != NULL){
+        if(isset($certification_id) && $certification_id != null){
             $dbAdapter = $this->adapter;
             $globalDb = new GlobalTable($dbAdapter);
-            $monthFlexLimit = $globalDb->getGlobalValue('month-flex-limit');
             $monthPriortoCertification = $globalDb->getGlobalValue('month-prior-to-certification');
             $startdate = strtotime(date('Y-m-d'));
             $enddate = strtotime($date_end_validity);
@@ -166,14 +165,13 @@ class WrittenExamTable extends AbstractTableGateway {
             $endyear = date('Y', $enddate);
             $startmonth = date('m', $startdate);
             $endmonth = date('m', $enddate);
-            $remmonths = (($endyear - $startyear) * 12) + ($endmonth - $startmonth);
-            if($remmonths > $monthFlexLimit){
+            $remmonths = abs((($endyear - $startyear) * 12) + ($endmonth - $startmonth));
+            if($remmonths > $monthPriortoCertification){
                 $date_after = date("Y-m-d", strtotime($date_end_validity . '- '.$monthPriortoCertification.' month'));
-                $date_before = date("Y-m-d", strtotime($date_end_validity . '+ 6 month'));
-                return 'flex##'.$certification_id.'##'.$max_date.'##'.$date_after.'##'.$date_before;
-            }/*else if($remmonths < $monthPriortoCertification){
-                return '';
-            }*/
+                $monthFlexLimit = $globalDb->getGlobalValue('month-flex-limit');
+                $date_before = date("Y-m-d", strtotime($date_end_validity . '+ '.$monthFlexLimit.' month'));
+                return '##'.$certification_id.'##'.$date_certificate_issued.'##'.$date_after.'##'.$date_before;
+            }
         }
         $sql = 'SELECT COUNT(*) as nombre from (select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, 
                 date_certificate_sent, certification_type, provider,last_name, first_name, middle_name, certification_id,

@@ -20,6 +20,10 @@ class CertificationForm extends Form {
             'type' => 'Hidden',
         ));
         $this->add(array(
+            'name' => 'provider',
+            'type' => 'Hidden',
+        ));
+        $this->add(array(
             'name' => 'examination',
             'type' => 'hidden',
         ));
