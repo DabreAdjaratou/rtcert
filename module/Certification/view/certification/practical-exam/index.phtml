@@ -1,7 +1,5 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;

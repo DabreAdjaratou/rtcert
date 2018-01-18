@@ -106,6 +106,7 @@ class CertificationController extends AbstractActionController {
 
         try {
             $certification = $this->getCertificationTable()->getCertification($id);
+            
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('certification', array(
                         'action' => 'index'
@@ -115,16 +116,15 @@ class CertificationController extends AbstractActionController {
         if (isset($certification->date_certificate_sent)) {
             $certification->date_certificate_sent = date("d-m-Y", strtotime($certification->date_certificate_sent));
         }
+        $provider = $this->getCertificationTable()->getProvider($id);
         $form = new CertificationForm($dbAdapter);
         $form->bind($certification);
         $form->get('submit')->setAttribute('value', 'UPDATE');
-
+        $form->get('provider')->setValue($provider);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setInputFilter($certification->getInputFilter());
             $form->setData($request->getPost());
-
-
             if ($form->isValid()) {
                 $this->getCertificationTable()->saveCertification($certification);
                 $container = new Container('alert');

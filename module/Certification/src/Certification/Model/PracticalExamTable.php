@@ -144,7 +144,7 @@ class PracticalExamTable extends AbstractTableGateway {
             $certification_id = $res1['certification_id'];
         }
 
-        if ($date_certificate_issued == null) {
+        if (!isset($date_certificate_issued)) {
             $date_certificate_issued = '0000-00-00';
             $date_end_validity = '0000-00-00';
         }
@@ -168,7 +168,7 @@ class PracticalExamTable extends AbstractTableGateway {
         }
         $sql = 'SELECT COUNT(*) as nombre from (select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, 
                 date_certificate_sent, certification_type, provider,last_name, first_name, middle_name, certification_id,
-                certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where examination.id = certification.examination and provider.id = examination.provider and final_decision in ("failed","pending") and date_certificate_issued >' . $max_date . ' and provider=' . $provider . ') as tab';
+                certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where examination.id = certification.examination and provider.id = examination.provider and final_decision in ("failed","pending") and date_certificate_issued >' . $date_certificate_issued . ' and provider=' . $provider . ') as tab';
 //        die($sql);
         $statement = $db->query($sql);
         $result = $statement->execute();
