@@ -143,12 +143,14 @@ class CertificationController extends AbstractActionController {
 
     public function pdfAction() {
         $header_text = $this->getCertificationTable()->SelectTexteHeader();
+        $id = base64_decode($this->params()->fromQuery(base64_encode('id')));
         $last = base64_decode($this->params()->fromQuery(base64_encode('last')));
         $first = base64_decode($this->params()->fromQuery(base64_encode('first')));
         $middle = base64_decode($this->params()->fromQuery(base64_encode('middle')));
         $certification_id = base64_decode($this->params()->fromQuery(base64_encode('certification_id')));
         $professional_reg_no = base64_decode($this->params()->fromQuery(base64_encode('professional_reg_no')));
         $date_issued = base64_decode($this->params()->fromQuery(base64_encode('date_issued')));
+        $date_end_validity = $this->getCertificationTable()->getCertificationValiditydate($id);
         return array(
             'last' => $last,
             'first' => $first,
@@ -156,6 +158,7 @@ class CertificationController extends AbstractActionController {
             'professional_reg_no' => $professional_reg_no,
             'certification_id' => $certification_id,
             'date_issued' => $date_issued,
+            'date_end_validity'=>$date_end_validity,
             'header_text' => $header_text
         );
     }

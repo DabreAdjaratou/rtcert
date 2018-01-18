@@ -89,7 +89,7 @@ $acl = $this->layout()->acl;
                                 if (strcasecmp($certification->final_decision, 'Certified') == 0) {
 
                                     echo "<td><div style='width:80px;height:40px;overflow:auto;'>
-                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array(base64_encode('last') => base64_encode($certification->last_name), base64_encode('first') => base64_encode($certification->first_name), base64_encode('middle') => base64_encode($certification->middle_name), base64_encode('professional_reg_no') => base64_encode($certification->professional_reg_no), base64_encode('certification_id') => base64_encode($certification->certification_id), base64_encode('date_issued') => base64_encode($certification->date_certificate_issued))
+                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array(base64_encode('id') => base64_encode($certification->id), base64_encode('last') => base64_encode($certification->last_name), base64_encode('first') => base64_encode($certification->first_name), base64_encode('middle') => base64_encode($certification->middle_name), base64_encode('professional_reg_no') => base64_encode($certification->professional_reg_no), base64_encode('certification_id') => base64_encode($certification->certification_id), base64_encode('date_issued') => base64_encode($certification->date_certificate_issued))
                                     )) .
                                     " target='_blank'><span class='glyphicon glyphicon-download-alt'>PDF</span></a> 
                                     </div>
@@ -171,7 +171,7 @@ $acl = $this->layout()->acl;
                                 if (strcasecmp($certification->final_decision, 'Certified') == 0) {
 
                                     echo "<td><div style='width:80px;height:40px;overflow:auto;'>
-                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array(base64_encode('last') => base64_encode($certification->last_name), base64_encode('first') => base64_encode($certification->first_name), base64_encode('middle') => base64_encode($certification->middle_name), base64_encode('professional_reg_no') => base64_encode($certification->professional_reg_no), base64_encode('certification_id') => base64_encode($certification->certification_id), base64_encode('date_issued') => base64_encode($certification->date_certificate_issued))
+                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array(base64_encode('id') => base64_encode($certification->id), base64_encode('last') => base64_encode($certification->last_name), base64_encode('first') => base64_encode($certification->first_name), base64_encode('middle') => base64_encode($certification->middle_name), base64_encode('professional_reg_no') => base64_encode($certification->professional_reg_no), base64_encode('certification_id') => base64_encode($certification->certification_id), base64_encode('date_issued') => base64_encode($certification->date_certificate_issued))
                                     )) . " target='_blank'><span class='glyphicon glyphicon-download-alt'>PDF</span></a> 
                                     </div>
                                 </td> ";

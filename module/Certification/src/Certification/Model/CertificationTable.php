@@ -311,7 +311,7 @@ class CertificationTable {
      */
     public function fetchAll3() {
         $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('id', 'examination', 'final_decision', 'certification_issuer', 'date_certificate_issued', 'date_certificate_sent', 'certification_type', 'date_end_validity'));
+        $sqlSelect->columns(array('id', 'examination', 'final_decision', 'certification_issuer', 'date_certificate_issued', 'date_certificate_sent', 'certification_type'));
         $sqlSelect->join('examination', 'examination.id = certification.examination ', array('provider'), 'left')
                 ->join('provider', 'provider.id = examination.provider ', array('last_name', 'first_name', 'middle_name', 'certification_id', 'certification_reg_no', 'professional_reg_no', 'email', 'facility_in_charge_email'), 'left')
                 ->where(array('final_decision' => 'certified'))
@@ -456,6 +456,17 @@ class CertificationTable {
             $statement2 = $db->query($sql2);
             $result2 = $statement2->execute();
         }
+    }
+    
+    public function getCertificationValiditydate($id){
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = 'SELECT date_end_validity FROM certification WHERE certification.id = '.$id;
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $date_end_validity = $res['date_end_validity'];
+        }
+      return $date_end_validity;
     }
 
 }
