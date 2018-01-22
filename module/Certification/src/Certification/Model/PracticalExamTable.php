@@ -10,18 +10,20 @@ use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 use \Application\Model\GlobalTable;
+use \Application\Service\CommonService;
 
 class PracticalExamTable extends AbstractTableGateway {
 
     private $tableGateway;
+    public $sm = null;
 
-    public function __construct(TableGateway $tableGateway, Adapter $adapter) {
+    public function __construct(TableGateway $tableGateway, Adapter $adapter, $sm=null) {
         $this->tableGateway = $tableGateway;
         $this->adapter = $adapter;
+        $this->sm = $sm;
     }
 
     public function fetchAll() {
-
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin', 'provider_id', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
         $sqlSelect->join('provider', ' provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
@@ -134,6 +136,7 @@ class PracticalExamTable extends AbstractTableGateway {
      * @return type $nombre integer
      */
     public function attemptNumber($provider) {
+        $common = new CommonService($this->sm);
         $db = $this->tableGateway->getAdapter();
         $sql1 = 'select date_certificate_issued, date_end_validity, certification_id from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
         $statement1 = $db->query($sql1);
@@ -163,7 +166,7 @@ class PracticalExamTable extends AbstractTableGateway {
                 $date_after = date("Y-m-d", strtotime($date_end_validity . '- '.$monthPriortoCertification.' month'));
                 $monthFlexLimit = $globalDb->getGlobalValue('month-flex-limit');
                 $date_before = date("Y-m-d", strtotime($date_end_validity . '+ '.$monthFlexLimit.' month'));
-                return '##'.$certification_id.'##'.$date_certificate_issued.'##'.$date_after.'##'.$date_before;
+                return '##'.$certification_id.'##'.$common->humanDateFormat($date_certificate_issued).'##'.$common->humanDateFormat($date_after).'##'.$common->humanDateFormat($date_before);
             }
         }
         $sql = 'SELECT COUNT(*) as nombre from (select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, 
