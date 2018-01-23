@@ -21,7 +21,7 @@
         }
     },
     tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>'
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
     },
     plotOptions: {
         pie: {
@@ -43,7 +43,8 @@
             ?>
         {
             name: '<?php echo ucfirst($region['location_name']); ?>',
-            y: <?php echo $region['total_certification']; ?>
+            y: <?php echo $region['total_certification']; ?>,
+            number:<?php echo $region['total_certification']; ?>
         },
         <?php } } ?>
         ]
