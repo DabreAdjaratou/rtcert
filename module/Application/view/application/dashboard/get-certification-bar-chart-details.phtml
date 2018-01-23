@@ -52,10 +52,12 @@
               data: [
                 <?php
                   foreach($certification as $count){
+                    if($count == 0){ $count = 'null'; }
                     echo '{y:'.$count.'},';
                   }
               ?>
-              ]
+              ],
+               connectNulls:false
             },
           <?php } ?>
     ]
