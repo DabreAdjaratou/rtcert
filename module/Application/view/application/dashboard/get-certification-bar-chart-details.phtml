@@ -1,6 +1,6 @@
 <div id="chartStats" class="ct-chart"></div>
 <script>
-    Highcharts.chart('chartStats', {
+Highcharts.chart('chartStats', {
     chart: {
         type: 'line'
     },
@@ -36,6 +36,11 @@
         allowDecimals: false
     },
     plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+        },
         line: {
             dataLabels: {
                 enabled: false
@@ -61,5 +66,5 @@
             },
           <?php } ?>
     ]
-  });
+ });
 </script>
