@@ -355,49 +355,42 @@ if($nombre!= null){
 </script>
 <script src="<?php echo $this->basePath('assets/js/personnel_certification/written.js'); ?>" type="text/javascript"></script>
 <script type="text/javascript" >
-                    function showAttempt(str) {
-                        if (str == "") {
-                            document.getElementById("Type of Exam").innerHTML = "";
-                            return;
-                        } else {
-                            if (window.XMLHttpRequest) {
-                                // code for IE7+, Firefox, Chrome, Opera, Safari
-                                xmlhttp = new XMLHttpRequest();
-                            } else {
-                                // code for IE6, IE5
-                                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                            }
-                            xmlhttp.onreadystatechange = function () {
-                                if (this.readyState == 4 && this.status == 200) {
-                                    var responseArray = this.responseText.split('##');
-                                    if(responseArray.length > 1){
-                                      $('#alertMsg').html('<span>Last Certificate for <strong>'+responseArray[1]+'</strong> was issued on '+responseArray[2]+'. You can do re-certification only after '+responseArray[3]+' or before '+responseArray[4]+'</span>');
-                                      document.getElementById("Type of Exam").innerHTML = "";
-                                    }else{
-                                        $('#alertMsg').html('');
-                                        document.getElementById("Type of Exam").innerHTML = this.responseText;
-                                        if (document.getElementById("Type of Exam").value >= 4) {
-                                            alert('This tester has already made three unsuccessful attempts');
-                                            window.location = '<?php echo $this->url('practical-exam', array('action' => 'index')); ?>';
-                                        }
-                                    }
-                                    
-                                }
-
-                                
-
-                            };
-//                            alert(str);
-                            xmlhttp.open("GET", "<?php echo $this->url('written-exam', array('action' => 'attempt')); ?>?q=" + str, true);
-                            xmlhttp.send();
+    function showAttempt(str) {
+        if (str == "") {
+            document.getElementById("Type of Exam").innerHTML = "";
+            return;
+        } else {
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var responseArray = this.responseText.split('##');
+                    if(responseArray.length > 1){
+                      $('#alertMsg').html('<span>Last Certificate for <strong>'+responseArray[1]+'</strong> was issued on '+responseArray[2]+'. You can do re-certification only after '+responseArray[3]+' or before '+responseArray[4]+'</span>');
+                      document.getElementById("Type of Exam").innerHTML = "";
+                    }else{
+                        $('#alertMsg').html('');
+                        document.getElementById("Type of Exam").innerHTML = this.responseText;
+                        if (document.getElementById("Type of Exam").value >= 4) {
+                            alert('This tester has already made three unsuccessful attempts');
+                            window.location = '<?php echo $this->url('practical-exam', array('action' => 'index')); ?>';
                         }
                     }
-
-                
-
+                    
+                }
+            };
+//          alert(str);
+            xmlhttp.open("GET", "<?php echo $this->url('written-exam', array('action' => 'attempt')); ?>?q=" + str, true);
+            xmlhttp.send();
+        }
+    }
     var dt = null;
     
-
     function format ( d ) {
         return '<h5>&nbsp;'+d[1]+' - '+ d[2] + ' ('+d[4]+')'+'</h5>'+
                 '<table class="table table-bordered table-condensed table-striped table-hover table-fw-widget">'+
@@ -425,8 +418,11 @@ if($nombre!= null){
                     '</tr>'+
                 '</table>';
     }
+    
     $(document).ready(function () {
-
+        <?php if(isset($practical) && (int)$practical > 0){ ?>
+            showAttempt('<?php echo $provider['id']; ?>');
+        <?php } ?>
        dt = $('#writtenExamTable').DataTable({
             "columnDefs": [
                 {

@@ -273,6 +273,9 @@ if($nombre!= null){
     }
     
     $(document).ready(function () {
+        <?php if(isset($written) && (int)$written > 0){ ?>
+            showAttempt('<?php echo $provider['id']; ?>');
+        <?php } ?>
         $('#practicalExamsTable').dataTable({
             "aProcessing": true,
             "aServerSide": true,

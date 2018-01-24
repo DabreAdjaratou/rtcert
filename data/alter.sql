@@ -625,7 +625,7 @@ UPDATE `global_config` SET `global_name` = 'month-prior-to-certification' WHERE 
 UPDATE `global_config` SET `global_name` = 'month-valid' WHERE `global_config`.`config_id` = 7;
 
 -- Pal 24 Jan 2018
-INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Certificate Prefix', 'certificate_prefix', 'RTCERT');
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Certificate Prefix', 'certificate-prefix', 'RTCERT');
 
 ALTER TABLE `provider` ADD `certification_key` INT(11) NULL DEFAULT '0' AFTER `test_site_in_charge`;
 
