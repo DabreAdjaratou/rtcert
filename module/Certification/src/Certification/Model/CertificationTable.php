@@ -285,22 +285,17 @@ class CertificationTable {
         $db = $this->tableGateway->getAdapter();
         $dbAdapter = $this->adapter;
         $globalDb = new GlobalTable($dbAdapter);
-        $sql = 'SELECT MAX(certification_id) as max FROM provider';
+        $sql = 'SELECT MAX(certification_key) as max FROM provider';
         $statement = $db->query($sql);
         $result = $statement->execute();
+        $certificationKey = 1;
         foreach ($result as $res) {
-            $max = $res['max'];
+            $certificationKey = ($res['max']+1);
         }
         
         $certificatePrefix = ($globalDb->getGlobalValue('certificate-prefix')!= null && $globalDb->getGlobalValue('certificate-prefix')!= '')?$globalDb->getGlobalValue('certificate-prefix'):'';
-        $array2 = explode("-C", $max);
-        if(sizeof($array2) > 1){
-            $certification_id = $certificatePrefix . substr_replace("0000", ($array[1] + 1), -strlen(($array[1] + 1)));
-        }else{
-           preg_match_all('!\d+!', $max, $matches); 
-           $certification_id = $certificatePrefix. substr_replace("0000", ($matches[0][0] + 1), -strlen(($matches[0][0] + 1))); 
-        }
-        $sql2 = "UPDATE provider SET certification_id='" . $certification_id . "' WHERE id=" . $provider;
+        $certification_id = $certificatePrefix . sprintf("%04d", $certificationKey);
+        $sql2 = "UPDATE provider SET certification_id='" . $certification_id . "', certification_key = '.$certificationKey.' WHERE id=" . $provider;
 
         $db->getDriver()->getConnection()->execute($sql2);
     }

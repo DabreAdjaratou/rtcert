@@ -161,8 +161,8 @@ class PracticalExamTable extends AbstractTableGateway {
             $endyear = date('Y', $enddate);
             $startmonth = date('m', $startdate);
             $endmonth = date('m', $enddate);
-            $remmonths = abs((($endyear - $startyear) * 12) + ($endmonth - $startmonth));
-            if($remmonths > $monthPriortoCertification){
+            $remmonths = (($endyear - $startyear) * 12) + ($endmonth - $startmonth);
+            if($remmonths > 0 && $remmonths > $monthPriortoCertification){
                 $date_after = date("Y-m-d", strtotime($date_end_validity . '- '.$monthPriortoCertification.' month'));
                 $monthFlexLimit = $globalDb->getGlobalValue('month-flex-limit');
                 $date_before = date("Y-m-d", strtotime($date_end_validity . '+ '.$monthFlexLimit.' month'));
