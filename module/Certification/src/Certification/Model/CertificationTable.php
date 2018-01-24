@@ -273,8 +273,8 @@ class CertificationTable {
             $endyear = date('Y', $enddate);
             $startmonth = date('m', $startdate);
             $endmonth = date('m', $enddate);
-            $remmonths = abs((($endyear - $startyear) * 12) + ($endmonth - $startmonth));
-            if($remmonths > $monthFlexLimit){
+            $remmonths = (($endyear - $startyear) * 12) + ($endmonth - $startmonth);
+            if($remmonths > 0 && $remmonths > $monthFlexLimit){
                 $certification_id = null;
             }
         }
