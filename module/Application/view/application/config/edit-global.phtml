@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                      <label for="country-name" class="col-sm-2 control-label">Country or Instance Name<span class="mandatory">*</span></label>
+                      <label for="country-name" class="col-sm-2 control-label">Country or Instance name<span class="mandatory">*</span></label>
                         <div class="col-lg-4">
                             <input name="country-name" id="country-name" class="form-control isRequired" placeholder="Country/Instance Name" title="Please enter country/instance name" value="<?php echo $config['country-name']; ?>" />
                         </div>
@@ -68,6 +68,12 @@
                       <label for="month-prior-to-certification" class="col-sm-2 control-label">Month allowed prior to certification to give recertification exam<span class="mandatory">*</span></label>
                         <div class="col-lg-4">
                             <input name="month-prior-to-certification" id="month-prior-to-certification" class="form-control isNumeric isRequired" placeholder="Month(s)" title="Please enter month(s)" value="<?php echo $config['month-prior-to-certification']; ?>" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="certificate-prefix" class="col-sm-2 control-label">Certificate prefix</label>
+                        <div class="col-lg-4">
+                            <input name="certificate-prefix" id="certificate-prefix" class="form-control" placeholder="Certificate Prefix" title="Please enter certificate prefix" value="<?php echo $config['certificate-prefix']; ?>" />
                         </div>
                     </div>
                     <hr>

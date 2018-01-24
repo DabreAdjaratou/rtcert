@@ -254,7 +254,7 @@ class CertificationTable {
 
     public function certificationType($provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql1 = 'select date_end_validity from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
+        $sql1 = 'select certification_id, date_end_validity from certification, examination, provider WHERE certification.examination=examination.id and examination.provider=provider.id and final_decision="certified" and provider=' . $provider.' ORDER BY date_certificate_issued DESC LIMIT 1';
         //die($sql1);
         $statement = $db->query($sql1);
         $result = $statement->execute();
@@ -283,23 +283,23 @@ class CertificationTable {
 
     public function certificationId($provider) {
         $db = $this->tableGateway->getAdapter();
+        $dbAdapter = $this->adapter;
+        $globalDb = new GlobalTable($dbAdapter);
         $sql = 'SELECT MAX(certification_id) as max FROM provider';
         $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
             $max = $res['max'];
         }
-        $array = explode("C", $max);
-        $array2 = explode("-", $max);
-
-        if (date('Y') > $array2[0]) {
-
-            $certification_id = date('Y') . '-C' . substr_replace("0000", 1, -strlen(1));
-        } else {
-
-            $certification_id = $array2[0] . '-C' . substr_replace("0000", ($array[1] + 1), -strlen(($array[1] + 1)));
+        
+        $certificatePrefix = ($globalDb->getGlobalValue('certificate-prefix')!= null && $globalDb->getGlobalValue('certificate-prefix')!= '')?$globalDb->getGlobalValue('certificate-prefix'):'';
+        $array2 = explode("-C", $max);
+        if(sizeof($array2) > 1){
+            $certification_id = $certificatePrefix . substr_replace("0000", ($array[1] + 1), -strlen(($array[1] + 1)));
+        }else{
+           preg_match_all('!\d+!', $max, $matches); 
+           $certification_id = $certificatePrefix. substr_replace("0000", ($matches[0][0] + 1), -strlen(($matches[0][0] + 1))); 
         }
-
         $sql2 = "UPDATE provider SET certification_id='" . $certification_id . "' WHERE id=" . $provider;
 
         $db->getDriver()->getConnection()->execute($sql2);
