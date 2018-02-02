@@ -1,2 +1,2 @@
-ODK Dashboard Application
+RT Certificate Management Application
 =======================
