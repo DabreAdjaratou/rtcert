@@ -36,21 +36,22 @@ class TrainingController extends AbstractActionController {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
+             $params = $request->getPost();
+            
             $training = new Training();
             $form->setInputFilter($training->getInputFilter());
             $select_time = $request->getPost('select_time');
-//            die($select_time);
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $training->exchangeArray($form->getData());
+            //die($select_time);
+            //$form->setData($request->getPost());
+            //if ($form->isValid()) {
+                $training->exchangeArray($request->getPost());
                 $training->length_of_training = $training->length_of_training . ' ' . $select_time;
                 $this->getTrainingTable()->saveTraining($training);
                 $container = new Container('alert');
                 $container->alertMsg = 'New training added successfully';
 
                 return $this->redirect()->toRoute('training', array('action' => 'add'));
-            }
+            //}
         }
 
         return array('form' => $form);
@@ -69,42 +70,38 @@ class TrainingController extends AbstractActionController {
         }
 
         try {
-            $training = $this->getTrainingTable()->getTraining($training_id);
-        } catch (\Exception $ex) {
-            return $this->redirect()->toRoute('training', array(
-                        'action' => 'index'
-            ));
-        }
-        $training->last_training_date = date("d-m-Y", strtotime($training->last_training_date));
-        if (isset($training->date_certificate_issued)) {
-            $training->date_certificate_issued = date("d-m-Y", strtotime($training->date_certificate_issued));
-        }
-
-        $form = new TrainingForm($dbAdapter);
-
-        $time_array = explode(' ', $training->length_of_training);
-        $time1 = $time_array[0];
-        $time2 = $time_array[1];
-
-
-        $training->length_of_training = $time1;
-        $form->bind($training);
-        $form->get('submit')->setAttribute('value', 'UPDATE');
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $select_time = $request->getPost('select_time');
-            $form->setInputFilter($training->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
+            $request = $this->getRequest();
+            $form = new TrainingForm($dbAdapter);
+            if ($request->isPost()) {
+                $training = new Training();
+                $form->setInputFilter($training->getInputFilter());
+                $select_time = $request->getPost('select_time');
+                
+                $training->exchangeArray($request->getPost());
                 $training->length_of_training = $training->length_of_training . ' ' . $select_time;
                 $this->getTrainingTable()->saveTraining($training);
                 $container = new Container('alert');
                 $container->alertMsg = 'Training updated successfully';
                 return $this->redirect()->toRoute('training');
             }
+            $training = $this->getTrainingTable()->getTraining($training_id);
+        } catch (\Exception $ex) {
+            return $this->redirect()->toRoute('training', array(
+                        'action' => 'index'
+            ));
         }
+        //$training->last_training_date = date("d-m-Y", strtotime($training->last_training_date));
+        if (isset($training->date_certificate_issued)) {
+            $training->date_certificate_issued = date("d-m-Y", strtotime($training->date_certificate_issued));
+        }
+
+        $time_array = explode(' ', $training->length_of_training);
+        $time1 = $time_array[0];
+        $time2 = $time_array[1];
+        
+        $training->length_of_training = $time1;
+        $form->bind($training);
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         return array(
             'training_id' => $training_id,

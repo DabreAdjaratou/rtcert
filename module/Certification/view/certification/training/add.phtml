@@ -16,7 +16,14 @@ $sessionLogin = new Container('credo');
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
-
+<style>
+    .select2-container .select2-selection--single{
+        height:44px;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow b:after{
+        content:'';
+    }
+</style>
 <div class="am-content">
     <div class="page-head">
 
@@ -42,13 +49,15 @@ $sessionLogin = new Container('credo');
                 <div class="col-sm-12">
                     <div class="panel panel-default">
                         <div class="panel-body" >
-                            <form action="<?php $this->url('training', array('action' => 'add')); ?>" name="form" method="post" onsubmit="return validateForm()">
+                            <form action="<?php $this->url('training', array('action' => 'add')); ?>" name="form" id="form" method="post" onsubmit="return validateForm();">
                                 <?php
                                 $form->prepare();
                                 $form->get('Provider_id')->setAttributes([
                                     'class' => 'form-control',
                                     'autocomplete' => 'off',
-                                    'id' => 'Tester  Name',
+                                    'id' => 'testerName',
+                                    'multiple' => 'multiple',
+                                    'title' => 'Please select the tester',
                                     'onclick' => 'emptyInput(this)'
                                 ]);
 
@@ -56,30 +65,29 @@ $sessionLogin = new Container('credo');
                                     'class' => 'form-control',
                                     'autocomplete' => 'off',
                                     'id' => 'Type of Competency',
+                                    'title' => 'Please select type of competency',
                                     'onclick' => 'emptyInput(this)'
                                 ]);
 
-                                $form->get('last_training_date')->setAttributes([
-                                    'class' => 'form-control',
-                                    'autocomplete' => 'off',
-                                    'id' => 'date',
-                                    'onclick' => 'emptyInput(this)'
-                                ]);
+                               
                                 $form->get('type_of_training')->setAttributes([
                                     'class' => 'form-control',
                                     'id' => 'Type of Activity/Training',
+                                    'title' => 'Please select type of activity/training',
                                     'onclick' => 'emptyInput(this)'
                                 ]);
                                 $form->get('length_of_training')->setAttributes([
                                     'class' => 'form-control',
                                     'autocomplete' => 'off',
                                     'id' => 'Length of Activity/Training',
+                                    'title' => 'Please enter length of activity/training',
                                     'onclick' => 'emptyInput(this)',
                                     'placeholder' => 'Length of Training/Activity'
                                 ]);
                                 $form->get('training_organization_id')->setAttributes([
                                     'class' => 'form-control',
                                     'id' => 'Training Organization',
+                                    'title' => 'Please select training organization',
                                     'onclick' => 'emptyInput(this)'
                                 ]);
                                 $form->get('facilitator')->setAttributes([
@@ -87,16 +95,17 @@ $sessionLogin = new Container('credo');
                                     'placeholder' => 'Name of Facilitator(s)',
                                     'autocomplete' => 'off',
                                     'id' => 'Name of Facilitator(s)',
+                                    'title' => 'Please enter name of facilitator(s)',
                                     'onclick' => 'emptyInput(this)'
                                 ]);
-
 
                                 $form->get('training_certificate')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Training certificate',
                                     'id' => 'Training certificate',
                                     'onchange' => 'issued()',
-                                    'onclick' => 'emptyInput(this)']);
+                                    'onclick' => 'emptyInput(this)'
+                                ]);
                                 $form->get('date_certificate_issued')->setAttributes([
                                     'class' => 'form-control',
                                     'autocomplete' => 'off',
@@ -109,7 +118,8 @@ $sessionLogin = new Container('credo');
                                     'autocomplete' => 'off',
                                     'id' => 'Comments',
                                     'onclick' => 'emptyInput(this)']);
-
+                                
+                               
                                 echo $this->form()->openTag($form);
                                 ?>
                                 <?php echo $this->formHidden($form->get('training_id')->setAttribute('class', 'form-control')) ?>
@@ -128,10 +138,7 @@ $sessionLogin = new Container('credo');
                                     <?= $this->formElement($form->get('type_of_training')); ?>
                                     <?= $this->formElementErrors($form->get('type_of_training')); ?>
                                 </div>
-                                <div class="form-group col-lg-6">
-                                    <?= $this->formLabel($form->get('last_training_date')); ?><span class="mandatory">*</span>
-                                    <?= $this->formElement($form->get('last_training_date')); ?>
-                                    <?= $this->formElementErrors($form->get('last_training_date')); ?></div>
+                                
 
                                 <div class = " form-group col-lg-6">
                                     <div class = "input-group">
@@ -178,8 +185,10 @@ $sessionLogin = new Container('credo');
 
                                 </div>
 
-                                <div class="form-group col-lg-4" ><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                                    <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('training', array('action' => 'index')); ?>" >CANCEL</a> </div>
+                                <div class="form-group col-lg-4" >
+                                    <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
+                                    <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('training', array('action' => 'index')); ?>" >CANCEL</a>
+                                </div>
                                     <?php echo $this->form()->closeTag();
                                     ?>
                             </form>
@@ -212,6 +221,15 @@ $sessionLogin = new Container('credo');
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/training.js'); ?>"></script>
 
 
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#testerName").select2({
+            placeholder: "Please choose a Provider",
+            allowClear: true,
+        });
+    });
+    
+   
+</script>
 
 

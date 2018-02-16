@@ -40,47 +40,48 @@ class TrainingTable extends AbstractTableGateway {
     }
 
     public function saveTraining(Training $Training) {
-        $date = $Training->last_training_date;
-        $date_explode = explode("-", $date);
-//        die(print_r($date_explode));
-        $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
-
-        if (isset($Training->date_certificate_issued)) {
+        //$date = $Training->last_training_date;
+        //$date_explode = explode("-", $date);
+        //die(print_r($date_explode));
+        //$newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+        $newsdate2=NULL;
+        if (isset($Training->date_certificate_issued) && trim($Training->date_certificate_issued)!="") {
             $date2 = $Training->date_certificate_issued;
             $date_explode2 = explode("-", $date2);
             $newsdate2 = $date_explode2[2] . '-' . $date_explode2[1] . '-' . $date_explode2[0];
-
-            $data = array(
-                'Provider_id' => $Training->Provider_id,
-                'type_of_competency' => $Training->type_of_competency,
-                'last_training_date' => $newsdate,
-                'type_of_training' => $Training->type_of_training,
-                'length_of_training' => $Training->length_of_training,
-                'training_organization_id' => $Training->training_organization_id,
-                'facilitator' => strtoupper($Training->facilitator),
-                'training_certificate' => $Training->training_certificate,
-                'date_certificate_issued' => $newsdate2,
-                'Comments' => $Training->Comments,
-            );
-        } else {
-            $data = array(
-                'Provider_id' => $Training->Provider_id,
-                'type_of_competency' => $Training->type_of_competency,
-                'last_training_date' => $newsdate,
-                'type_of_training' => $Training->type_of_training,
-                'length_of_training' => $Training->length_of_training,
-                'training_organization_id' => $Training->training_organization_id,
-                'facilitator' => strtoupper($Training->facilitator),
-                'training_certificate' => $Training->training_certificate,
-                'date_certificate_issued' => $Training->date_certificate_issued,
-                'Comments' => $Training->Comments,
-            );
         }
+        //\Zend\Debug\Debug::dump($Training); die;
         $training_id = (int) $Training->training_id;
         if ($training_id == 0) {
-            $this->tableGateway->insert($data);
+            foreach($Training->Provider_id as $val){
+                $data = array(
+                   'Provider_id' => $val,
+                   'type_of_competency' => $Training->type_of_competency,
+                   //'last_training_date' => $newsdate,
+                   'type_of_training' => $Training->type_of_training,
+                   'length_of_training' => $Training->length_of_training,
+                   'training_organization_id' => $Training->training_organization_id,
+                   'facilitator' => strtoupper($Training->facilitator),
+                   'training_certificate' => $Training->training_certificate,
+                   'date_certificate_issued' => $newsdate2,
+                   'Comments' => $Training->Comments,
+               );
+                $this->tableGateway->insert($data);
+            }
         } else {
             if ($this->getTraining($training_id)) {
+                $data = array(
+                    'Provider_id' => $Training->Provider_id,
+                    'type_of_competency' => $Training->type_of_competency,
+                    //'last_training_date' => $newsdate,
+                    'type_of_training' => $Training->type_of_training,
+                    'length_of_training' => $Training->length_of_training,
+                    'training_organization_id' => $Training->training_organization_id,
+                    'facilitator' => strtoupper($Training->facilitator),
+                    'training_certificate' => $Training->training_certificate,
+                    'date_certificate_issued' => $newsdate2,
+                    'Comments' => $Training->Comments,
+                );
                 $this->tableGateway->update($data, array('training_id' => $training_id));
             } else {
                 throw new \Exception('Training  id does not exist');
