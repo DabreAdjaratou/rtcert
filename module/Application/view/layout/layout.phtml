@@ -139,59 +139,50 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
             <?php } ?>
             </ul>
             
-                            
+            <?php if(isset($sessionLogin->userId)){ ?>
                             <ul class="nav navbar-nav am-top-menu">
-                            <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">System Admin <span class="caret"></span></a>
-                            <ul role="menu" class="dropdown-menu">
-                            <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
-                                        ?>
-                                        
-                                       
-                                    <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
-                                    <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
-                                    <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
-                                    <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organizations</a></li>
-                                    <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>">Certificate PDF Settings</a></li>
+                              <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">System Admin <span class="caret"></span></a>
+                                  <ul role="menu" class="dropdown-menu">
+                                    <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
+                                              ?>
+                                              
+                                            
+                                          <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
+                                          <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
+                                          <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+                                          <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organizations</a></li>
+                                          <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>">Certificate PDF Settings</a></li>
 
 
-                                    <?php } ?>
+                                          <?php } ?>
                                                 
                                                 <?php echo $adminMenu; ?>
                                             </ul>
-                                        </li>
-
-
-                                        
-                            
-                                            
+                                </li>
+                                <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Tester Evaluation<span class="caret"></span></a>
+                                      <ul role="menu" class="dropdown-menu">
+                                          <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Manage Trainings</a></li>                                        
+                                          <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Manage Testers </a></li>
+                                          <li class="divider"></li>
+                                          <li><a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>">Written Examinations</a></li>
+                                          <li><a href="<?php echo $this->url('practical-exam', array('action' => 'add')); ?>">Practical Examinations</a></li>
+                                          <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Results Validation</a></li>
+                                          <li class="divider"></li>
+                                          <li><a href="javascript:alert('Under active development');">Issued Certificates</a></li>
+                                          <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Recertifications Reminder</a></li>
+                                        </ul>
+                                </li>
                                     
-                                        
-                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Tester Evaluation<span class="caret"></span></a>
-                                        <ul role="menu" class="dropdown-menu">
-                                            <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Manage Trainings</a></li>                                        
-                                            <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Manage Testers </a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>">Written Examinations</a></li>
-                                            <li><a href="<?php echo $this->url('practical-exam', array('action' => 'add')); ?>">Practical Examinations</a></li>
-                                            <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Results Validation</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="javascript:alert('Under active development');">Issued Certificates</a></li>
-                                            <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Recertifications Reminder</a></li>
-                                            
-                                                
-                                            </ul>
-                                        </li>
+                            <?php if($role!= 'DEO'){ ?>
+                                  <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Certifications<span class="caret"></span></a>
+                                  <ul role="menu" class="dropdown-menu">
+                                    <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certifications</a></li>
+                                    <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
                                     
-                                        <?php if($role!= 'DEO'){ ?>
-					  <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Manage Certifications<span class="caret"></span></a>
-					  <ul role="menu" class="dropdown-menu">
-						  <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certifications</a></li>
-						  <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
-						  
-					      </ul>
-					  </li>
-                                        <?php } ?>
-                                        <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Reports<span class="caret"></span></a>
+                                      </ul>
+                                  </li>
+                                <?php } ?>
+                                  <li class="dropdown"><a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">Reports<span class="caret"></span></a>
                                         <ul role="menu" class="dropdown-menu">
                                                 <li><a href="<?php echo $this->url('provider', array('action' => 'xls')); ?>">Provider Reports</a></li>
                                                 <li><a href="<?php echo $this->url('training', array('action' => 'xls')); ?>">Training Reports</a></li>
@@ -204,6 +195,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "inde
                                           
                                         </li>
                                 </ul> 
+                            <?php } ?>
                                 <!--the flashing buttons-->
                         <?php
                         if (!empty($nb) && $nb > 0) {
